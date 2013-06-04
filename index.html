@@ -280,7 +280,7 @@ function submitJson(callbackFunc, requiredToShowConfirm) {
 
 function refreshGlobalTimeline() {
     $("#param_method").val('GET');
-	$("#param_url").val('/atmos/messages/timeline');
+	$("#param_url").val('/atmos/messages/global_timeline');
 	$("#param_parameter").val("");
 	//確認ダイアログを表示
 
@@ -322,7 +322,7 @@ function refreshGlobalTimeline() {
 
 function refreshMyTimeline() {
     $("#param_method").val('GET');
-	$("#param_url").val('/atmos/messages/timeline');
+	$("#param_url").val('/atmos/messages/focused_timeline');
 	$("#param_parameter").val("");
 	//確認ダイアログを表示
 
@@ -364,7 +364,7 @@ function refreshMyTimeline() {
 
 function refreshTalkTimeline() {
     $("#param_method").val('GET');
-	$("#param_url").val('/atmos/messages/timeline');
+	$("#param_url").val('/atmos/messages/talk_timeline');
 	$("#param_parameter").val("");
 	//確認ダイアログを表示
 
