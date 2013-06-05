@@ -73,3 +73,8 @@ var isJson = function(arg){
     if(typeof(arg) != "string"){return false;}
     try{arg = (!JSON) ? eval("(" + arg + ")") : JSON.parse(arg);return true;}catch(e){return false;}
 }
+
+function utc2jst(utcString) {
+	var utc = new Date(utcString);
+	return utc.toLocaleString();
+}

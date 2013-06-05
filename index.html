@@ -69,6 +69,22 @@
 			</div>
 		</div>
 
+		<div id="messageSenderDialog" class="modal hide fade" role="dialog" tabindex="-1" aria-labelledby="messageSenderDialogLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 Id="messageSenderDialogLabel">Send Message</h3>
+			</div>
+			<div class="modal-body">
+				<input type="hidden" name="method" value="POST" id="message_sender_dialog_method" />
+				<input type="hidden" name="url" value="/atmos/messages/send" id="message_sender_dialog_url" />
+				<textarea rows="3" class="input-block-level" placeholder="Please write messages." name="message_sender_message_body" value="" id="message_sender_message_body" ></textarea>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+				<button class="btn btn-primary" id="messageSenderDialogOK">OK</button>
+			</div>
+		</div>
+
 		<!-- navigation bar -->
         <div class="navbar navbar-inverse navbar-fixed-top">
           <div class="navbar-inner">
@@ -103,7 +119,7 @@
 				<div class="span4">
 					<div class="timeline palette-global-timeline-base-color">
 						<div class="timeline-header">
-    						<a id="send_message_button" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
+    						<a id="send_message_button_on_global_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
     						<a id="refresh_global_timeline_button" style="float:right;" href="#"><i class="fui-heart-16"></i></a>
                             <span class="timeline-title">
                                 Global Timeline
@@ -115,7 +131,7 @@
 				<div class="span4">
 					<div class="timeline palette-my-timeline-base-color">
 						<div class="timeline-header">
-    						<a id="send_message_button" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
+    						<a id="send_message_button_on_my_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
     						<a id="refresh_my_timeline_button" style="float:right;" href="#"><i class="fui-heart-16"></i></a>
                             <span class="timeline-title">
                                 My Timeline
@@ -127,7 +143,7 @@
 				<div class="span4">
 					<div class="timeline palette-talk-timeline-base-color">
 						<div class="timeline-header">
-    						<a id="send_talk_button" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
+    						<a id="send_message_button_on_talk_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
     						<a id="refresh_talk_timeline_button" style="float:right;" href="#"><i class="fui-heart-16"></i></a>
                             <span class="timeline-title">
                                 Talk Timeline
@@ -256,10 +272,10 @@ function submitJson(callbackFunc, requiredToShowConfirm) {
 		})
 		.fail(function(xhr, textStatus, errorThrown){
 			alert('error');
-			window.console.debug(errorThrown);
+			//window.console.debug(errorThrown);
 		})
 		.always(function(xhr, textStatus, errorThrown){
-			window.console.debug(textStatus);
+			//window.console.debug(textStatus);
 		});
 	};
 
@@ -304,7 +320,7 @@ function refreshGlobalTimeline() {
 				+ '	<div class="timeline-item avator">'
                 + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
 				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + result['created_at'] + '</p></span>'
+				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
                 + '    <div class="tooltip timeline-item fade right in">'
                 + '        <div class="tooltip-arrow timeline-item-arrow palette-global-timeline-border-right-color"></div>'
                 + '        <div class="tooltip-innter timeline-item-inner palette-global-timeline-bg-color">' + result['message'] + '</div>'
@@ -346,7 +362,7 @@ function refreshMyTimeline() {
 				+ '	<div class="timeline-item avator">'
                 + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
 				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + result['created_at'] + '</p></span>'
+				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
                 + '    <div class="tooltip timeline-item fade right in">'
                 + '        <div class="tooltip-arrow timeline-item-arrow palette-my-timeline-border-right-color"></div>'
                 + '        <div class="tooltip-innter timeline-item-inner palette-my-timeline-bg-color">' + result['message'] + '</div>'
@@ -388,7 +404,7 @@ function refreshTalkTimeline() {
 				+ '	<div class="timeline-item avator">'
                 + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
 				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + result['created_at'] + '</p></span>'
+				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
                 + '    <div class="tooltip timeline-item fade right in">'
                 + '        <div class="tooltip-arrow timeline-item-arrow palette-talk-timeline-border-right-color"></div>'
                 + '        <div class="tooltip-innter timeline-item-inner palette-talk-timeline-bg-color">' + result['message'] + '</div>'
@@ -430,7 +446,7 @@ function refreshAnnounceTimeline() {
 				+ '	<div class="timeline-item avator">'
                 + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
 				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + result['created_at'] + '</p></span>'
+				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
                 + '    <div class="tooltip timeline-item fade right in">'
                 + '        <div class="tooltip-arrow timeline-item-arrow palette-announce-timeline-border-right-color"></div>'
                 + '        <div class="tooltip-innter timeline-item-inner palette-announce-timeline-bg-color">' + result['message'] + '</div>'
@@ -472,7 +488,7 @@ function refreshMonologTimeline() {
 				+ '	<div class="timeline-item avator">'
                 + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
 				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + result['created_at'] + '</p></span>'
+				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
                 + '    <div class="tooltip timeline-item fade right in">'
                 + '        <div class="tooltip-arrow timeline-item-arrow palette-monolog-timeline-border-right-color"></div>'
                 + '        <div class="tooltip-innter timeline-item-inner palette-monolog-timeline-bg-color">' + result['message'] + '</div>'
@@ -514,7 +530,7 @@ function refreshPrivateTimeline() {
 				+ '	<div class="timeline-item avator">'
                 + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
 				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + result['created_at'] + '</p></span>'
+				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
                 + '    <div class="tooltip timeline-item fade right in">'
                 + '        <div class="tooltip-arrow timeline-item-arrow palette-private-timeline-border-right-color"></div>'
                 + '        <div class="tooltip-innter timeline-item-inner palette-private-timeline-bg-color">' + result['message'] + '</div>'
@@ -570,10 +586,10 @@ function tryLogin() {
 	    })
 	    .fail(function(xhr, textStatus, errorThrown){
 	        alert('error');
-	        window.console.debug(errorThrown);
+	        //window.console.debug(errorThrown);
 	    })
 	    .always(function(xhr, textStatus, errorThrown){
-	        window.console.debug(textStatus);
+	        //window.console.debug(textStatus);
 	    });
 	
 		return false;
@@ -615,12 +631,73 @@ function submitJsonManually() {
 	return false;
 }
 
+function sendMessage() {
+
+	var sendMessageFunc = function () {
+    	var headerNameAtmosSessionId = 'atmosphere-session-id';
+	    var targetMethod = $("#message_sender_dialog_method").val();
+		var targetUrl = $("#message_sender_dialog_url").val();
+		var inputtedMessage = $("#message_sender_message_body").val();
+	 	var paramJSON = {};
+	    paramJSON['message'] = inputtedMessage;
+    	var atmosSessionId = $("#param_atmos_session_id").val();
+	
+        var headers = {};
+        headers[headerNameAtmosSessionId] = atmosSessionId;
+	    
+	    var requestParams = {
+	        url: targetUrl,
+	        type: targetMethod,
+	        dataType: 'text',
+	        data: JSON.stringify(paramJSON),
+	        headers: headers
+	    };
+	
+	    $.ajax(requestParams)
+	    .done(function(data, textStatus, xhr){
+	        var atmosSessionId = xhr.getResponseHeader('atmosphere-session-id');
+	        if (typeof(atmosSessionId) != 'undefined' && atmosSessionId != null && atmosSessionId.length > 0) {
+	            $("#param_atmos_session_id").val(atmosSessionId);
+	        }
+	    })
+	    .fail(function(xhr, textStatus, errorThrown){
+	        alert('error');
+	        //window.console.debug(errorThrown);
+	    })
+	    .always(function(xhr, textStatus, errorThrown){
+	        //window.console.debug(textStatus);
+	    });
+	
+		return false;
+	}
+
+	showDialog(
+		'messageSenderDialog',
+		'messageSenderDialogLabel',
+		'messageSenderDialogOK',
+		sendMessageFunc,
+		null,
+		true
+	);
+
+	return false;
+}
+
 $(document).ready(function() {
 	$('#loginButton').on('click', function() {
 		tryLogin();
 	});
 	$('#sendRequestManualButton').on('click', function() {
 		submitJsonManually();
+	});
+	$('#send_message_button_on_global_timeline').on('click', function() {
+		sendMessage();
+	});
+	$('#send_message_button_on_my_timeline').on('click', function() {
+		sendMessage();
+	});
+	$('#send_message_button_on_talk_timeline').on('click', function() {
+		sendMessage();
 	});
 	$('#refresh_global_timeline_button').on('click', function() {
 		refreshGlobalTimeline();
