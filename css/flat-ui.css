@@ -1060,9 +1060,11 @@ input[disabled],
 input[readonly],
 textarea[disabled],
 textarea[readonly] {
-  background-color: #eaeded;
+  /* background-color: #eaeded; */
+  background-color: #34495E;
   border-color: transparent;
-  color: #cad2d3;
+  /* color: #cad2d3; */
+  color: #FFFFFF;
   cursor: default; }
 
 input,
@@ -1694,6 +1696,29 @@ textarea,
     border-width: 9px 9px 9px 0;
     margin-top: -3px;
     top: -3px; }
+  .timeline-item.action-panel {
+	font-size:14px;
+	vertical-align:middle;
+	width:168px;
+    background:rgba(0, 0, 0, 0.4);
+    color:#fff;
+    height: 22px;
+    padding: 0 20px;
+    position:absolute;
+    bottom:7px;
+    right:0px;
+    margin-right:10px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+	display:none; }
+  .timeline-item.action-panel a {
+      text-decoration: none; }
+  .timeline-item.action-panel i {
+      /* SUN-FLOWER */
+      color: #f1c40f;
+	  vertical-align: middle;
+	  margin-left: 5px;
+	  margin-right: 5px; }
 /*
 .timeline-item:after {
   clear:right; }

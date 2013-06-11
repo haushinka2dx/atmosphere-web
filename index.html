@@ -10,6 +10,9 @@
 		
 		<!-- Loading Flat UI -->
 		<link href="css/flat-ui.css" rel="stylesheet">
+		
+		<!-- General foundation icon font -->
+		<link href="css/general_foundicons.css" rel="stylesheet">
 
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
 		<!--[if lt IE 9]>
@@ -77,11 +80,32 @@
 			<div class="modal-body">
 				<input type="hidden" name="method" value="POST" id="message_sender_dialog_method" />
 				<input type="hidden" name="url" value="/atmos/messages/send" id="message_sender_dialog_url" />
+				<input type="hidden" name="reply_to" value="" id="message_sender_reply_to" />
+				<label>Original Message</label>
+				<textarea rows="3" class="input-block-level" id="message_sender_original_message" readonly></textarea>
 				<textarea rows="3" class="input-block-level" placeholder="Please write messages." name="message_sender_message_body" value="" id="message_sender_message_body" ></textarea>
 			</div>
 			<div class="modal-footer">
 				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
 				<button class="btn btn-primary" id="messageSenderDialogOK">OK</button>
+			</div>
+		</div>
+
+		<div id="responseSenderDialog" class="modal hide fade" role="dialog" tabindex="-1" aria-labelledby="responseSenderDialogLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 Id="responseSenderDialogLabel">Are you sure to <i id="response_sender_dialog_icon"></i> this message?</h3>
+			</div>
+			<div class="modal-body">
+				<input type="hidden" name="method" value="POST" id="response_sender_dialog_method" />
+				<input type="hidden" name="url" value="/atmos/messages/response" id="response_sender_dialog_url" />
+				<input type="hidden" name="target_message_id" value="" id="response_sender_target_message_id" />
+				<input type="hidden" name="response_action" value="" id="response_sender_response_action" />
+				<textarea rows="3" class="input-block-level" id="response_sender_original_message"></textarea>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+				<button class="btn btn-primary" id="responseSenderDialogOK">OK</button>
 			</div>
 		</div>
 
@@ -98,10 +122,13 @@
                       Send Request
                     </a>
                   </li>
-                  <li>
+                  <li id="menuItemLogin">
                     <a href="#" id="loginButton">
                       Login
                     </a>
+                  </li>
+				  <li id="menuItemCurrentUser" style="display:none;">
+				  	<a href="#">Not Login</a>
                   </li>
                 </ul>
               </div><!--/.nav -->
@@ -120,7 +147,7 @@
 					<div class="timeline palette-global-timeline-base-color">
 						<div class="timeline-header">
     						<a id="send_message_button_on_global_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_global_timeline_button" style="float:right;" href="#"><i class="fui-heart-16"></i></a>
+    						<a id="refresh_global_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
                             <span class="timeline-title">
                                 Global Timeline
                             </span>
@@ -132,7 +159,7 @@
 					<div class="timeline palette-my-timeline-base-color">
 						<div class="timeline-header">
     						<a id="send_message_button_on_my_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_my_timeline_button" style="float:right;" href="#"><i class="fui-heart-16"></i></a>
+    						<a id="refresh_my_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
                             <span class="timeline-title">
                                 My Timeline
                             </span>
@@ -144,7 +171,7 @@
 					<div class="timeline palette-talk-timeline-base-color">
 						<div class="timeline-header">
     						<a id="send_message_button_on_talk_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_talk_timeline_button" style="float:right;" href="#"><i class="fui-heart-16"></i></a>
+    						<a id="refresh_talk_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
                             <span class="timeline-title">
                                 Talk Timeline
                             </span>
@@ -158,7 +185,7 @@
 					<div class="timeline palette-announce-timeline-base-color">
 						<div class="timeline-header">
     						<a id="send_announce_button" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_announce_timeline_button" style="float:right;" href="#"><i class="fui-heart-16"></i></a>
+    						<a id="refresh_announce_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
                             <span class="timeline-title">
                                 Announce Timeline
                             </span>
@@ -170,7 +197,7 @@
 					<div class="timeline palette-monolog-timeline-base-color">
 						<div class="timeline-header">
     						<a id="send_monolog_button" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_monolog_timeline_button" style="float:right;" href="#"><i class="fui-heart-16"></i></a>
+    						<a id="refresh_monolog_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
                             <span class="timeline-title">
                                 Monologue Timeline
                             </span>
@@ -182,7 +209,7 @@
 					<div class="timeline palette-private-timeline-base-color">
 						<div class="timeline-header">
     						<a id="send_private_button" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_private_timeline_button" style="float:right;" href="#"><i class="fui-heart-16"></i></a>
+    						<a id="refresh_private_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
                             <span class="timeline-title">
                                 Private Timeline
                             </span>
@@ -208,518 +235,6 @@
 		<script src="js/bootstrap-transition.js"></script>
 		<script src="js/jquery-tap.js"></script>
 		<script src="js/myutil.js"></script>
-<script type="text/javascript">
-<!--
-function submitJson(callbackFunc, requiredToShowConfirm) {
-    var headerNameAtmosSessionId = 'atmosphere-session-id';
-    var targetMethod = $("#param_method").val();
-	var targetUrl = $("#param_url").val();
-	var targetParams = $("#param_parameter").val();
-    var atmosSessionId = $("#param_atmos_session_id").val();
-	
-	if (targetMethod === 'GET' && targetParams.length > 0) {
-		var queryString = '';
-		var paramsJSON = JSON.parse(targetParams);
-		for (var pKey in paramsJSON) {
-            var rawValue = paramsJSON[pKey];
-            if (isJson(rawValue)) {
-                var encodedValue = encodeURI(JSON.stringify(rawValue));
-            }
-            else {
-                var encodedValue = encodeURI(rawValue);
-            }
-			if (queryString.length > 0) {
-				queryString += '&';
-			}
-			queryString += pKey + '=' + encodedValue;
-		}
-		targetParams = queryString;
-	}
-
-    var headers = {};
-    headers[headerNameAtmosSessionId] = atmosSessionId;
-    
-	var sendRequestFunc = function() {
-		var requestParams = {
-			url: targetUrl,
-			type: targetMethod,
-			//dataType: 'json',
-			dataType: 'text',
-			//data: paramObj
-			data: targetParams,
-            headers: headers
-		};
-	
-		$.ajax(requestParams)
-		.done(function(data, textStatus, xhr){
-			// store atmosSessionId
-            var atmosSessionId = xhr.getResponseHeader('atmosphere-session-id');
-            if (typeof(atmosSessionId) != 'undefined' && atmosSessionId != null && atmosSessionId.length > 0) {
-                $("#param_atmos_session_id").val(atmosSessionId);
-            }
-
-			// log result
-			$('#resultArea').prepend(
-				'<div class="span3">'
-				+ '	<textarea rows="12" class="input-block-level" placeholder="" disabled></textarea> '
-				+ '</div>');
-			$("#resultArea > div:first > textarea:first").val(data);
-
-			// call calback
-			if (typeof(callbackFunc) != 'undefined' && callbackFunc != null) {
-				callbackFunc(data, textStatus, xhr);
-			}
-		})
-		.fail(function(xhr, textStatus, errorThrown){
-			alert('error');
-			//window.console.debug(errorThrown);
-		})
-		.always(function(xhr, textStatus, errorThrown){
-			//window.console.debug(textStatus);
-		});
-	};
-
-	if (requiredToShowConfirm) {
-		//確認ダイアログを表示
-		showConfirmDialog(
-			'Confirmation!!!',
-			'Are you sure to send request?<br /><p class="text-info">' + targetUrl + '</p>',
-			sendRequestFunc
-		);
-	}
-	else {
-		sendRequestFunc();
-	}
-
-	return false;
-}
-
-function refreshGlobalTimeline() {
-    $("#param_method").val('GET');
-	$("#param_url").val('/atmos/messages/global_timeline');
-	$("#param_parameter").val("");
-	//確認ダイアログを表示
-
-	var callback = function(data, textStatus, xhr) {
-		var resultJSON = JSON.parse(data);
-		if (resultJSON['count'] > 0) {
-			for (var resultIndex = resultJSON['count'] - 1; resultIndex >= 0; resultIndex--) {
-				var result = resultJSON['results'][resultIndex];
-				var timelineItems = $("#global-timeline-area").children();
-				if (timelineItems.length > 0 && timelineItems[0].id >= result['created_at']) {
-					continue;
-				}
-				var avatorPaths = [
-					'images/illustrations/paper.png', 
-					'images/illustrations/bag.png', 
-					'images/illustrations/infinity.png', 
-					'images/illustrations/gift.png', 
-				];
-				$("#global-timeline-area").prepend(
-				'<div class="timeline-item" id="' + result['created_at'] + '">'
-				+ '	<div class="timeline-item avator">'
-                + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
-				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
-                + '    <div class="tooltip timeline-item fade right in">'
-                + '        <div class="tooltip-arrow timeline-item-arrow palette-global-timeline-border-right-color"></div>'
-                + '        <div class="tooltip-innter timeline-item-inner palette-global-timeline-bg-color">' + result['message'] + '</div>'
-                + '    </div>'
-				+ '</div>'
-				+ '<div style="clear:right;"></div>');
-			}
-		}
-	};
-
-	submitJson(callback);
-
-	return false;
-}
-
-function refreshMyTimeline() {
-    $("#param_method").val('GET');
-	$("#param_url").val('/atmos/messages/focused_timeline');
-	$("#param_parameter").val("");
-	//確認ダイアログを表示
-
-	var callback = function(data, textStatus, xhr) {
-		var resultJSON = JSON.parse(data);
-		if (resultJSON['count'] > 0) {
-			for (var resultIndex = resultJSON['count'] - 1; resultIndex >= 0; resultIndex--) {
-				var result = resultJSON['results'][resultIndex];
-				var timelineItems = $("#my-timeline-area").children();
-				if (timelineItems.length > 0 && timelineItems[0].id >= result['created_at']) {
-					continue;
-				}
-				var avatorPaths = [
-					'images/illustrations/paper.png', 
-					'images/illustrations/bag.png', 
-					'images/illustrations/infinity.png', 
-					'images/illustrations/gift.png', 
-				];
-				$("#my-timeline-area").prepend(
-				'<div class="timeline-item" id="' + result['created_at'] + '">'
-				+ '	<div class="timeline-item avator">'
-                + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
-				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
-                + '    <div class="tooltip timeline-item fade right in">'
-                + '        <div class="tooltip-arrow timeline-item-arrow palette-my-timeline-border-right-color"></div>'
-                + '        <div class="tooltip-innter timeline-item-inner palette-my-timeline-bg-color">' + result['message'] + '</div>'
-                + '    </div>'
-				+ '</div>'
-				+ '<div style="clear:right;"></div>');
-			}
-		}
-	};
-
-	submitJson(callback);
-
-	return false;
-}
-
-function refreshTalkTimeline() {
-    $("#param_method").val('GET');
-	$("#param_url").val('/atmos/messages/talk_timeline');
-	$("#param_parameter").val("");
-	//確認ダイアログを表示
-
-	var callback = function(data, textStatus, xhr) {
-		var resultJSON = JSON.parse(data);
-		if (resultJSON['count'] > 0) {
-			for (var resultIndex = resultJSON['count'] - 1; resultIndex >= 0; resultIndex--) {
-				var result = resultJSON['results'][resultIndex];
-				var timelineItems = $("#talk-timeline-area").children();
-				if (timelineItems.length > 0 && timelineItems[0].id >= result['created_at']) {
-					continue;
-				}
-				var avatorPaths = [
-					'images/illustrations/paper.png', 
-					'images/illustrations/bag.png', 
-					'images/illustrations/infinity.png', 
-					'images/illustrations/gift.png', 
-				];
-				$("#talk-timeline-area").prepend(
-				'<div class="timeline-item" id="' + result['created_at'] + '">'
-				+ '	<div class="timeline-item avator">'
-                + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
-				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
-                + '    <div class="tooltip timeline-item fade right in">'
-                + '        <div class="tooltip-arrow timeline-item-arrow palette-talk-timeline-border-right-color"></div>'
-                + '        <div class="tooltip-innter timeline-item-inner palette-talk-timeline-bg-color">' + result['message'] + '</div>'
-                + '    </div>'
-				+ '</div>'
-				+ '<div style="clear:right;"></div>');
-			}
-		}
-	};
-
-	submitJson(callback);
-
-	return false;
-}
-
-function refreshAnnounceTimeline() {
-    $("#param_method").val('GET');
-	$("#param_url").val('/atmos/announce/timeline');
-	$("#param_parameter").val("");
-	//確認ダイアログを表示
-
-	var callback = function(data, textStatus, xhr) {
-		var resultJSON = JSON.parse(data);
-		if (resultJSON['count'] > 0) {
-			for (var resultIndex = resultJSON['count'] - 1; resultIndex >= 0; resultIndex--) {
-				var result = resultJSON['results'][resultIndex];
-				var timelineItems = $("#announce-timeline-area").children();
-				if (timelineItems.length > 0 && timelineItems[0].id >= result['created_at']) {
-					continue;
-				}
-				var avatorPaths = [
-					'images/illustrations/paper.png', 
-					'images/illustrations/bag.png', 
-					'images/illustrations/infinity.png', 
-					'images/illustrations/gift.png', 
-				];
-				$("#announce-timeline-area").prepend(
-				'<div class="timeline-item" id="' + result['created_at'] + '">'
-				+ '	<div class="timeline-item avator">'
-                + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
-				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
-                + '    <div class="tooltip timeline-item fade right in">'
-                + '        <div class="tooltip-arrow timeline-item-arrow palette-announce-timeline-border-right-color"></div>'
-                + '        <div class="tooltip-innter timeline-item-inner palette-announce-timeline-bg-color">' + result['message'] + '</div>'
-                + '    </div>'
-				+ '</div>'
-				+ '<div style="clear:right;"></div>');
-			}
-		}
-	};
-
-	submitJson(callback);
-
-	return false;
-}
-
-function refreshMonologTimeline() {
-    $("#param_method").val('GET');
-	$("#param_url").val('/atmos/monolog/timeline');
-	$("#param_parameter").val("");
-	//確認ダイアログを表示
-
-	var callback = function(data, textStatus, xhr) {
-		var resultJSON = JSON.parse(data);
-		if (resultJSON['count'] > 0) {
-			for (var resultIndex = resultJSON['count'] - 1; resultIndex >= 0; resultIndex--) {
-				var result = resultJSON['results'][resultIndex];
-				var timelineItems = $("#monolog-timeline-area").children();
-				if (timelineItems.length > 0 && timelineItems[0].id >= result['created_at']) {
-					continue;
-				}
-				var avatorPaths = [
-					'images/illustrations/paper.png', 
-					'images/illustrations/bag.png', 
-					'images/illustrations/infinity.png', 
-					'images/illustrations/gift.png', 
-				];
-				$("#monolog-timeline-area").prepend(
-				'<div class="timeline-item" id="' + result['created_at'] + '">'
-				+ '	<div class="timeline-item avator">'
-                + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
-				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
-                + '    <div class="tooltip timeline-item fade right in">'
-                + '        <div class="tooltip-arrow timeline-item-arrow palette-monolog-timeline-border-right-color"></div>'
-                + '        <div class="tooltip-innter timeline-item-inner palette-monolog-timeline-bg-color">' + result['message'] + '</div>'
-                + '    </div>'
-				+ '</div>'
-				+ '<div style="clear:right;"></div>');
-			}
-		}
-	};
-
-	submitJson(callback);
-
-	return false;
-}
-
-function refreshPrivateTimeline() {
-    $("#param_method").val('GET');
-	$("#param_url").val('/atmos/private/timeline');
-	$("#param_parameter").val("");
-	//確認ダイアログを表示
-
-	var callback = function(data, textStatus, xhr) {
-		var resultJSON = JSON.parse(data);
-		if (resultJSON['count'] > 0) {
-			for (var resultIndex = resultJSON['count'] - 1; resultIndex >= 0; resultIndex--) {
-				var result = resultJSON['results'][resultIndex];
-				var timelineItems = $("#private-timeline-area").children();
-				if (timelineItems.length > 0 && timelineItems[0].id >= result['created_at']) {
-					continue;
-				}
-				var avatorPaths = [
-					'images/illustrations/paper.png', 
-					'images/illustrations/bag.png', 
-					'images/illustrations/infinity.png', 
-					'images/illustrations/gift.png', 
-				];
-				$("#private-timeline-area").prepend(
-				'<div class="timeline-item" id="' + result['created_at'] + '">'
-				+ '	<div class="timeline-item avator">'
-                + '    	<img src="' + avatorPaths[resultIndex % 4] + '" />'
-				+ '	</div>'
-				+ '	<span><p class="timeline-item byat">' + result['created_by'] + ' - ' + utc2jst(result['created_at']) + '</p></span>'
-                + '    <div class="tooltip timeline-item fade right in">'
-                + '        <div class="tooltip-arrow timeline-item-arrow palette-private-timeline-border-right-color"></div>'
-                + '        <div class="tooltip-innter timeline-item-inner palette-private-timeline-bg-color">' + result['message'] + '</div>'
-                + '    </div>'
-				+ '</div>'
-				+ '<div style="clear:right;"></div>');
-			}
-		}
-	};
-
-	submitJson(callback);
-
-	return false;
-}
-
-function submitJsonManually() {
-    $("#param_method").val($("input:radio[name='methodRadioManually']:checked").val());
-	$("#param_url").val($("#param_url_manually").val());
-	$("#param_parameter").val($("#param_parameter_manually").val());
-
-	submitJson();
-
-	return false;
-}
-
-function tryLogin() {
-
-	var loginFunc = function () {
-	    var targetMethod = $("#login_dialog_method").val();
-		var targetUrl = $("#login_dialog_url").val();
-		var inputtedUserId = $("#login_dialog_user_id").val();
-		var inputtedPassword = $("#login_dialog_password").val();
-	 	var paramJSON = {};
-	    paramJSON['user_id'] = inputtedUserId;
-	    paramJSON['password'] = inputtedPassword;
-	
-	    var headers = {};
-	    
-	    var requestParams = {
-	        url: targetUrl,
-	        type: targetMethod,
-	        dataType: 'text',
-	        data: JSON.stringify(paramJSON),
-	        headers: headers
-	    };
-	
-	    $.ajax(requestParams)
-	    .done(function(data, textStatus, xhr){
-	        var atmosSessionId = xhr.getResponseHeader('atmosphere-session-id');
-	        if (typeof(atmosSessionId) != 'undefined' && atmosSessionId != null && atmosSessionId.length > 0) {
-	            $("#param_atmos_session_id").val(atmosSessionId);
-	        }
-	    })
-	    .fail(function(xhr, textStatus, errorThrown){
-	        alert('error');
-	        //window.console.debug(errorThrown);
-	    })
-	    .always(function(xhr, textStatus, errorThrown){
-	        //window.console.debug(textStatus);
-	    });
-	
-		return false;
-	}
-
-	showDialog(
-		'loginDialog',
-		'loginDialogLabel',
-		'loginDialogOK',
-		loginFunc,
-		null,
-		true
-	);
-
-	return false;
-}
-
-function submitJsonManually() {
-
-	var sendRequestFunc = function () {
-	    $("#param_method").val($("input:radio[name='methodRadioManually']:checked").val());
-		$("#param_url").val($("#param_url_manually").val());
-		$("#param_parameter").val($("#param_parameter_manually").val());
-
-		submitJson();
-
-		return false;
-	}
-
-	showDialog(
-		'manualSenderDialog',
-		'manualSenderDialogLabel',
-		'manualSenderDialogOK',
-		sendRequestFunc,
-		null,
-		true
-	);
-
-	return false;
-}
-
-function sendMessage() {
-
-	var sendMessageFunc = function () {
-    	var headerNameAtmosSessionId = 'atmosphere-session-id';
-	    var targetMethod = $("#message_sender_dialog_method").val();
-		var targetUrl = $("#message_sender_dialog_url").val();
-		var inputtedMessage = $("#message_sender_message_body").val();
-	 	var paramJSON = {};
-	    paramJSON['message'] = inputtedMessage;
-    	var atmosSessionId = $("#param_atmos_session_id").val();
-	
-        var headers = {};
-        headers[headerNameAtmosSessionId] = atmosSessionId;
-	    
-	    var requestParams = {
-	        url: targetUrl,
-	        type: targetMethod,
-	        dataType: 'text',
-	        data: JSON.stringify(paramJSON),
-	        headers: headers
-	    };
-	
-	    $.ajax(requestParams)
-	    .done(function(data, textStatus, xhr){
-	        var atmosSessionId = xhr.getResponseHeader('atmosphere-session-id');
-	        if (typeof(atmosSessionId) != 'undefined' && atmosSessionId != null && atmosSessionId.length > 0) {
-	            $("#param_atmos_session_id").val(atmosSessionId);
-	        }
-	    })
-	    .fail(function(xhr, textStatus, errorThrown){
-	        alert('error');
-	        //window.console.debug(errorThrown);
-	    })
-	    .always(function(xhr, textStatus, errorThrown){
-	        //window.console.debug(textStatus);
-	    });
-	
-		return false;
-	}
-
-	showDialog(
-		'messageSenderDialog',
-		'messageSenderDialogLabel',
-		'messageSenderDialogOK',
-		sendMessageFunc,
-		null,
-		true
-	);
-
-	return false;
-}
-
-$(document).ready(function() {
-	$('#loginButton').on('click', function() {
-		tryLogin();
-	});
-	$('#sendRequestManualButton').on('click', function() {
-		submitJsonManually();
-	});
-	$('#send_message_button_on_global_timeline').on('click', function() {
-		sendMessage();
-	});
-	$('#send_message_button_on_my_timeline').on('click', function() {
-		sendMessage();
-	});
-	$('#send_message_button_on_talk_timeline').on('click', function() {
-		sendMessage();
-	});
-	$('#refresh_global_timeline_button').on('click', function() {
-		refreshGlobalTimeline();
-	});
-	$('#refresh_my_timeline_button').on('click', function() {
-		refreshMyTimeline();
-	});
-	$('#refresh_talk_timeline_button').on('click', function() {
-		refreshTalkTimeline();
-	});
-	$('#refresh_announce_timeline_button').on('click', function() {
-		refreshAnnounceTimeline();
-	});
-	$('#refresh_monolog_timeline_button').on('click', function() {
-		refreshMonologTimeline();
-	});
-	$('#refresh_private_timeline_button').on('click', function() {
-		refreshPrivateTimeline();
-	});
-});
--->
-
-</script>
+		<script src="js/atmos-web.js"></script>
 	</body>
 </html>
