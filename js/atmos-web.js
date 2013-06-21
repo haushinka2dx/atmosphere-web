@@ -212,7 +212,7 @@ function refreshTalkTimeline() {
 
 function refreshAnnounceTimeline() {
     $("#param_method").val('GET');
-	$("#param_url").val('/atmos/announce/timeline');
+	$("#param_url").val('/atmos/messages/announce_timeline');
 	$("#param_parameter").val("");
 	//確認ダイアログを表示
 
