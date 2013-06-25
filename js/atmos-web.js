@@ -233,7 +233,7 @@ function refreshAnnounceTimeline() {
 
 function refreshMonologTimeline() {
     $("#param_method").val('GET');
-	$("#param_url").val('/atmos/monolog/timeline');
+	$("#param_url").val('/atmos/messages/monolog_timeline');
 	$("#param_parameter").val("");
 	//確認ダイアログを表示
 
@@ -391,10 +391,14 @@ function sendMessage() {
 		var targetUrl = $("#message_sender_dialog_url").val();
 		var replyTo = $("#message_sender_reply_to").val();
 		var inputtedMessage = $("#message_sender_message_body").val();
+		var messageType = $("#message_sender_message_type").val();
 	 	var paramJSON = {};
 	    paramJSON['message'] = inputtedMessage;
 		if (typeof(replyTo) != 'undefined' && replyTo != null && replyTo.length > 0) {
 			paramJSON['reply_to'] = replyTo;
+		}
+		if (typeof(messageType) != 'undefined' && messageType != null && messageType.length > 0) {
+			paramJSON['message_type'] = messageType;
 		}
     	var atmosSessionId = $("#param_atmos_session_id").val();
 	
@@ -512,12 +516,23 @@ $(document).ready(function() {
 		submitJsonManually();
 	});
 	$('#send_message_button_on_global_timeline').on('click', function() {
+		$("#message_sender_message_type").val('');
 		sendMessage();
 	});
 	$('#send_message_button_on_my_timeline').on('click', function() {
+		$("#message_sender_message_type").val('');
 		sendMessage();
 	});
 	$('#send_message_button_on_talk_timeline').on('click', function() {
+		$("#message_sender_message_type").val('');
+		sendMessage();
+	});
+	$('#send_message_button_on_announce_timeline').on('click', function() {
+		$("#message_sender_message_type").val('');
+		sendMessage();
+	});
+	$('#send_message_button_on_monolog_timeline').on('click', function() {
+		$("#message_sender_message_type").val('monolog');
 		sendMessage();
 	});
 	$('#refresh_global_timeline_button').on('click', function() {

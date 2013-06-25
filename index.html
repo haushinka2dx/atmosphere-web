@@ -81,6 +81,7 @@
 				<input type="hidden" name="method" value="POST" id="message_sender_dialog_method" />
 				<input type="hidden" name="url" value="/atmos/messages/send" id="message_sender_dialog_url" />
 				<input type="hidden" name="reply_to" value="" id="message_sender_reply_to" />
+				<input type="hidden" name="message_sender_message_type" value="" id="message_sender_message_type" />
 				<label>Original Message</label>
 				<textarea rows="3" class="input-block-level" id="message_sender_original_message" readonly></textarea>
 				<textarea rows="3" class="input-block-level" placeholder="Please write messages." name="message_sender_message_body" value="" id="message_sender_message_body" ></textarea>
@@ -184,7 +185,7 @@
 				<div class="span4">
 					<div class="timeline palette-announce-timeline-base-color">
 						<div class="timeline-header">
-    						<a id="send_announce_button" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
+    						<a id="send_message_button_on_announce_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
     						<a id="refresh_announce_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
                             <span class="timeline-title">
                                 Announce Timeline
@@ -196,7 +197,7 @@
 				<div class="span4">
 					<div class="timeline palette-monolog-timeline-base-color">
 						<div class="timeline-header">
-    						<a id="send_monolog_button" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
+    						<a id="send_message_button_on_monolog_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
     						<a id="refresh_monolog_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
                             <span class="timeline-title">
                                 Monologue Timeline
@@ -220,6 +221,16 @@
 			</div>
 		</div>
 		<div class="container-fluid" id="resultArea">
+			<div class="row">
+				<div class="span12">
+					<form method="POST" action="/atmos/user/set_avator">
+						<fieldset>
+							<label>プロフィール画像</label><input type="file" name="profileImage" />
+							<input type="submit" />
+						</fieldset>
+					</form>
+				</div>
+			</div>
 		</div>
 
 		<!-- Load JS here for greater good =============================-->
