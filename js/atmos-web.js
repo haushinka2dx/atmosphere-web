@@ -359,6 +359,60 @@ function tryLogin() {
 	return false;
 }
 
+function logout() {
+
+	var logoutFunc = function () {
+	    var targetMethod = $("#logout_dialog_method").val();
+		var targetUrl = $("#logout_dialog_url").val();
+	 	var paramJSON = {};
+	
+	    var headers = {};
+		headers['atmosphere-session-id'] = $("#param_atmos_session_id").val();
+	    
+	    var requestParams = {
+	        url: targetUrl,
+	        type: targetMethod,
+	        dataType: 'text',
+	        data: JSON.stringify(paramJSON),
+	        headers: headers
+	    };
+	
+	    $.ajax(requestParams)
+	    .done(function(data, textStatus, xhr){
+			//do nothing
+	    })
+	    .fail(function(xhr, textStatus, errorThrown){
+			//do nothing
+	    })
+	    .always(function(xhr, textStatus, errorThrown){
+			$("#menuItemCurrentUser").hide();
+			$("#menuItemCurrentUser > a").text('Not Login');
+			$("#menuItemLogin").show();
+
+			//clear all messages
+			$("#global-timeline-area").empty();
+			$("#my-timeline-area").empty();
+			$("#talk-timeline-area").empty();
+			$("#announce-timeline-area").empty();
+			$("#monolog-timeline-area").empty();
+			$("#private-timeline-area").empty();
+	    });
+	
+		return false;
+	}
+
+	showDialog(
+		'logoutDialog',
+		'logoutDialogLabel',
+		'logoutDialogOK',
+		logoutFunc,
+		null,
+		true
+	);
+
+	return false;
+}
+
 function submitJsonManually() {
 
 	var sendRequestFunc = function () {
@@ -511,6 +565,9 @@ function applyActionPanelEvent(targetTimelineAreaId) {
 $(document).ready(function() {
 	$('#loginButton').on('click', function() {
 		tryLogin();
+	});
+	$('#logoutButton').on('click', function() {
+		logout();
 	});
 	$('#sendRequestManualButton').on('click', function() {
 		submitJsonManually();

@@ -48,6 +48,21 @@
 			</div>
 		</div>
 
+		<div id="logoutDialog" class="modal hide fade" role="dialog" tabindex="-1" aria-labelledby="logoutDialogLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 Id="logoutDialogLabel">logout</h3>
+			</div>
+			<div class="modal-body">
+				<input type="hidden" name="method" value="GET" id="logout_dialog_method" />
+				<input type="hidden" name="url" value="/atmos/auth/logout" id="logout_dialog_url" />
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+				<button class="btn btn-primary" id="logoutDialogOK">OK</button>
+			</div>
+		</div>
+
 		<div id="manualSenderDialog" class="modal hide fade" role="dialog" tabindex="-1" aria-labelledby="manualSenderDialogLabel" aria-hidden="true">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -129,7 +144,7 @@
                     </a>
                   </li>
 				  <li id="menuItemCurrentUser" style="display:none;">
-				  	<a href="#">Not Login</a>
+				  	<a href="#" id="logoutButton">Not Login</a>
                   </li>
                 </ul>
               </div><!--/.nav -->
