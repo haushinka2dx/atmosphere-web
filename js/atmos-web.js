@@ -114,10 +114,10 @@ function addTimelineItem(timelineType, oneMessage) {
     + '    </div>'
 	+ '    <div class="timeline-item action-panel">'
 	+ '    	<a href="#" class="reply" addresses="' + addressesStr + '"><i class="foundicon-edit" style="color: #f39c12;"></i></a>'
-	+ '    	<a href="#" class="response-action" response-action="memo"><i class="foundicon-add-doc"></i></a>' + oneMessage['responses']['memo'].length
-	+ '    	<a href="#" class="response-action" response-action="usefull"><i class="foundicon-idea"></i></a>' + oneMessage['responses']['usefull'].length
-	+ '    	<a href="#" class="response-action" response-action="good"><i class="foundicon-star"></i></a>' + oneMessage['responses']['good'].length
-	+ '    	<a href="#" class="response-action" response-action="fun"><i class="foundicon-smiley"></i></a>' + oneMessage['responses']['fun'].length
+	+ '    	<a href="#" class="response-action" response-action="memo"><i class="foundicon-add-doc"></i></a><span class="response-count" response-action="memo">' + oneMessage['responses']['memo'].length + '</span>'
+	+ '    	<a href="#" class="response-action" response-action="usefull"><i class="foundicon-idea"></i></a><span class="response-count" response-action="usefull">' + oneMessage['responses']['usefull'].length + '</span>'
+	+ '    	<a href="#" class="response-action" response-action="good"><i class="foundicon-star"></i></a><span class="response-count" response-action="good">' + oneMessage['responses']['good'].length + '</span>'
+	+ '    	<a href="#" class="response-action" response-action="fun"><i class="foundicon-smiley"></i></a><span class="response-count" response-action="fun">' + oneMessage['responses']['fun'].length + '</span>'
 	+ '    </div>'
 	+ '</div>'
 	+ '<div style="clear:right;"></div>');
@@ -273,14 +273,28 @@ function refreshPrivateTimeline() {
 	return false;
 }
 
-function submitJsonManually() {
-    $("#param_method").val($("input:radio[name='methodRadioManually']:checked").val());
-	$("#param_url").val($("#param_url_manually").val());
-	$("#param_parameter").val($("#param_parameter_manually").val());
+function refreshMessage(messageId) {
+	$("#param_method").val("GET");
+	$("#param_url").val("/atmos/messages/search");
+	$("#param_parameter").val('{"message_ids":"' + messageId + '"}');
 
-	submitJson();
+	var callback = function(data, textStatus, xhr) {
+		var resultJSON = JSON.parse(data);
+		if (resultJSON['count'] === 1) {
+			var targetMessage = resultJSON['results'][0];
+			updateMessageResponses(targetMessage);
+		}
+	};
 
-	return false;
+	submitJson(callback);
+}
+
+function updateMessageResponses(messageInfo) {
+	var messageId = messageInfo['_id'];
+	var responses = messageInfo['responses'];
+	Object.keys(responses).forEach(function(actionName, i, a) {
+		$("[message-id=" + messageId + "] > .action-panel > span.response-count[response-action=" + actionName + "]").text(responses[actionName].length);
+	});
 }
 
 function tryLogin() {
@@ -335,6 +349,9 @@ function tryLogin() {
 			})
 			.always(function(xhr, textStatus, errorThrown) {
 			});
+
+			//start websocket listen
+			atmosSockJS.init(atmosSessionId);
 	    })
 	    .fail(function(xhr, textStatus, errorThrown){
 	        alert('error');
@@ -373,7 +390,7 @@ function logout() {
 	        url: targetUrl,
 	        type: targetMethod,
 	        dataType: 'text',
-	        data: JSON.stringify(paramJSON),
+	        data: Object.keys(paramJSON).length > 0 ? JSON.stringify(paramJSON) : '',
 	        headers: headers
 	    };
 	
@@ -398,6 +415,8 @@ function logout() {
 			$("#private-timeline-area").empty();
 	    });
 	
+		atmosSockJS.end();
+
 		return false;
 	}
 
@@ -562,6 +581,54 @@ function applyActionPanelEvent(targetTimelineAreaId) {
 	);
 }
 
+if (typeof AtmosSockJS === 'undefined') {
+	var AtmosSockJS = function() {};
+	AtmosSockJS.prototype = {
+		sock : undefined,
+		init : function(atmosSessionId) {
+			var that = this;
+			that.sock = new SockJS('/atmos-ws/notify');
+
+			that.sock.onopen = function() {
+				$.jGrowl("WebSocket was opened.");
+				console.log('open');
+				that.sock.send('{"action":"start","atmosphere-session-id":"' + atmosSessionId + '"}');
+			};
+			
+			that.sock.onmessage = function(e) {
+				var msgJSON = JSON.parse(e.data);
+				if (!msgJSON.from_myself) {
+					$.jGrowl("WebSocket message was received. => " + e.data);
+				}
+			    console.log('message', e.data);
+				if (msgJSON['action'] === 'sendResponse') {
+					console.log('apply response');
+					refreshMessage(msgJSON['info']['target_msg_id']);
+				}
+			};
+			
+			that.sock.onclose = function() {
+				$.jGrowl("WebSocket was closed.");
+			    console.log('close');
+			};
+			
+		},
+		end : function() {
+			var that = this;
+			that.sock.close();
+			that.sock = undefined;
+		},
+		send : function(msg) {
+			if (this.sock) {
+				this.sock.send(msg);
+			}
+		},
+		addNotificationReceiver : function(receiver) {
+		},
+	};
+	var atmosSockJS = new AtmosSockJS();
+}
+
 $(document).ready(function() {
 	$('#loginButton').on('click', function() {
 		tryLogin();
@@ -610,4 +677,5 @@ $(document).ready(function() {
 	$('#refresh_private_timeline_button').on('click', function() {
 		refreshPrivateTimeline();
 	});
+//	atmosSockJS.init();
 });
