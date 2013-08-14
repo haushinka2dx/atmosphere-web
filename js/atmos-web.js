@@ -87,12 +87,6 @@ function addTimelineItem(timelineType, oneMessage) {
 	if (timelineItems.length > 0 && timelineItems[0].id >= oneMessage['created_at']) {
 		return;
 	}
-	var avatorPaths = [
-		'images/illustrations/paper.png', 
-		'images/illustrations/bag.png', 
-		'images/illustrations/infinity.png', 
-		'images/illustrations/gift.png', 
-	];
 	var addressesStr = '@' + oneMessage['created_by'];
 	if (typeof(oneMessage['addresses']) != 'undefined' && oneMessage['addresses'].length > 0) {
 		var filteredAddresses = oneMessage['addresses'].filter(function(element, index, array) {
@@ -105,7 +99,7 @@ function addTimelineItem(timelineType, oneMessage) {
 	$("#" + timelineAreaId).prepend(
 	  ' <div class="timeline-item" id="' + oneMessage['created_at'] + '" message-id="' + oneMessage["_id"] + '">'
 	+ '		<div class="timeline-item avator">'
-    + '	    	<img src="' + avatorPaths[getRandomInt(0,3)] + '" />'
+    + '	    	<img src="/atmos/user/avator?user_id=' + oneMessage['created_by'] + '" />'
 	+ '		</div>'
 	+ '		<span><p class="timeline-item byat">' + oneMessage['created_by'] + ' - ' + utc2jst(oneMessage['created_at']) + '</p></span>'
     + '	    <div class="tooltip timeline-item fade right in">'
@@ -342,6 +336,9 @@ function tryLogin() {
 					var currentUserId = dataJson['user_id'];
 					$("#menuItemCurrentUser > a").text('Logged in as ' + currentUserId);
 					$("#menuItemCurrentUser").show();
+
+					//start websocket listen
+					atmosSockJS.init(atmosSessionId);
 				}
 			})
 			.fail(function(xhr, textStatus, errorThrown) {
@@ -349,9 +346,6 @@ function tryLogin() {
 			})
 			.always(function(xhr, textStatus, errorThrown) {
 			});
-
-			//start websocket listen
-			atmosSockJS.init(atmosSessionId);
 	    })
 	    .fail(function(xhr, textStatus, errorThrown){
 	        alert('error');
@@ -570,6 +564,33 @@ function sendResponseToMessage() {
 	return false;
 }
 
+function changeAvator() {
+
+	var changeAvatorFunc = function () {
+		$("#avator_changer_profile_image").upload(
+			'/atmos/user/change_avator',
+			//{ "atmosphere-session-id" : atmosSessionId },
+			function(res) {
+				alert(res);
+			},
+			'json'
+		);
+	
+		return false;
+	}
+
+	showDialog(
+		'avatorChangerDialog',
+		'avatorChangerDialogLabel',
+		'avatorChangerDialogOK',
+		changeAvatorFunc,
+		null,
+		true
+	);
+
+	return false;
+}
+
 function applyActionPanelEvent(targetTimelineAreaId) {
 	$("#" + targetTimelineAreaId).children(":first").hover(
 		function() {
@@ -633,6 +654,9 @@ $(document).ready(function() {
 	$('#loginButton').on('click', function() {
 		tryLogin();
 	});
+	$('#changeAvatorButton').on('click', function() {
+		changeAvator();
+	});
 	$('#logoutButton').on('click', function() {
 		logout();
 	});
@@ -676,6 +700,17 @@ $(document).ready(function() {
 	});
 	$('#refresh_private_timeline_button').on('click', function() {
 		refreshPrivateTimeline();
+	});
+	$('#avator_select_button').change(function() {
+    	var atmosSessionId = $("#param_atmos_session_id").val();
+		$(this).upload(
+			'/atmos/user/change_avator',
+			{ "atmosphere-session-id" : atmosSessionId },
+			function(res) {
+				alert(res);
+			},
+			'json'
+		);
 	});
 //	atmosSockJS.init();
 });
