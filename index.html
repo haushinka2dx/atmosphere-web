@@ -5,276 +5,964 @@
 		<title>atmosphere</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<!-- Loading Bootstrap -->
-		<link href="css/bootstrap.css" rel="stylesheet">
-		
-		<!-- Loading Flat UI -->
-		<link href="css/flat-ui.css" rel="stylesheet">
-		
 		<!-- General foundation icon font -->
 		<link href="css/general_foundicons.css" rel="stylesheet">
 
-		<!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
-		<!--[if lt IE 9]>
-			<script src="js/html5shiv.js"></script>
-		<![endif]-->
+		<!-- Atmosphere stylesheet -->
+		<link href="css/atmos.css" rel="stylesheet">
 
-		<!-- jquery.jgrowl -->
-		<link href="css/jquery.jgrowl.min.css" rel="stylesheet">
+		<!-- Theme stylesheet -->
+		<link href="css/theme.css" rel="stylesheet">
 	</head>
 
-	<body style="padding-top: 60px;">
-		<!-- invisible forms -->
-		<div style="display:none;">
-			<form class="form">
-				<input type="hidden" id="param_method" value="" />
-				<input type="hidden" id="param_url" value="" />
-				<input type="hidden" id="param_parameter" value="" />
-	            <input type="hidden" id="param_atmos_session_id" value="" />
-			</form>
-		</div>
-		
-		<div id="loginDialog" class="modal hide fade" role="dialog" tabindex="-1" aria-labelledby="loginDialogLabel" aria-hidden="true">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 Id="loginDialogLabel">Login</h3>
-			</div>
-			<div class="modal-body">
-				<input type="hidden" name="method" value="POST" id="login_dialog_method" />
-				<input type="hidden" name="url" value="/atmos/auth/login" id="login_dialog_url" />
-				<input type="text" class="input-block-level" placeholder="UserId" name="userId" value="bob" id="login_dialog_user_id" />
-				<input type="password" class="input-block-level" placeholder="Password" name="password" value="BOB" id="login_dialog_password" />
-			</div>
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-				<button class="btn btn-primary" id="loginDialogOK">OK</button>
-			</div>
-		</div>
-
-		<div id="logoutDialog" class="modal hide fade" role="dialog" tabindex="-1" aria-labelledby="logoutDialogLabel" aria-hidden="true">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 Id="logoutDialogLabel">logout</h3>
-			</div>
-			<div class="modal-body">
-				<input type="hidden" name="method" value="GET" id="logout_dialog_method" />
-				<input type="hidden" name="url" value="/atmos/auth/logout" id="logout_dialog_url" />
-			</div>
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-				<button class="btn btn-primary" id="logoutDialogOK">OK</button>
-			</div>
-		</div>
-
-		<div id="manualSenderDialog" class="modal hide fade" role="dialog" tabindex="-1" aria-labelledby="manualSenderDialogLabel" aria-hidden="true">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 Id="manualSenderDialogLabel">Send Request</h3>
-			</div>
-			<div class="modal-body">
-                <label class="radio inline">
-                    METHOD
-                </label>
-                <label class="radio inline">
-                    <input type="radio" name="methodRadioManually" value="GET" checked>GET
-                </label>
-                <label class="radio inline">
-                    <input type="radio" name="methodRadioManually" value="POST">POST
-                </label>
-				<input type="text" class="input-block-level" placeholder="URL" name="url" value="/atmos/" id="param_url_manually" />
-				<textarea rows="3" class="input-block-level" placeholder="Parameters" name="parameter" value="" id="param_parameter_manually" ></textarea>
-			</div>
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-				<button class="btn btn-primary" id="manualSenderDialogOK">OK</button>
-			</div>
-		</div>
-
-		<div id="messageSenderDialog" class="modal hide fade" role="dialog" tabindex="-1" aria-labelledby="messageSenderDialogLabel" aria-hidden="true">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 Id="messageSenderDialogLabel">Send Message</h3>
-			</div>
-			<div class="modal-body">
-				<input type="hidden" name="method" value="POST" id="message_sender_dialog_method" />
-				<input type="hidden" name="url" value="/atmos/messages/send" id="message_sender_dialog_url" />
-				<input type="hidden" name="reply_to" value="" id="message_sender_reply_to" />
-				<input type="hidden" name="message_sender_message_type" value="" id="message_sender_message_type" />
-				<label>Original Message</label>
-				<textarea rows="3" class="input-block-level" id="message_sender_original_message" readonly></textarea>
-				<textarea rows="3" class="input-block-level" placeholder="Please write messages." name="message_sender_message_body" value="" id="message_sender_message_body" ></textarea>
-			</div>
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-				<button class="btn btn-primary" id="messageSenderDialogOK">OK</button>
-			</div>
-		</div>
-
-		<div id="responseSenderDialog" class="modal hide fade" role="dialog" tabindex="-1" aria-labelledby="responseSenderDialogLabel" aria-hidden="true">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 Id="responseSenderDialogLabel">Are you sure to <i id="response_sender_dialog_icon"></i> this message?</h3>
-			</div>
-			<div class="modal-body">
-				<input type="hidden" name="method" value="POST" id="response_sender_dialog_method" />
-				<input type="hidden" name="url" value="/atmos/messages/response" id="response_sender_dialog_url" />
-				<input type="hidden" name="target_message_id" value="" id="response_sender_target_message_id" />
-				<input type="hidden" name="response_action" value="" id="response_sender_response_action" />
-				<textarea rows="3" class="input-block-level" id="response_sender_original_message"></textarea>
-			</div>
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-				<button class="btn btn-primary" id="responseSenderDialogOK">OK</button>
-			</div>
-		</div>
-
-		<div id="avatorChangerDialog" class="modal hide fade" role="dialog" tabindex="-1" aria-labelledby="avatorChangerDialogLabel" aria-hidden="true">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 Id="avatorChangerDialogLabel">Are you sure to <i id="avator_changer_dialog_icon"></i> this message?</h3>
-			</div>
-			<div class="modal-body">
-			<form>
-				<input type="file" class="input-block-level" name="profileImage" id="avator_changer_profile_image" />
-			</form>
-			</div>
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-				<button class="btn btn-primary" id="avatorChangerDialogOK">OK</button>
-			</div>
-		</div>
-
-		<!-- navigation bar -->
-        <div class="navbar navbar-inverse navbar-fixed-top">
-          <div class="navbar-inner">
-            <div class="container">
-              <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target="#nav-collapse-01"></button>
-	          <span class="brand">atmosphere - Next Generation Commnunication Tool -</span>
-              <div class="nav-collapse collapse" id="nav-collapse-01">
-                <ul class="nav">
-                  <li>
-                    <a href="#" id="sendRequestManualButton">
-                      Send Request
-                    </a>
-                  </li>
-                  <li id="menuItemLogin">
-                    <a href="#" id="loginButton">
-                      Login
-                    </a>
-                  </li>
-				  <li id="menuItemCurrentUser" style="display:none;">
-				  	<a href="#">Not Login</a>
-					<ul>
-						<li><a href="#" id="changeAvatorButton">Change Avator</a></li>
-						<li><a href="#" id="logoutButton">Log out</a></li>
+	<body>
+		<section> 
+		</section>
+		<section class="main-section"> 
+			<header class="atmos-header">
+				<nav class="atmos-menu">
+					<ul class="atmos-vmenu">
+					    <li><a href="#" class="icon-logo">Logo</a></li>
+						<li id="menuItemLogin"><a href="#" class="icon-login">Login</a></li>
+					    <li id="menuItemCurrentUser"><a href="#" class="icon-send">Send Request</a></li>
 					</ul>
-                  </li>
-                </ul>
-              </div><!--/.nav -->
-            </div>
-          </div>
-		</div>
-
-		<div class="container">
 <!--
-            <h1>
-                atmosphere<small> - Next Generation Communication Tool - </small>
-            </h1>
+					<h4>Atmosphere</h4>
+	                <ul>
+	                  <li>
+	                    <a href="#" id="sendRequestManualButton">
+							<i class="foundicon-plus"></i>
+	                    </a>
+	                  </li>
+	                  <li id="menuItemLogin">
+	                    <a href="#" id="loginButton">
+							<i class="foundicon-monitor"></i>
+	                    </a>
+	                  </li>
+					  <li id="menuItemCurrentUser" style="display:none;">
+					  	<a href="#">Not Login</a>
+						<ul>
+							<li><a href="#" id="changeAvatorButton">Change Avator</a></li>
+							<li><a href="#" id="logoutButton">Log out</a></li>
+						</ul>
+	                  </li>
+	                </ul>
 -->
-            <div class="row" style="margin-top:4px;">
-				<div class="span4">
-					<div class="timeline palette-global-timeline-base-color">
-						<div class="timeline-header">
-    						<a id="send_message_button_on_global_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_global_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
-                            <span class="timeline-title">
-                                Global Timeline
-                            </span>
-    					</div>
-						<div id="global-timeline-area" class="timeline-area"></div>
-                    </div>
-				</div>
-				<div class="span4">
-					<div class="timeline palette-my-timeline-base-color">
-						<div class="timeline-header">
-    						<a id="send_message_button_on_my_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_my_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
-                            <span class="timeline-title">
-                                My Timeline
-                            </span>
-    					</div>
-						<div id="my-timeline-area" class="timeline-area"></div>
-                    </div>
-				</div>
-				<div class="span4">
-					<div class="timeline palette-talk-timeline-base-color">
-						<div class="timeline-header">
-    						<a id="send_message_button_on_talk_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_talk_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
-                            <span class="timeline-title">
-                                Talk Timeline
-                            </span>
-    					</div>
-						<div id="talk-timeline-area" class="timeline-area"></div>
-                    </div>
-				</div>
-			</div>
-            <div class="row" style="margin-top:4px;">
-				<div class="span4">
-					<div class="timeline palette-announce-timeline-base-color">
-						<div class="timeline-header">
-    						<a id="send_message_button_on_announce_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_announce_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
-                            <span class="timeline-title">
-                                Announce Timeline
-                            </span>
-    					</div>
-						<div id="announce-timeline-area" class="timeline-area"></div>
-                    </div>
-				</div>
-				<div class="span4">
-					<div class="timeline palette-monolog-timeline-base-color">
-						<div class="timeline-header">
-    						<a id="send_message_button_on_monolog_timeline" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_monolog_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
-                            <span class="timeline-title">
-                                Monologue Timeline
-                            </span>
-    					</div>
-						<div id="monolog-timeline-area" class="timeline-area"></div>
-                    </div>
-				</div>
-				<div class="span4">
-					<div class="timeline palette-private-timeline-base-color">
-						<div class="timeline-header">
-    						<a id="send_private_button" style="float:left;" href="#"><i class="fui-bubble-16"></i></a>
-    						<a id="refresh_private_timeline_button" style="float:right;" href="#"><i class="foundicon-refresh"></i></a>
-                            <span class="timeline-title">
-                                Private Timeline
-                            </span>
-    					</div>
-						<div id="private-timeline-area" class="timeline-area"></div>
-                    </div>
-				</div>
-			</div>
-		</div>
+				</nav>
+			</header>
+			<div class="contents-wrapper">
+				<div class="contents">
+					<div class="timeline timeline-row1">
+						<header class="timeline-header">
+							<span class="timeline-title">global timeline</span>
+						</header>
+						<div class="timeline-items-wrapper">
+							<div class="timeline-items">
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=bob" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is bob's message
+											This is bob's message
+											This is bob's message
+											This is bob's message
+											This is bob's message
+											This is bob's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=bob" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											ボブが何か言っているようです。ただ、言語が分からないため通じません。こんな時どうしたら…？
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=bob" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is bob's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=bob" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is bob's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=bob" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is bob's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=bob" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is bob's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+							</div> <!-- timeline-items -->
+						</div> <!-- timeline-itmes-wrapper -->
+					</div> <!-- timeline -->
+					<div class="timeline timeline-row2">
+						<header class="timeline-header">
+							<span class="timeline-title">my timeline</span>
+						</header>
+						<div class="timeline-items-wrapper">
+							<div class="timeline-items">
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=bob" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is bob's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+							</div> <!-- timeline-items -->
+						</div> <!-- timeline-itmes-wrapper -->
+					</div> <!-- timeline -->
+					<div class="timeline timeline-row3">
+						<header class="timeline-header">
+							<span class="timeline-title">my timeline</span>
+						</header>
+						<div class="timeline-items-wrapper">
+							<div class="timeline-items">
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=bob" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is bob's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+							</div> <!-- timeline-items -->
+						</div> <!-- timeline-itmes-wrapper -->
+					</div> <!-- timeline -->
+					<div class="timeline timeline-row4">
+						<header class="timeline-header">
+							<span class="timeline-title">my timeline</span>
+						</header>
+						<div class="timeline-items-wrapper">
+							<div class="timeline-items">
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=bob" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is bob's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+							</div> <!-- timeline-items -->
+						</div> <!-- timeline-itmes-wrapper -->
+					</div> <!-- timeline -->
+					<div class="timeline timeline-row5">
+						<header class="timeline-header">
+							<span class="timeline-title">my timeline</span>
+						</header>
+						<div class="timeline-items-wrapper">
+							<div class="timeline-items">
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=bob" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is bob's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+							</div> <!-- timeline-items -->
+						</div> <!-- timeline-itmes-wrapper -->
+					</div> <!-- timeline -->
+					<div class="timeline timeline-row6">
+						<header class="timeline-header">
+							<span class="timeline-title">my timeline</span>
+						</header>
+						<div class="timeline-items-wrapper">
+							<div class="timeline-items">
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=bob" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is bob's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+								<div class="timeline-item-wrapper">
+									<article class="timeline-item">
+										<header class="timeline-item-header">
+											<div class="timeline-item-timestamp">2013-01-01 22:43:56</div>
+											<div class="timeline-item-user">
+												<div class="timeline-item-avator"><img src="/atmos/user/avator?user_id=john" /></div>
+												<div class="timeline-item-username">testuser</div>
+											</div>
+										</header>
+										<div class="timeline-item-message">
+											This is john's message
+										</div>
+										<footer class="timeline-item-footer">
+											<div class="reaction-panel">
+												<a href="#"><i class="foundicon-checkmark"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-smiley"></i></a><span class="reaction-count">0</span>
+												<a href="#"><i class="foundicon-star"></i></a><a href="#" class="reaction-count">99</a>
+												<a href="#"><i class="foundicon-idea"></i></a><a href="#" class="reaction-count">99</a>
+											</div>
+											<div class="reply-panel">
+												<a href="#"><i class="foundicon-quote"></i></a>
+												<a href="#"><i class="foundicon-left-arrow"></i></a>
+												<a href="#"><i class="foundicon-people"></i></a>
+											</div>
+										</footer>
+									</article>
+								</div>
+							</div> <!-- timeline-items -->
+						</div> <!-- timeline-itmes-wrapper -->
+					</div> <!-- timeline -->
+				</div> <!-- contents -->
+			</div> <!-- contents-wrapper -->
+			<footer class="atmos-footer">
+			</footer>
+		</section>
 
 		<!-- Load JS here for greater good =============================-->
 		<script src="js/jquery-2.0.3.min.js"></script>
-		<script src="js/jquery-ui-1.10.0.custom.min.js"></script>
-		<script src="js/jquery.dropkick-1.0.0.js"></script>
-		<script src="js/custom_checkbox_and_radio.js"></script>
-		<script src="js/custom_radio.js"></script>
-		<script src="js/jquery.tagsinput.js"></script>
-		<script src="js/bootstrap-tooltip.js"></script>
-		<script src="js/jquery.placeholder.js"></script>
-		<script src="js/bootstrap-modal.js"></script>
-		<script src="js/bootstrap-transition.js"></script>
-		<script src="js/jquery-tap.js"></script>
-		<script src="js/jquery.jgrowl.min.js"></script>
 		<script src="js/jquery.upload-1.0.2.min.js"></script>
-		<script src="js/myutil.js"></script>
+
+		<!-- sock.js (web socket) -->
 		<script src="js/sockjs-0.3.4.js"></script>
-		<script src="js/atmos-web.js"></script>
+
+		<!-- atmospheres -->
+		<script src="js/myutil.js"></script>
+		<script src="js/atmos.js"></script>
 	</body>
 </html>
