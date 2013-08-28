@@ -1,0 +1,124 @@
+.timeline {
+	color: #ffffff;
+	border-color: #555555;
+}
+
+.timeline-header {
+	background-color: #555555;
+}
+
+.timeline-item-wrapper {
+	border-color: #555555;
+}
+
+.timeline-item-header {
+	color: #cccccc;
+}
+
+.reply-panel > a {
+	color: #cccccc;
+}
+
+.reaction-panel > * {
+	color: #cccccc;
+}
+
+/* default */
+.timeline-item-wrapper {
+	background-color: #444444;
+}
+
+.timeline-item-wrapper:hover {
+	background-color: #777777;
+}
+
+.timeline-items-wrapper {
+	background-color: #444444;
+}
+
+
+.timeline-row1 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper {
+	background-color: #2980b9;
+}
+
+.timeline-row1 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover {
+	/* PETER-RIVER */
+	background-color: #3498db;
+}
+
+.timeline-row1 > .timeline-items-wrapper {
+	/* BELIZE HOLE */
+	background-color: #444444;
+}
+
+.timeline-row1 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper {
+	background-color: #2980b9;
+}
+
+.timeline-row1 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover {
+	/* PETER-RIVER */
+	background-color: #3498db;
+}
+
+.timeline-row2 > .timeline-items-wrapper {
+	/* GREEN-SEA */
+	background-color: #444444;
+}
+
+.timeline-row2 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper {
+	background-color: #16a085;
+}
+
+.timeline-row2 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover {
+	/* TURQUOISE */
+	background-color: #1abc9c;
+}
+
+.palette-global-timeline-base-color {
+	/* BELIZE HOLE */
+	background-color: #2980b9;
+}
+.palette-global-timeline-header-color {
+	/* PETER-RIVER */
+	background-color: #3498db;
+}
+.palette-my-timeline-base-color {
+	/* GREEN-SEA */
+	background-color: #16a085;
+}
+.palette-my-timeline-header-color {
+	/* TURQUOISE */
+	background-color: #1abc9c;
+}
+.palette-talk-timeline-base-color {
+	/* PUMPKIN */
+	background-color: #d35400;
+}
+.palette-talk-timeline-header-color {
+	/* CARROT */
+	background-color: #e67e22;
+}
+.palette-announce-timeline-base-color {
+	/* NEPHRITIS */
+	background-color: #27ae60;
+}
+.palette-announce-timeline-header-color {
+	/* EMERLAND */
+	background-color: #2ecc71;
+}
+.palette-monolog-timeline-base-color {
+	/* WISTERIA */
+	background-color: #8e44ad;
+}
+.palette-monolog-timeline-header-color {
+	/* AMETHYST */
+	background-color: #9b59b6;
+}
+.palette-private-timeline-base-color {
+	/* POMEGRANATE */
+	background-color: #c0392b;
+}
+.palette-private-timeline-header-color {
+	/* ALIZARIN */
+	background-color: #e74c3c;
+}

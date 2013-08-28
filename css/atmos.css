@@ -1,0 +1,215 @@
+* {
+	padding: 0;
+	margin: 0;
+	text-decoration: none;
+}
+
+html, body {
+	height: 100%;
+	overflow-y: hidden;
+}
+
+.main-section {
+	height: 100%;
+}
+
+.atmos-header {
+	width: 56px;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+}
+
+.atmos-menu {
+	position: relative;
+	height: 100%;
+}
+
+.atmos-menu h4 {
+	margin: 0;
+}
+
+.atmos-menu ul {
+	padding: 0;
+	list-style-type: none;
+}
+
+.atmos-vmenu {
+    position: fixed;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    height: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background: #555555;
+}
+ 
+.atmos-vmenu li a {
+    display: block;
+    text-indent: -500em;
+    height: 3.5em;
+    width: 3.5em;
+    line-height: 3.5em;
+    text-align: center;
+    color: #999;
+    position: relative;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    -webkit-transition: background 0.1s ease-in-out;
+    -moz-transition: background 0.1s ease-in-out;
+    transition: background 0.1s ease-in-out;
+}
+ 
+.atmos-vmenu li a:hover,
+.atmos-vmenu li:first-child a{
+    background: #47a3da;
+    color: #fff;
+}
+ 
+/* class for current item */
+.atmos-vmenu li.cbp-vicurrent a {
+    background: #fff;
+    color: #47a3da;
+}
+ 
+.atmos-vmenu li a:before {
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    text-indent: 0em;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 1.4em;
+    -webkit-font-smoothing: antialiased;
+}
+ 
+.atmos-vmenu li a.icon-logo:before {
+    content: "A";
+    font-weight: 700;
+    font-size: 200%;
+    font-family: 'Lato', Calibri, Arial, sans-serif;
+}
+
+.atmos-vmenu li a.icon-login:before {
+    content: "\f00f";
+    font-family: "GeneralFoundicons";
+}
+
+.atmos-vmenu li a.icon-send:before {
+    content: "\f003";
+    font-family: "GeneralFoundicons";
+}
+
+.contents-wrapper {
+	position: fixed;
+	left: 56px;
+	top: 0px;
+	min-width: 600px;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.contents {
+	position: relative;
+	padding-right: 56px;
+	height: 100%;
+	font-size: 0;
+	white-space: nowrap;
+	overflow-x: auto;
+}
+
+.timeline {
+	display: inline-block;
+	font-size: 1rem;
+	white-space: normal;
+	width: 298px;
+	height: 100%;
+	vertical-align: top;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	border-top-style: none;
+	border-left-style: none;
+	border-right-style: solid;
+	border-bottom-style: none;
+	border-width: 2px;
+}
+
+.timeline-header {
+	position: relative;
+	height: 57px;
+	font-size: 1.1em;
+	text-align: center;
+}
+
+.timeline-items-wrapper {
+	position: relative;
+	width: 320px;
+	height: 100%;
+	overflow-y: auto;
+}
+
+.timeline-items {
+	position: relative;
+	padding-bottom: 57px;
+	font-size: 0.9em;
+}
+
+.timeline-item-wrapper {
+	padding-left: 52px;
+	border-top-style: none;
+	border-left-style: none;
+	border-right-style: none;
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+	transition: all 0.5s ease-out 0;
+}
+
+.timeline-item {
+	padding: 4px;
+	padding-right: 28px;
+}
+
+.timeline-item-avator {
+	float: left;
+	width: 48px;
+	margin-left: -52px;
+	margin-right: 4px;
+}
+
+.timeline-item-timestamp {
+	float: right;
+	font-size: 0.8em;
+	padding-top: 0.3em;
+}
+
+.timeline-item-footer {
+	font-size: 0.8em;
+}
+
+.reply-panel {
+}
+
+.reply-panel > a {
+}
+
+.reaction-panel {
+	float: right;
+	opacity: 0;
+	transition: opacity 0.5s ease-out 0;
+}
+
+.timeline-item:hover > .timeline-item-footer > .reaction-panel {
+	opacity: 1;
+}
+
+.reaction-panel > a {
+}
+
+.reaction-count {
+	padding-left: 0.3em;
+}
