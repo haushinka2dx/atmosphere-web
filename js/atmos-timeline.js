@@ -16,7 +16,7 @@ var createAtmosTimeline = undefined;
 		searchCondition : searchCondition,
 		alreadyReadDateTime : alreadyReadDateTime,
 		latestMessageDateTime : latestMessageDateTime,
-		oldestmessageDateTime : oldestMessageDateTime,
+		oldestMessageDateTime : oldestMessageDateTime,
 		createParameters : createParameters,
 		init : init,
 		readMore : readMore,
