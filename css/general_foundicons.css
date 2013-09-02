@@ -26,6 +26,22 @@
   text-decoration: inherit;
 }
 
+.foundicon-memo:before {
+  content: "\f005"; /* checkmark */
+}
+
+.foundicon-usefull:before {
+  content: "\f022"; /* idea */
+}
+
+.foundicon-good:before {
+  content: "\f002"; /* star */
+}
+
+.foundicon-fun:before {
+  content: "\f02d"; /* smiley */
+}
+
 /* icons */
 .foundicon-settings:before {
   content: "\f000";
@@ -37,6 +53,10 @@
 
 .foundicon-star:before {
   content: "\f002";
+}
+
+.foundicon-good:before {
+  content: "\f002"; /* star */
 }
 
 .foundicon-plus:before {

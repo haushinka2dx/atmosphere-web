@@ -181,10 +181,19 @@ html, body {
 	margin-right: 4px;
 }
 
+.timeline-item-avator > img {
+	max-width: 48px;
+	max-height: 48px;
+}
+
 .timeline-item-timestamp {
 	float: right;
 	font-size: 0.8em;
 	padding-top: 0.3em;
+}
+
+.timeline-item-message {
+	word-wrap: break-word;
 }
 
 .timeline-item-footer {
