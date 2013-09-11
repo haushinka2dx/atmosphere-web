@@ -42,6 +42,14 @@
   content: "\f02d"; /* smiley */
 }
 
+.foundicon-ok:before {
+  content: "\f005"; /* checkmark */
+}
+
+.foundicon-close:before {
+  content: "\f006"; /* remove */
+}
+
 /* icons */
 .foundicon-settings:before {
   content: "\f000";

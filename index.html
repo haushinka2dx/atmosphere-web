@@ -8,6 +8,9 @@
 		<!-- General foundation icon font -->
 		<link href="css/general_foundicons.css" rel="stylesheet">
 
+		<!-- jGrowl -->
+		<link href="css/jquery.jgrowl.min.css" rel="stylesheet">
+
 		<!-- Atmosphere stylesheet -->
 		<link href="css/atmos.css" rel="stylesheet">
 
@@ -23,31 +26,14 @@
 				<nav class="atmos-menu">
 					<ul class="atmos-vmenu">
 					    <li><a href="#" class="icon-logo">Logo</a></li>
-						<li id="menuItemLogin"><a href="#" class="icon-login">Login</a></li>
-					    <li id="menuItemCurrentUser"><a href="#" class="icon-send">Send Request</a></li>
-					</ul>
 <!--
-					<h4>Atmosphere</h4>
-	                <ul>
-	                  <li>
-	                    <a href="#" id="sendRequestManualButton">
-							<i class="foundicon-plus"></i>
-	                    </a>
-	                  </li>
-	                  <li id="menuItemLogin">
-	                    <a href="#" id="loginButton">
-							<i class="foundicon-monitor"></i>
-	                    </a>
-	                  </li>
-					  <li id="menuItemCurrentUser" style="display:none;">
-					  	<a href="#">Not Login</a>
-						<ul>
-							<li><a href="#" id="changeAvatorButton">Change Avator</a></li>
-							<li><a href="#" id="logoutButton">Log out</a></li>
-						</ul>
-	                  </li>
-	                </ul>
+						<li><a href="#" class="icon-login"><span>Login<span></a></li>
 -->
+						<li><a href="#" class="icon-send" id="menuItemSendMessage"><span>Send Request</span></a></li>
+						<li><a href="#" class="icon-private" id="menuItemSendPrivate"><span>Send Request</span></a></li>
+						<li><a href="#" class="icon-avator" id="menuItemChangeAvator"><span>Change Avator</span></a></li>
+						<li><a href="#" class="icon-logout" id="menuItemLogout"><span>Logout<span></a></li>
+					</ul>
 				</nav>
 			</header>
 			<div class="contents-wrapper">
@@ -72,7 +58,7 @@
 					</div> <!-- timeline -->
 					<div class="timeline timeline-row3">
 						<header class="timeline-header">
-							<span class="timeline-title">my timeline</span>
+							<span class="timeline-title">talk timeline</span>
 						</header>
 						<div class="timeline-items-wrapper">
 							<div class="timeline-items" id="tl_talk_timeline">
@@ -81,7 +67,7 @@
 					</div> <!-- timeline -->
 					<div class="timeline timeline-row4">
 						<header class="timeline-header">
-							<span class="timeline-title">my timeline</span>
+							<span class="timeline-title">announce timeline</span>
 						</header>
 						<div class="timeline-items-wrapper">
 							<div class="timeline-items" id="tl_announce_timeline">
@@ -90,7 +76,7 @@
 					</div> <!-- timeline -->
 					<div class="timeline timeline-row5">
 						<header class="timeline-header">
-							<span class="timeline-title">my timeline</span>
+							<span class="timeline-title">monolog timeline</span>
 						</header>
 						<div class="timeline-items-wrapper">
 							<div class="timeline-items" id="tl_monolog_timeline">
@@ -99,7 +85,7 @@
 					</div> <!-- timeline -->
 					<div class="timeline timeline-row6">
 						<header class="timeline-header">
-							<span class="timeline-title">my timeline</span>
+							<span class="timeline-title">private timeline</span>
 						</header>
 						<div class="timeline-items-wrapper">
 							<div class="timeline-items" id="tl_private_timeline">
@@ -115,12 +101,16 @@
 		<!-- Load JS here for greater good =============================-->
 		<script src="js/jquery-2.0.3.min.js"></script>
 		<script src="js/jquery.upload-1.0.2.min.js"></script>
+		<script src="js/jquery.cookie.js"></script>
 
 		<!-- sock.js (web socket) -->
 		<script src="js/sockjs-0.3.4.js"></script>
 
 		<!-- hogan.js (template engine) -->
 		<script src="js/hogan-2.0.0.min.js"></script>
+
+		<!-- jGrowl.js -->
+		<script src="js/jquery.jgrowl.min.js"></script>
 
 		<!-- templates -->
 		<!--
@@ -135,23 +125,65 @@
 							<div class="timeline-item-avator"><img src="{{timeline-item-avator-img-url}}" /></div>
 							<div class="timeline-item-username">{{timeline-item-username}}</div>
 						</div>
+						<div style="float: clear;" ></div>
 					</header>
-					<div class="timeline-item-message">
-						{{timeline-item-message}}
-					</div>
+					<div class="timeline-item-message">{{timeline-item-message}}</div>
 					<footer class="timeline-item-footer">
+						<input type="hidden" name="message-id" value="{{timeline-item-message-id}}" />
+						<input type="hidden" name="message-body" value="{{timeline-item-message}}" />
 						<div class="reaction-panel">
 							{{#reactions}}
-							<a href="#"><i class="{{reaction-icon-class}}"></i></a><a href="#" class="reaction-count">{{reaction-count}}</a>
+							<a href="#" class="reaction" reaction-type="{{reaction-type}}"><i class="{{reaction-icon-class}}"></i></a>
+							<a href="#" class="reaction-count" reaction-type="{{reaction-type}}">{{reaction-count}}</a>
 							{{/reactions}}
 						</div>
 						<div class="reply-panel">
-							<a href="#"><i class="foundicon-quote"></i></a>
-							<a href="#"><i class="foundicon-left-arrow"></i></a>
+							<a href="#" class="reply" reply-type="quote"><i class="foundicon-quote"></i></a>
+							<a href="#" class="reply" reply-type="no-quote"><i class="foundicon-left-arrow"></i></a>
 							<a href="#"><i class="foundicon-people"></i></a>
 						</div>
 					</footer>
 				</article>
+			</div>
+		</script>
+		<script type="text/template" id="tmpl-modal-dialog">
+			<div class="atmos-modal-bg" id="{{modal-dialog-id}}">
+				<div class="atmos-modal-wrapper">
+					<div class="atmos-modal">
+						<div class="atmos-modal-header">
+							<div class="atmos-modal-window-button">
+								<a href="#" class="{{modal-dialog-id}}-atmos-modal-close-button" name="window-close"><i class="foundicon-remove"></i></a>
+							</div>
+							<h2>{{modal-dialog-title}}<h2>
+						</div>
+						<div class="atmos-modal-body">
+							{{#modal-dialog-messages}}
+								<p>{{modal-dialog-message}}</p>
+							{{/modal-dialog-messages}}
+							<ul>
+								{{#modal-dialog-inputs}}
+									<li>
+									{{^is-textarea}}
+										<input type="{{input-type}}" placeholder="{{input-place-holder}}" name="{{input-name}}" id="{{input-id}}" value="{{input-value}}" />
+										{{#has-label}}
+										<label for="{{input-id}}">{{input-label-text}}</label>
+										{{/has-label}}
+									{{/is-textarea}}
+									{{#is-textarea}}
+										<textarea placeholder="{{input-place-holder}}" name="{{input-name}}" id="{{input-id}}">{{input-value}}</textarea>
+									{{/is-textarea}}
+									</li>
+								{{/modal-dialog-inputs}}
+							</ul>
+						</div>
+						<div class="atmos-modal-footer">
+							{{#ok-button-enabled}}
+							<button data-hover="OK" class="{{modal-dialog-id}}-atmos-modal-ok-button foundicon-ok" name="ok"><span>OK</span></button>
+							{{/ok-button-enabled}}
+							<button data-hover="CLOSE" class="{{modal-dialog-id}}-atmos-modal-close-button foundicon-close" name="close"><span>CLOSE</span></button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</script>
 
@@ -160,6 +192,16 @@
 		<script src="js/myutil.js"></script>
 		<script src="js/atmos-search-condition.js"></script>
 		<script src="js/atmos-timeline.js"></script>
+		<script src="js/atmos-dialog.js"></script>
 		<script src="js/atmos.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+
+				$('#menuItemSendMessage').on('click', function(e) { atmos.showMessageSenderDialog(); });
+				$('#menuItemSendPrivate').on('click', function(e) { atmos.showPrivateMessageSenderDialog(); });
+				$('#menuItemChangeAvator').on('click', function(e) { atmos.showAvatorChangeDialog(); });
+				$('#menuItemLogout').on('click', function(e) { atmos.showLogoutDialog(); });
+			});
+		</script>
 	</body>
 </html>

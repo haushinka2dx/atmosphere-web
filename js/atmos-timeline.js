@@ -110,6 +110,24 @@ var createAtmosTimeline = undefined;
 							var tlItem = tlResult['results'][itemIndex];
 							var tlItemHtml = this.createTimelineItem(tlItem);
 							$("#" + this.id()).prepend(tlItemHtml);
+							$("#" + this.id() + ' > div:first a.reaction').on('click', function(e) {
+								var targetLink = e.currentTarget;
+								var targetMessageId = $(targetLink).parent().parent().find('input[name=message-id]').val();
+								var targetMessageBody = $(targetLink).parent().parent().find('input[name=message-body]').val();
+								var reactionType = $(targetLink).attr('reaction-type');
+								atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody);
+							});
+							$("#" + this.id() + ' > div:first a.reply').on('click', function(e) {
+								var targetLink = e.currentTarget;
+								var targetMessageId = $(targetLink).parent().parent().find('input[name=message-id]').val();
+								var targetMessageBody = $(targetLink).parent().parent().find('input[name=message-body]').val();
+								var replyType = $(targetLink).attr('reply-type');
+								var defaultMessage = '';
+								if (replyType === 'quote') {
+									defaultMessage = targetMessageBody;
+								}
+								atmos.showMessageSenderDialog(defaultMessage, targetMessageId, targetMessageBody);
+							});
 						}
 						this.latestMessageDateTime(tlResult['latest_created_at']);
 						this.oldestMessageDateTime(tlResult['oldest_created_at']);
@@ -138,6 +156,7 @@ var createAtmosTimeline = undefined;
 	function createTimelineItem(msg) {
 		var tmpl = Hogan.compile($("#tmpl-timeline-item-wrapper").text());
 		var context = {};
+		context["timeline-item-message-id"] = msg['_id'];
 		context["timeline-item-timestamp"] = utc2jst(msg['created_at']);
 		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"];
 		context["timeline-item-username"] = msg["created_by"];
@@ -147,6 +166,7 @@ var createAtmosTimeline = undefined;
 		Object.keys(responses).sort().forEach(function(resType, i, a) {
 			var responderUserIds = responses[resType];
 			var responseInfo = {};
+			responseInfo['reaction-type'] = resType;
 			responseInfo['reaction-icon-class'] = "foundicon-" + resType;
 			responseInfo['reaction-count'] = responderUserIds.length;
 			reactions.push(responseInfo);

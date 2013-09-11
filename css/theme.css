@@ -1,3 +1,59 @@
+.atmos-modal-bg {
+	background-color: rgba(0,0,0,0.7);
+}
+
+.atmos-modal {
+	color: #fff;
+	background-color: #47a3da;
+}
+
+.atmos-modal-header {
+	background-color: #3692c9;
+}
+
+.atmos-modal-header a {
+	color: #58b4eb;
+}
+
+.atmos-modal-body ul {
+	list-style: none;
+}
+
+.atmos-modal-body input,
+.atmos-modal-body textarea {
+	background-color: #69c5fc;
+	color: #fff;
+}
+
+.atmos-modal-body input::-webkit-input-placeholder,
+.atmos-modal-body textarea::-webkit-input-placeholder {
+	color: #3692c9;
+}
+
+.atmos-modal-body input::-moz-placeholder,
+.atmos-modal-body textarea::-moz-placeholder {
+	color: #3692c9;
+}
+
+.atmos-modal-footer button {
+	color: #fff;
+	background-color: #3692c9;
+}
+
+.atmos-modal-footer button:active {
+	color: #fff;
+	background-color: #69c5fc;
+}
+
+.atmos-modal-footer button:active:before {
+	color: #fff;
+}
+
+.atmos-modal-footer a {
+	color: #1470a7;
+	text-shadow: 0 0 1px rgba(111,134,134,0.3);
+}
+
 .timeline {
 	color: #ffffff;
 	border-color: #555555;
@@ -37,39 +93,42 @@
 }
 
 
-.timeline-row1 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper {
-	background-color: #2980b9;
-}
-
-.timeline-row1 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover {
-	/* PETER-RIVER */
-	background-color: #3498db;
-}
-
-.timeline-row1 > .timeline-items-wrapper {
+.timeline-row1 > .timeline-items-wrapper,
+.timeline-row3 > .timeline-items-wrapper,
+.timeline-row5 > .timeline-items-wrapper {
 	/* BELIZE HOLE */
 	background-color: #444444;
 }
 
-.timeline-row1 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper {
+.timeline-row1 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper,
+.timeline-row3 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper,
+.timeline-row5 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper {
 	background-color: #2980b9;
 }
 
-.timeline-row1 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover {
+.timeline-row1 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover,
+.timeline-row3 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover,
+.timeline-row5 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover {
 	/* PETER-RIVER */
 	background-color: #3498db;
 }
 
-.timeline-row2 > .timeline-items-wrapper {
+.timeline-row2 > .timeline-items-wrapper,
+.timeline-row4 > .timeline-items-wrapper,
+.timeline-row6 > .timeline-items-wrapper {
 	/* GREEN-SEA */
 	background-color: #444444;
 }
 
-.timeline-row2 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper {
+.timeline-row2 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper,
+.timeline-row4 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper,
+.timeline-row6 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper {
 	background-color: #16a085;
 }
 
-.timeline-row2 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover {
+.timeline-row2 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover,
+.timeline-row4 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover,
+.timeline-row6 > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover {
 	/* TURQUOISE */
 	background-color: #1abc9c;
 }

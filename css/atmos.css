@@ -86,7 +86,7 @@ html, body {
     font-size: 1.4em;
     -webkit-font-smoothing: antialiased;
 }
- 
+
 .atmos-vmenu li a.icon-logo:before {
     content: "A";
     font-weight: 700;
@@ -101,6 +101,21 @@ html, body {
 
 .atmos-vmenu li a.icon-send:before {
     content: "\f003";
+    font-family: "GeneralFoundicons";
+}
+
+.atmos-vmenu li a.icon-private:before {
+    content: "\f007";
+    font-family: "GeneralFoundicons";
+}
+
+.atmos-vmenu li a.icon-avator:before {
+    content: "\f020";
+    font-family: "GeneralFoundicons";
+}
+
+.atmos-vmenu li a.icon-logout:before {
+  	content: "\f013";
     font-family: "GeneralFoundicons";
 }
 
@@ -141,9 +156,11 @@ html, body {
 
 .timeline-header {
 	position: relative;
-	height: 57px;
+	height: 31px;
 	font-size: 1.1em;
 	text-align: center;
+	padding-top: 13px;
+	padding-bottom: 13px;
 }
 
 .timeline-items-wrapper {
@@ -189,11 +206,13 @@ html, body {
 .timeline-item-timestamp {
 	float: right;
 	font-size: 0.8em;
-	padding-top: 0.3em;
+	padding-top: 2px;
 }
 
 .timeline-item-message {
 	word-wrap: break-word;
+	margin-top: 2px;
+	margin-bottom: 2px;
 }
 
 .timeline-item-footer {
@@ -222,3 +241,220 @@ html, body {
 .reaction-count {
 	padding-left: 0.3em;
 }
+
+.atmos-modal-bg {
+	display: none;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+}
+
+.atmos-modal-wrapper {
+	position: fixed;
+	z-index: 2000;
+	min-width: 300px;
+	max-width: 500px;
+	min-height: 200px;
+	width: 50%;
+	height: 50%;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	transform: translateX(-50%) translateY(-50%);
+}
+
+.atmos-modal {
+	z-index: 2100;
+	position: relative;
+	margin: 0px auto;
+}
+
+.atmos-modal-header {
+	padding: 0.5em;
+	text-align: center;
+}
+
+.atmos-modal-window-button {
+	float: right;
+	padding: 0.5em;
+	text-align: center;
+}
+
+.atmos-modal-body {
+	padding: 0.5em;
+	min-height: 100px;
+	text-align: center;
+	font-size: 1.2em;
+}
+
+.atmos-modal-body p {
+	padding: 4px;
+}
+
+.atmos-modal-body input,
+.atmos-modal-body textarea {
+	border-radius: 2px;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	border-style: none;
+	padding: 4px 6px 4px 6px;
+	vertical-align: middle;
+	font-size: 1em;
+	margin: 3px 0 3px 0;
+	line-height: 1.4em;
+	width: 90%;
+}
+
+.atmos-modal-body input[type=checkbox] {
+	width: auto;
+	text-align: left;
+}
+
+.atmos-modal-body input:focus,
+.atmos-modal-body textarea:focus {
+	outline-offset: -2px;
+	outline-style: solid;
+	outline-width: 2px;
+	outline-color: rgba(200,200,200,0.5);
+}
+
+.atmos-modal-footer {
+	padding: 0.5em;
+	text-align: center;
+}
+
+.atmos-modal-footer button {
+	border: none;
+	font-family: inherit;
+	font-size: inherit;
+	color: inherit;
+	background: none;
+	cursor: pointer;
+	padding: 5px 10px;
+	display: inline-block;
+//	margin: 15px 30px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+//	font-weight: 700;
+	outline: none;
+	position: relative;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+
+//	background: #823aa0;
+//	color: #fff;
+	height: 30px;
+	min-width: 100px;
+	line-height: 24px;
+	font-size: 1.1em;
+	overflow: hidden;
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+
+.atmos-modal-footer button:after {
+	content: '';
+	position: absolute;
+	z-index: -1;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.atmos-modal-footer button:active {
+	top: 2px;
+}
+
+.atmos-modal-footer button span {
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	-webkit-transition: all 0.3s;
+	-webkit-backface-visibility: hidden;
+	-moz-transition: all 0.3s;
+	-moz-backface-visibility: hidden;
+	transition: all 0.3s;
+	backface-visibility: hidden;
+}
+
+.atmos-modal-footer button:before {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+//	line-height: 2.5;
+//	font-size: 180%;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.atmos-modal-footer button:active:before {
+	color: #703b87;
+}
+
+/* Button 5b */
+.atmos-modal-footer button:hover span {
+	-webkit-transform: translateX(200%);
+	-moz-transform: translateX(200%);
+	-ms-transform: translateX(200%);
+	transform: translateX(200%);
+}
+
+.atmos-modal-footer button:before {
+	left: -100%;
+	top: 0;
+}
+
+.atmos-modal-footer button:hover:before {
+	left: 0;
+	padding-top: 5px;
+}
+
+.atmos-modal-footer a {
+	font-size: 1.2em;
+	display: inline-block;
+	margin: 0 1em 0 1em;
+
+//	color: #6f8686;
+//	text-shadow: 0 0 1px rgba(111,134,134,0.3);
+	outline: none;
+}
+
+.atmos-modal-footer a:hover,
+.atmos-modal-footer a:focus {
+	outline: none;
+}
+
+//.cl-effect-16 a {
+//	color: #6f8686;
+//	text-shadow: 0 0 1px rgba(111,134,134,0.3);
+//}
+
+.atmos-modal-footer a::before {
+	color: #fff;
+	content: attr(data-hover);
+	position: absolute;
+	opacity: 0;
+	text-shadow: 0 0 1px rgba(255,255,255,0.3);
+	-webkit-transform: scale(1.1) translateX(10px) translateY(-10px) rotate(4deg);
+	-moz-transform: scale(1.1) translateX(10px) translateY(-10px) rotate(4deg);
+	transform: scale(1.1) translateX(10px) translateY(-10px) rotate(4deg);
+	-webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
+	-moz-transition: -moz-transform 0.3s, opacity 0.3s;
+	transition: transform 0.3s, opacity 0.3s;
+	pointer-events: none;
+}
+
+.atmos-modal-footer a:hover::before,
+.atmos-modal-footer a:focus::before {
+	-webkit-transform: scale(1) translateX(0px) translateY(0px) rotate(0deg);
+	-moz-transform: scale(1) translateX(0px) translateY(0px) rotate(0deg);
+	transform: scale(1) translateX(0px) translateY(0px) rotate(0deg);
+	opacity: 1;
+}
+
