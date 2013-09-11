@@ -654,8 +654,10 @@ var atmos = null;
 				);
 				this.whoami(whoamiCallback);
 			}
+			else {
+				this.showLoginDialog();
+			}
 		}
-		//atmos.showLoginDialog();
 
 		// defines timelines
 		var scGlobal = createAtmosSearchCondition();
