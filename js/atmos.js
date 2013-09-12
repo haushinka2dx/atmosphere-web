@@ -536,7 +536,7 @@ var atmos = null;
 		dialog.show();
 	}
 
-	function showMessageSenderDialog(messageType, defaultMessage, replyToMessageId, originalMessageBody) {
+	function showMessageSenderDialog(defaultMessage, replyToMessageId, originalMessageBody) {
 		var msgs = [];
 		if (can(replyToMessageId)) {
 			msgs.push('Reply to');
