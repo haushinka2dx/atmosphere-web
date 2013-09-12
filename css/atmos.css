@@ -114,6 +114,11 @@ html, body {
     font-family: "GeneralFoundicons";
 }
 
+.atmos-vmenu li a.icon-password:before {
+    content: "\f01b";
+    font-family: "GeneralFoundicons";
+}
+
 .atmos-vmenu li a.icon-logout:before {
   	content: "\f013";
     font-family: "GeneralFoundicons";

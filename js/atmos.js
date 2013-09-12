@@ -15,6 +15,7 @@ var atmos = null;
 		login : login,
 		whoami : whoami,
 		logout : logout,
+		changePassword : changePassword,
 		loadAllUserIds : loadAllUserIds,
 		loadAllGroupIds : loadAllGroupIds,
 		sendMessage : sendMessage,
@@ -24,6 +25,7 @@ var atmos = null;
 		addTimeline : addTimeline,
 		showLoginDialog : showLoginDialog,
 		showLogoutDialog : showLogoutDialog,
+		showPasswordChangeDialog : showPasswordChangeDialog,
 		showAvatorChangeDialog : showAvatorChangeDialog,
 		showMessageSenderDialog : showMessageSenderDialog,
 		showPrivateMessageSenderDialog : showPrivateMessageSenderDialog,
@@ -152,6 +154,51 @@ var atmos = null;
 		);
 		var failureCallback = new CallbackInfo(
 			function(xhr, textStatus, errorThrown) {
+				console.log(errorThrown);
+			},
+			this
+		);
+		this.sendRequest(url, method, data, successCallback, failureCallback);
+	}
+
+	// change password
+	// callback(when successed): { "status":"ok" }
+	// callback(when failed): { "status":"error" }
+	function changePassword(currentPassword, newPassword, callback) {
+		var url = this.createUrl('/user/change_password');
+		var method = 'POST';
+		var data = {
+			current_user_password : currentPassword,
+			new_user_password : newPassword,
+		}
+		var successCallback = new CallbackInfo(
+			function(res, textStatus, xhr) {
+				var loginResult = JSON.parse(res);
+				var resultStatus = 'ng';
+				if (loginResult['status'] === 'ok') {
+					resultStatus = 'ok';
+					$.jGrowl('Changing password was done successfully.');
+				}
+				else {
+					$.jGrowl('Changing password was failed.');
+				}
+				if (can(callback)) {
+					var callbackResult = {};
+					callbackResult['status'] = resultStatus;
+					callback.fire(callbackResult);
+				}
+			},
+			this
+		);
+		var failureCallback = new CallbackInfo(
+			function(xhr, textStatus, errorThrown) {
+				if (can(callback)) {
+					var callbackResult = {};
+					callbackResult['status'] = 'error';
+					callbackResult['message'] = errorThrown;
+					console.dir(errorThrown);
+					callback.fire(callbackResult);
+				}
 				console.log(errorThrown);
 			},
 			this
@@ -435,6 +482,35 @@ var atmos = null;
 		dialog.show();
 	}
 
+	function showPasswordChangeDialog(message) {
+		var dialogMsg = can(message) ? message : '';
+		var dialog = createAtmosDialog(
+			'Change password',
+			[ dialogMsg ],
+			[ {"input-type":"password", "input-place-holder":"current password", "input-name":"current-password", "input-value":"" },
+			  {"input-type":"password", "input-place-holder":"New password", "input-name":"new-password", "input-value":"" } ],
+			true,
+			function(result) {
+				if (result['action'] === 'ok') {
+					var currentPassword = result['inputs']['current-password'];
+					var newPassword = result['inputs']['new-password'];
+					var postChange = new CallbackInfo(
+						function(res) {
+							if (can(res) && res['status'] === 'ok') {
+							}
+							else {
+								this.showPasswordChangeDialog('Changing password was failed. ' + res['message']);
+							}
+						},
+						atmos
+					);
+					atmos.changePassword(currentPassword, newPassword, postChange);
+				}
+			}
+		);
+		dialog.show();
+	}
+
 	function showAvatorChangeDialog() {
 		var that = this;
 		var dialog = createAtmosDialog(
@@ -477,17 +553,6 @@ var atmos = null;
 				if (result['action'] === 'ok') {
 					var message = result['inputs']['message'];
 					var messageType = result['inputs']['message-type'];
-					var postSending = new CallbackInfo(
-						function(res) {
-							if (can(res) && res['status'] === 'ok') {
-								this.refreshTimelines();
-							}
-							else {
-								alert('message send error');
-							}
-						},
-						atmos
-					);
 					atmos.sendMessage(message, messageType, replyToMessageId);
 				}
 			}
@@ -512,17 +577,6 @@ var atmos = null;
 				if (result['action'] === 'ok') {
 					var dstUserId = result['inputs']['address-user-id'];
 					var message = result['inputs']['message'];
-					var postSending = new CallbackInfo(
-						function(res) {
-							if (can(res) && res['status'] === 'ok') {
-								this.refreshTimelines();
-							}
-							else {
-								alert('private message send error');
-							}
-						},
-						atmos
-					);
 					atmos.sendPrivate(dstUserId, message);
 				}
 			}
@@ -540,17 +594,6 @@ var atmos = null;
 			true,
 			function(result) {
 				if (result['action'] === 'ok') {
-					var postSending = new CallbackInfo(
-						function(res) {
-							if (can(res) && res['status'] === 'ok') {
-								this.refreshTimelines();
-							}
-							else {
-								alert('message send error');
-							}
-						},
-						atmos
-					);
 					atmos.responseToMessage(targetMessageId, reactionType);
 				}
 			}

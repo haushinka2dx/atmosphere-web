@@ -32,6 +32,7 @@
 						<li><a href="#" class="icon-send" id="menuItemSendMessage"><span>Send Request</span></a></li>
 						<li><a href="#" class="icon-private" id="menuItemSendPrivate"><span>Send Request</span></a></li>
 						<li><a href="#" class="icon-avator" id="menuItemChangeAvator"><span>Change Avator</span></a></li>
+						<li><a href="#" class="icon-password" id="menuItemChangePassword"><span>Change Password</span></a></li>
 						<li><a href="#" class="icon-logout" id="menuItemLogout"><span>Logout<span></a></li>
 					</ul>
 				</nav>
@@ -200,6 +201,7 @@
 				$('#menuItemSendMessage').on('click', function(e) { atmos.showMessageSenderDialog(); });
 				$('#menuItemSendPrivate').on('click', function(e) { atmos.showPrivateMessageSenderDialog(); });
 				$('#menuItemChangeAvator').on('click', function(e) { atmos.showAvatorChangeDialog(); });
+				$('#menuItemChangePassword').on('click', function(e) { atmos.showPasswordChangeDialog(); });
 				$('#menuItemLogout').on('click', function(e) { atmos.showLogoutDialog(); });
 			});
 		</script>
