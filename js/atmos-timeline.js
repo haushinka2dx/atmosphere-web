@@ -157,7 +157,7 @@ var createAtmosTimeline = undefined;
 		var tmpl = Hogan.compile($("#tmpl-timeline-item-wrapper").text());
 		var context = {};
 		context["timeline-item-message-id"] = msg['_id'];
-		context["timeline-item-timestamp"] = utc2jst(msg['created_at']);
+		context["timeline-item-timestamp"] = utc2jstRelative(msg['created_at']);
 		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"];
 		context["timeline-item-username"] = msg["created_by"];
 		context["timeline-item-message"] = msg["message"];
