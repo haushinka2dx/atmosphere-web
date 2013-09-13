@@ -291,12 +291,12 @@ html, body {
 .atmos-modal-body {
 	padding: 0.5em;
 	min-height: 100px;
-	text-align: center;
+//	text-align: center;
 	font-size: 1.2em;
 }
 
 .atmos-modal-body p {
-	padding: 4px;
+	padding: 1px;
 }
 
 .atmos-modal-body input,
@@ -310,7 +310,7 @@ html, body {
 	font-size: 1em;
 	margin: 3px 0 3px 0;
 	line-height: 1.4em;
-	width: 90%;
+	width: 97%;
 }
 
 .atmos-modal-body input[type=checkbox] {
@@ -463,3 +463,32 @@ html, body {
 	opacity: 1;
 }
 
+.avator-mini {
+	max-width: 14px;
+	max-height: 14px;
+	min-width: 14px;
+	min-height: 14px;
+	margin-right: 3px;
+}
+
+div.textcomplete-wrapper {
+	width: 100%;
+}
+
+div.textcomplete-wrapper > ul.dropdown-menu {
+	background-color: rgba(0,0,0,0.3);
+	font-size: 0.8em;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	border-radius: 2px;
+	text-align:	left;
+}
+
+div.textcomplete-wrapper > ul.dropdown-menu > li {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+div.textcomplete-wrapper > ul.dropdown-menu > li.active {
+	background-color: rgba(0,0,0,0.2);
+}

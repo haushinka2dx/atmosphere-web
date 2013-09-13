@@ -145,7 +145,7 @@ var atmos = null;
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var logoutResult = JSON.parse(res);
-				if (logoutResult['status'] === 'ok') {
+				if (logoutResult['status'] === 'ok' || textStatus == 401) {
 					this.clearCurrentInfo();
 					this.init();
 				}
@@ -305,7 +305,6 @@ var atmos = null;
 		}
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
-				console.log(res);
 				var sendResult = JSON.parse(res);
 				var resultStatus = 'ng';
 				if (sendResult['status'] === 'ok') {
@@ -349,7 +348,6 @@ var atmos = null;
 		}
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
-				console.log(res);
 				var sendResult = JSON.parse(res);
 				var resultStatus = 'ng';
 				if (sendResult['status'] === 'ok') {
@@ -393,7 +391,6 @@ var atmos = null;
 		}
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
-				console.log(res);
 				var sendResult = JSON.parse(res);
 				var resultStatus = 'ng';
 				if (sendResult['status'] === 'ok') {
@@ -687,6 +684,8 @@ var atmos = null;
 				var whoamiCallback = new CallbackInfo(
 					function(res) {
 						if (res['status'] === 'ok') {
+							this.loadAllUserIds();
+							this.loadAllGroupIds();
 							this.refreshTimelines();
 						}
 						else {

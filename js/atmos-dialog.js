@@ -117,6 +117,45 @@ var createAtmosDialog = undefined;
 		$("." + this.id() + "-atmos-modal-close-button").on('click', function(ev) {
 			that.close('close');
 		});
+		$("#" + this.id() + " textarea").textcomplete({
+			// user id strategy
+			user: {
+				//match: /(^@|[^@.\-_a-zA-Z0-9]@)([a-zA-Z0-9.\-_]*)$/,
+				match: /(^|\s)@(\w*)$/,
+				search: function (term, callback) {
+					var regexp = new RegExp('^' + term);
+					callback($.map(atmos.allUserIds(), function(userId) {
+						return regexp.test(userId) ? userId : null;
+					}));
+				},
+				template: function(value) {
+					return '<img class="avator-mini" src="' + atmos.createUrl("/user/avator") + '?user_id=' + value + '" />' + value;
+				},
+				replace: function (value) {
+					return '$1@' + value + ' ';
+				},
+				cache: false
+			},
+
+			// user id strategy
+			group: {
+				//match: /(^@@|[^@.\-_a-zA-Z0-9]@@)([a-zA-Z0-9.\-_]*)$/,
+				match: /(^|\s)\$(\w*)$/,
+				search: function (term, callback) {
+					var regexp = new RegExp('^' + term);
+					callback($.map(atmos.allGroupIds(), function(groupId) {
+						return regexp.test(groupId) ? groupId : null;
+					}));
+				},
+				template: function(value) {
+					return value;
+				},
+				replace: function (value) {
+					return '$1$' + value + ' ';
+				},
+				cache: false
+			}}
+		);
 		$("#" + this.id()).show();
 	}
 
