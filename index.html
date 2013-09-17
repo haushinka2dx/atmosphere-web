@@ -122,7 +122,7 @@
 		-->
 		<script type="text/template" id="tmpl-timeline-item-wrapper">
 			<div class="timeline-item-wrapper">
-				<article class="timeline-item">
+				<article class="timeline-item msg_{{timeline-item-message-id}}">
 					<header class="timeline-item-header">
 						<div class="timeline-item-timestamp">{{timeline-item-timestamp}}</div>
 						<div class="timeline-item-user">
@@ -197,6 +197,7 @@
 		<script src="js/atmos-search-condition.js"></script>
 		<script src="js/atmos-timeline.js"></script>
 		<script src="js/atmos-dialog.js"></script>
+		<script src="js/atmos-sockjs.js"></script>
 		<script src="js/atmos.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function() {

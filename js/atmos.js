@@ -6,6 +6,7 @@ var atmos = null;
 		this._timelines = {};
 		this._allUserIds = [];
 		this._allGroupIds = [];
+		this._sockjs = createAtmosSockJS();
 	};
 	Atmos.prototype = {
 		atmosSessionId : atmosSessionId,
@@ -32,6 +33,8 @@ var atmos = null;
 		showResponseDialog : showResponseDialog,
 		createTimelineItem : createTimelineItem,
 		init : init,
+		initSockJS : initSockJS,
+		processServerNotification : processServerNotification,
 		refreshTimelines : refreshTimelines,
 		allUserIds : allUserIds,
 		allGroupIds : allGroupIds,
@@ -446,10 +449,7 @@ var atmos = null;
 					var postLogin = new CallbackInfo(
 						function(res) {
 							if (can(res) && res['status'] === 'ok') {
-								this.whoami();
-								this.loadAllUserIds();
-								this.loadAllGroupIds();
-								this.refreshTimelines();
+								this.init();
 							}
 							else {
 								this.showLoginDialog('Login failed.  Please confirm user id or password, or both.', userId);
@@ -687,6 +687,7 @@ var atmos = null;
 							this.loadAllUserIds();
 							this.loadAllGroupIds();
 							this.refreshTimelines();
+							this.initSockJS();
 						}
 						else {
 							this.showLoginDialog();
@@ -725,6 +726,26 @@ var atmos = null;
 		var scPrivate = createAtmosSearchCondition();
 		var tlPrivate = createAtmosTimeline('tl_private_timeline', 'Private', '', this.createUrl('/private/timeline'), scPrivate);
 		this.addTimeline(tlPrivate);
+	}
+
+	function initSockJS() {
+		this._sockjs.end();
+		var cb = new CallbackInfo(
+			this.processServerNotification,
+			this
+		);
+		this._sockjs.addNotificationReceiver(cb);
+		this._sockjs.start(this.atmosSessionId());
+	}
+
+	function processServerNotification(msgJSON) {
+		if (msgJSON['action'] === 'sendResponse') {
+			var targetMsgId = msgJSON['info']['target_msg_id'];
+			this.getTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
+		}
+		else if (msgJSON['action'] === 'sendMessage') {
+			this.refreshTimelines();
+		}
 	}
 
 	function addTimeline(timeline) {

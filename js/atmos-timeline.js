@@ -21,6 +21,8 @@ var createAtmosTimeline = undefined;
 		init : init,
 		readMore : readMore,
 		createTimelineItem : createTimelineItem,
+		updateTimelineItemReaction : updateTimelineItemReaction,
+		refreshMessage : refreshMessage,
 	}
 
 	function id(tlId) {
@@ -174,6 +176,47 @@ var createAtmosTimeline = undefined;
 		context["reactions"] = reactions;
 		var generated = tmpl.render(context);
 		return generated;
+	}
+
+	function updateTimelineItemReaction(msg) {
+		var msgId = msg['_id'];
+		var reactionPanels = $("article.msg_" + msgId + " div.reaction-panel");
+		var responses = msg['responses'];
+		Object.keys(responses).forEach(function(resType, i, a) {
+			var responderUserIds = responses[resType];
+			reactionPanels.find("a.reaction-count[reaction-type=" + resType + "]").text(responderUserIds.length);
+		});
+	}
+
+	function refreshMessage(messageId) {
+		var url = atmos.createUrl("/messages/search");
+		var method = 'GET';
+		var data = { "message_ids" : messageId };
+		var successCallback = new CallbackInfo(
+			function(res, textStatus, xhr) {
+				var tlResult = JSON.parse(res);
+				if (tlResult['status'] === 'ok') {
+					if (tlResult['count'] === 1) {
+						var tlItem = tlResult['results'][0];
+						updateTimelineItemReaction(tlItem);
+					}
+				}
+			},
+			this
+		);
+		var failureCallback = new CallbackInfo(
+			function(xhr, textStatus, errorThrown) {
+				console.log(errorThrown);
+			},
+			this
+		);
+		atmos.sendRequest(
+			url,
+			method,
+			data,
+			successCallback,
+			failureCallback
+		);
 	}
 
 	createAtmosTimeline = function(id, name, description, url, searchCondition) {
