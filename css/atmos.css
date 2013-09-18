@@ -147,7 +147,7 @@ html, body {
 	display: inline-block;
 	font-size: 1rem;
 	white-space: normal;
-	width: 298px;
+	width: 498px;
 	height: 100%;
 	vertical-align: top;
 	overflow-x: hidden;
@@ -170,7 +170,7 @@ html, body {
 
 .timeline-items-wrapper {
 	position: relative;
-	width: 320px;
+	width: 520px;
 	height: 100%;
 	overflow-y: auto;
 }
