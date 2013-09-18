@@ -133,6 +133,37 @@ var createAtmosTimeline = undefined;
 						}
 						this.latestMessageDateTime(tlResult['latest_created_at']);
 						this.oldestMessageDateTime(tlResult['oldest_created_at']);
+
+						var newItems = $("#" + this.id() + ' > div.new-item');
+						var delay = 0;
+						var delayDelta = 60;
+						var animationClasses = 'magictime swashIn';
+						for (var i=newItems.length - 1; i >= 0; i--) {
+							var targetNewItem = newItems[i];
+							$(targetNewItem).removeClass('new-item');
+							(function(){
+								var delayms = delay;
+								var item = targetNewItem;
+								setTimeout(
+									function() {
+										$(item).addClass(animationClasses);
+										$(item).show();
+									},
+									delayms
+								);
+							})();
+							(function(){
+								var delayms = delay + 1500;
+								var item = targetNewItem;
+								setTimeout(
+									function() {
+										$(item).removeClass(animationClasses);
+									},
+									delayms
+								);
+							})();
+							delay += delayDelta;
+						}
 					}
 				}
 			},
@@ -180,12 +211,40 @@ var createAtmosTimeline = undefined;
 
 	function updateTimelineItemReaction(msg) {
 		var msgId = msg['_id'];
-		var reactionPanels = $("article.msg_" + msgId + " div.reaction-panel");
+		var reactionPanels = $("#" + this.id() + " article.msg_" + msgId + " div.reaction-panel");
 		var responses = msg['responses'];
 		Object.keys(responses).forEach(function(resType, i, a) {
 			var responderUserIds = responses[resType];
 			reactionPanels.find("a.reaction-count[reaction-type=" + resType + "]").text(responderUserIds.length);
 		});
+		var reactionTargetArticles = $("#" + this.id() + " article.msg_" + msgId);
+		var delay = 0;
+		var delayDelta = 60;
+		var animationClasses = 'magictime shakeHorizontal';
+		for (var i=reactionTargetArticles.length - 1; i >= 0; i--) {
+			var targetItem = $(reactionTargetArticles[i]).parent();
+			(function(){
+				var delayms = delay;
+				var item = targetItem;
+				setTimeout(
+					function() {
+						$(item).addClass(animationClasses);
+					},
+					delayms
+				);
+			})();
+			(function(){
+				var delayms = delay + 1500;
+				var item = targetItem;
+				setTimeout(
+					function() {
+						$(item).removeClass(animationClasses);
+					},
+					delayms
+				);
+			})();
+			delay += delayDelta;
+		}
 	}
 
 	function refreshMessage(messageId) {
@@ -198,7 +257,7 @@ var createAtmosTimeline = undefined;
 				if (tlResult['status'] === 'ok') {
 					if (tlResult['count'] === 1) {
 						var tlItem = tlResult['results'][0];
-						updateTimelineItemReaction(tlItem);
+						this.updateTimelineItemReaction(tlItem);
 					}
 				}
 			},

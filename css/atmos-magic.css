@@ -1,0 +1,147 @@
+.shakeHorizontal {
+  -webkit-animation-name: shakeHorizontal;
+  -moz-animation-name: shakeHorizontal;
+  -ms-animation-name: shakeHorizontal;
+  -o-animation-name: shakeHorizontal;
+  animation-name: shakeHorizontal;
+}
+@-moz-keyframes shakeHorizontal {
+  25%, 55% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(-5%);
+    -moz-transform: scale(1, 1) translateX(-5%);
+    -ms-transform: scale(1, 1) translateX(-5%);
+    -o-transform: scale(1, 1) translateX(-5%);
+    transform: scale(1, 1) translateX(-5%);
+  }
+
+  45%, 85% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(5%);
+    -moz-transform: scale(1, 1) translateX(5%);
+    -ms-transform: scale(1, 1) translateX(5%);
+    -o-transform: scale(1, 1) translateX(5%);
+    transform: scale(1, 1) translateX(5%);
+  }
+
+  0%, 40%, 50%, 60%, 100% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(0);
+    -moz-transform: scale(1, 1) translateX(0);
+    -ms-transform: scale(1, 1) translateX(0);
+    -o-transform: scale(1, 1) translateX(0);
+    transform: scale(1, 1) translateX(0);
+  }
+}
+@-webkit-keyframes shakeHorizontal {
+  25%, 55% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(-5%);
+    -moz-transform: scale(1, 1) translateX(-5%);
+    -ms-transform: scale(1, 1) translateX(-5%);
+    -o-transform: scale(1, 1) translateX(-5%);
+    transform: scale(1, 1) translateX(-5%);
+  }
+
+  45%, 85% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(5%);
+    -moz-transform: scale(1, 1) translateX(5%);
+    -ms-transform: scale(1, 1) translateX(5%);
+    -o-transform: scale(1, 1) translateX(5%);
+    transform: scale(1, 1) translateX(5%);
+  }
+
+  0%, 40%, 50%, 60%, 100% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(0);
+    -moz-transform: scale(1, 1) translateX(0);
+    -ms-transform: scale(1, 1) translateX(0);
+    -o-transform: scale(1, 1) translateX(0);
+    transform: scale(1, 1) translateX(0);
+  }
+}
+@-o-keyframes shakeHorizontal {
+  25%, 55% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(-5%);
+    -moz-transform: scale(1, 1) translateX(-5%);
+    -ms-transform: scale(1, 1) translateX(-5%);
+    -o-transform: scale(1, 1) translateX(-5%);
+    transform: scale(1, 1) translateX(-5%);
+  }
+
+  45%, 85% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(5%);
+    -moz-transform: scale(1, 1) translateX(5%);
+    -ms-transform: scale(1, 1) translateX(5%);
+    -o-transform: scale(1, 1) translateX(5%);
+    transform: scale(1, 1) translateX(5%);
+  }
+
+  0%, 40%, 50%, 60%, 100% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(0);
+    -moz-transform: scale(1, 1) translateX(0);
+    -ms-transform: scale(1, 1) translateX(0);
+    -o-transform: scale(1, 1) translateX(0);
+    transform: scale(1, 1) translateX(0);
+  }
+}
+@-ms-keyframes shakeHorizontal {
+  25%, 55% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(-5%);
+    -moz-transform: scale(1, 1) translateX(-5%);
+    -ms-transform: scale(1, 1) translateX(-5%);
+    -o-transform: scale(1, 1) translateX(-5%);
+    transform: scale(1, 1) translateX(-5%);
+  }
+
+  45%, 85% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(5%);
+    -moz-transform: scale(1, 1) translateX(5%);
+    -ms-transform: scale(1, 1) translateX(5%);
+    -o-transform: scale(1, 1) translateX(5%);
+    transform: scale(1, 1) translateX(5%);
+  }
+
+  0%, 40%, 50%, 60%, 100% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(0);
+    -moz-transform: scale(1, 1) translateX(0);
+    -ms-transform: scale(1, 1) translateX(0);
+    -o-transform: scale(1, 1) translateX(0);
+    transform: scale(1, 1) translateX(0);
+  }
+}
+@keyframes shakeHorizontal {
+  25%, 55% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(-5%);
+    -moz-transform: scale(1, 1) translateX(-5%);
+    -ms-transform: scale(1, 1) translateX(-5%);
+    -o-transform: scale(1, 1) translateX(-5%);
+    transform: scale(1, 1) translateX(-5%);
+  }
+
+  45%, 85% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(5%);
+    -moz-transform: scale(1, 1) translateX(5%);
+    -ms-transform: scale(1, 1) translateX(5%);
+    -o-transform: scale(1, 1) translateX(5%);
+    transform: scale(1, 1) translateX(5%);
+  }
+
+  0%, 40%, 50%, 60%, 100% {
+    opacity: 1;
+    -webkit-transform: scale(1, 1) translateX(0);
+    -moz-transform: scale(1, 1) translateX(0);
+    -ms-transform: scale(1, 1) translateX(0);
+    -o-transform: scale(1, 1) translateX(0);
+    transform: scale(1, 1) translateX(0);
+  }
+}
