@@ -543,8 +543,7 @@ var atmos = null;
 		var dialog = createAtmosDialog(
 			'Send Message',
 			msgs,
-			[ {"is-textarea":false, "input-type":"checkbox", "input-place-holder":"", "input-name":"message-type", "input-id":"inputted-message-type", "input-value":"monolog", "input-label-text":'send for myself only(others can not see)' },
-			  {"is-textarea":true, "input-place-holder":"message", "input-name":"message", "input-id":"inputted-message", "input-value":defaultMessage } ],
+			[ {"is-textarea":true, "input-place-holder":"message", "input-name":"message", "input-id":"inputted-message", "input-value":defaultMessage } ],
 			true,
 			function(result) {
 				if (result['action'] === 'ok') {
@@ -708,25 +707,9 @@ var atmos = null;
 		var tlGlobal = createAtmosTimeline('tl_global_timeline', 'Global', 'all messages', this.createUrl('/messages/global_timeline'), scGlobal);
 		this.addTimeline(tlGlobal);
 
-		var scMy = createAtmosSearchCondition();
-		var tlMy = createAtmosTimeline('tl_my_timeline', 'My', 'The messages that my speakers says.', this.createUrl('/messages/focused_timeline'), scMy);
-		this.addTimeline(tlMy);
-
 		var scTalk = createAtmosSearchCondition();
 		var tlTalk = createAtmosTimeline('tl_talk_timeline', 'Talk', '', this.createUrl('/messages/talk_timeline'), scTalk);
 		this.addTimeline(tlTalk);
-
-		var scAnnounce = createAtmosSearchCondition();
-		var tlAnnounce = createAtmosTimeline('tl_announce_timeline', 'Announce', '', this.createUrl('/messages/announce_timeline'), scAnnounce);
-		this.addTimeline(tlAnnounce);
-
-		var scMonolog = createAtmosSearchCondition();
-		var tlMonolog = createAtmosTimeline('tl_monolog_timeline', 'Monolog', '', this.createUrl('/messages/monolog_timeline'), scMonolog);
-		this.addTimeline(tlMonolog);
-
-		var scPrivate = createAtmosSearchCondition();
-		var tlPrivate = createAtmosTimeline('tl_private_timeline', 'Private', '', this.createUrl('/private/timeline'), scPrivate);
-		this.addTimeline(tlPrivate);
 	}
 
 	function initSockJS() {
