@@ -220,7 +220,7 @@ var createAtmosTimeline = undefined;
 		var reactionTargetArticles = $("#" + this.id() + " article.msg_" + msgId);
 		var delay = 0;
 		var delayDelta = 60;
-		var animationClasses = 'magictime shakeHorizontal';
+		var animationClasses = 'magictime tada';
 		for (var i=reactionTargetArticles.length - 1; i >= 0; i--) {
 			var targetItem = $(reactionTargetArticles[i]).parent();
 			(function(){
