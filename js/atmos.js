@@ -631,6 +631,7 @@ var atmos = null;
 //	        dataType: 'json',
 	        dataType: 'text',
 	        data: reqData,
+			cache: false,
 	        headers: reqHeaders
 	    };
 	
