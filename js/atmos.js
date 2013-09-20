@@ -577,12 +577,22 @@ var atmos = null;
 		dialog.show();
 	}
 
-	function showMessageSenderDialog(defaultMessage, replyToMessageId, originalMessageBody) {
+	function showMessageSenderDialog(defaultMessage, replyToMessageId, originalMessageBody, addresses) {
 		var msgs = [];
 		if (can(replyToMessageId)) {
 			msgs.push('Reply to');
 			msgs.push('');
 			msgs.push(originalMessageBody);
+		}
+		if (!can(defaultMessage)) {
+			defaultMessage = '';
+		}
+		if (can(addresses)) {
+			for (var i=0; i<addresses.length; i++) {
+				if (defaultMessage.indexOf(addresses[i]) === -1) {
+					defaultMessage = addresses[i] + ' ' + defaultMessage;
+				}
+			}
 		}
 		var dialog = createAtmosDialog(
 			'Send Message',

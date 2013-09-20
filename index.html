@@ -138,7 +138,10 @@
 					<div class="timeline-item-message">{{timeline-item-message}}</div>
 					<footer class="timeline-item-footer">
 						<input type="hidden" name="message-id" value="{{timeline-item-message-id}}" />
+						<input type="hidden" name="message-created-by" value="{{timeline-item-username}}" />
 						<input type="hidden" name="message-body" value="{{timeline-item-message}}" />
+						<input type="hidden" name="message-address-users" value="{{timeline-item-address-users}}" />
+						<input type="hidden" name="message-address-groups" value="{{timeline-item-address-groups}}" />
 						<div class="reaction-panel">
 							{{#reactions}}
 							<a href="#" class="reaction" reaction-type="{{reaction-type}}"><i class="{{reaction-icon-class}}"></i></a>
