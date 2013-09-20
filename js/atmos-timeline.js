@@ -115,21 +115,31 @@ var createAtmosTimeline = undefined;
 							$("#" + this.id()).prepend(tlItemHtml);
 							$("#" + this.id() + ' > div:first a.reaction').on('click', function(e) {
 								var targetLink = e.currentTarget;
-								var targetMessageId = $(targetLink).parent().parent().find('input[name=message-id]').val();
-								var targetMessageBody = $(targetLink).parent().parent().find('input[name=message-body]').val();
+								var base = $(targetLink).parent().parent();
+								var targetMessageId = $(base).find('input[name=message-id]').val();
+								var targetMessageBody = $(base).find('input[name=message-body]').val();
 								var reactionType = $(targetLink).attr('reaction-type');
 								atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody);
 							});
 							$("#" + this.id() + ' > div:first a.reply').on('click', function(e) {
 								var targetLink = e.currentTarget;
-								var targetMessageId = $(targetLink).parent().parent().find('input[name=message-id]').val();
-								var targetMessageBody = $(targetLink).parent().parent().find('input[name=message-body]').val();
+								var base = $(targetLink).parent().parent();
+								var targetMessageId = $(base).find('input[name=message-id]').val();
+								var targetMessageBody = $(base).find('input[name=message-body]').val();
+								var addressUsers = $(base).find('input[name=message-address-users]').val();
+								var addressGroups = $(base).find('input[name=message-address-groups]').val();
+								var originalMsgCreatedBy = $(base).find('input[name=message-created-by]').val();
+
+								var addresses = [];
+								addresses = addresses.concat(addressUsers.split(' '), addressGroups.split(' '));
+								addresses.push('@' + originalMsgCreatedBy);
+
 								var replyType = $(targetLink).attr('reply-type');
 								var defaultMessage = '';
 								if (replyType === 'quote') {
 									defaultMessage = targetMessageBody;
 								}
-								atmos.showMessageSenderDialog(defaultMessage, targetMessageId, targetMessageBody);
+								atmos.showMessageSenderDialog(defaultMessage, targetMessageId, targetMessageBody, addresses);
 							});
 							$("#" + this.id() + ' > div:first a.remove').on('click', function(e) {
 								var targetLink = e.currentTarget;
@@ -202,6 +212,17 @@ var createAtmosTimeline = undefined;
 		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"];
 		context["timeline-item-username"] = msg["created_by"];
 		context["timeline-item-message"] = msg["message"];
+		var addresses = msg["addresses"];
+		if (can(addresses)) {
+			var addressUsers = addresses['users'];
+			if (can(addressUsers)) {
+				context["timeline-item-address-users"] = addressUsers.map(function(addressUser) { return '@' + addressUser; }).join(' ');
+			}
+			var addressGroups = addresses['groups'];
+			if (can(addressGroups)) {
+				context["timeline-item-address-groups"] = addressGroups.map(function(addressGroup) { return '$' + addressGroup; }).join(' ');
+			}
+		}
 		var reactions = [];
 		var responses = msg['responses'];
 		Object.keys(responses).sort().forEach(function(resType, i, a) {
