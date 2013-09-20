@@ -20,6 +20,7 @@ var atmos = null;
 		loadAllUserIds : loadAllUserIds,
 		loadAllGroupIds : loadAllGroupIds,
 		sendMessage : sendMessage,
+		removeMessage : removeMessage,
 		sendPrivate : sendPrivate,
 		responseToMessage : responseToMessage,
 		getTimelines : getTimelines,
@@ -29,6 +30,7 @@ var atmos = null;
 		showPasswordChangeDialog : showPasswordChangeDialog,
 		showAvatorChangeDialog : showAvatorChangeDialog,
 		showMessageSenderDialog : showMessageSenderDialog,
+		showMessageRemoveDialog : showMessageRemoveDialog,
 		showPrivateMessageSenderDialog : showPrivateMessageSenderDialog,
 		showResponseDialog : showResponseDialog,
 		createTimelineItem : createTimelineItem,
@@ -339,6 +341,48 @@ var atmos = null;
 		this.sendRequest(url, method, data, successCallback, failureCallback);
 	}
 
+	// remove  message
+	// callback(when successed): { "status":"ok" }
+	// callback(when failed): { "status":"error" }
+	function removeMessage(targetMessageId, callback) {
+		var url = this.createUrl('/messages/destroy');
+		var method = 'POST';
+		var data = {
+			_id : targetMessageId,
+		}
+		var successCallback = new CallbackInfo(
+			function(res, textStatus, xhr) {
+				var sendResult = JSON.parse(res);
+				var resultStatus = 'ng';
+				if (sendResult['status'] === 'ok') {
+					resultStatus = 'ok';
+					$.jGrowl('Message was removed successfully.');
+				}
+				else {
+					$.jGrowl('Message was not removed. ' + sendResult['message']);
+				}
+				if (can(callback)) {
+					var callbackResult = {};
+					callbackResult['status'] = resultStatus;
+					callback.fire(callbackResult);
+				}
+			},
+			this
+		);
+		var failureCallback = new CallbackInfo(
+			function(xhr, textStatus, errorThrown) {
+				if (can(callback)) {
+					var callbackResult = {};
+					callbackResult['status'] = 'error';
+					callback.fire(callbackResult);
+				}
+				$.jGrowl('Message was not removed. ' + errorThrown);
+			},
+			this
+		);
+		this.sendRequest(url, method, data, successCallback, failureCallback);
+	}
+
 	// send message
 	// callback(when successed): { "status":"ok" }
 	// callback(when failed): { "status":"error" }
@@ -556,6 +600,25 @@ var atmos = null;
 		dialog.show();
 	}
 
+	function showMessageRemoveDialog(targetMessageId, targetMessageBody) {
+		var msgs = [];
+		msgs.push('Are you sure to remove message?');
+		msgs.push('');
+		msgs.push(targetMessageBody);
+		var dialog = createAtmosDialog(
+			'Remove Message',
+			msgs,
+			[ ],
+			true,
+			function(result) {
+				if (result['action'] === 'ok') {
+					atmos.removeMessage(targetMessageId);
+				}
+			}
+		);
+		dialog.show();
+	}
+
 	function showPrivateMessageSenderDialog(addressUserId, defaultMessage, replyToMessageId, originalMessageBody) {
 		var msgs = [];
 		if (can(replyToMessageId)) {
@@ -729,6 +792,10 @@ var atmos = null;
 		}
 		else if (msgJSON['action'] === 'sendMessage') {
 			this.refreshTimelines();
+		}
+		else if (msgJSON['action'] === 'removedMessage') {
+			var removedMsgId = msgJSON['info']['_id'];
+			this.getTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
 		}
 	}
 
