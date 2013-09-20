@@ -149,6 +149,9 @@
 							<a href="#" class="reply" reply-type="quote"><i class="foundicon-quote"></i></a>
 							<a href="#" class="reply" reply-type="no-quote"><i class="foundicon-left-arrow"></i></a>
 							<a href="#"><i class="foundicon-people"></i></a>
+							{{#is-own-message}}
+							<a href="#" class="remove"><i class="foundicon-trash"></i></a>
+							{{/is-own-message}}
 						</div>
 					</footer>
 				</article>

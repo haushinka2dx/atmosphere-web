@@ -23,6 +23,7 @@ var createAtmosTimeline = undefined;
 		createTimelineItem : createTimelineItem,
 		updateTimelineItemReaction : updateTimelineItemReaction,
 		refreshMessage : refreshMessage,
+		removeMessage : removeMessage,
 	}
 
 	function id(tlId) {
@@ -130,6 +131,12 @@ var createAtmosTimeline = undefined;
 								}
 								atmos.showMessageSenderDialog(defaultMessage, targetMessageId, targetMessageBody);
 							});
+							$("#" + this.id() + ' > div:first a.remove').on('click', function(e) {
+								var targetLink = e.currentTarget;
+								var targetMessageId = $(targetLink).parent().parent().find('input[name=message-id]').val();
+								var targetMessageBody = $(targetLink).parent().parent().find('input[name=message-body]').val();
+								atmos.showMessageRemoveDialog(targetMessageId, targetMessageBody);
+							});
 						}
 						this.latestMessageDateTime(tlResult['latest_created_at']);
 						this.oldestMessageDateTime(tlResult['oldest_created_at']);
@@ -189,6 +196,7 @@ var createAtmosTimeline = undefined;
 	function createTimelineItem(msg) {
 		var tmpl = Hogan.compile($("#tmpl-timeline-item-wrapper").text());
 		var context = {};
+		context["is-own-message"] = atmos.currentUserId() === msg['created_by'];
 		context["timeline-item-message-id"] = msg['_id'];
 		context["timeline-item-timestamp"] = utc2jstRelative(msg['created_at']);
 		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"];
@@ -276,6 +284,38 @@ var createAtmosTimeline = undefined;
 			successCallback,
 			failureCallback
 		);
+	}
+
+	function removeMessage(messageId) {
+		var msgId = messageId;
+		var removedMessageArticle = $("#" + this.id() + " article.msg_" + msgId);
+		var delay = 0;
+		var delayDelta = 60;
+		var animationClasses = 'magictime holeOut';
+		for (var i=removedMessageArticle.length - 1; i >= 0; i--) {
+			var targetItem = $(removedMessageArticle[i]).parent();
+			(function(){
+				var delayms = delay;
+				var item = targetItem;
+				setTimeout(
+					function() {
+						$(item).addClass(animationClasses);
+					},
+					delayms
+				);
+			})();
+			(function(){
+				var delayms = delay + 1050;
+				var item = targetItem;
+				setTimeout(
+					function() {
+						$(item).remove();
+					},
+					delayms
+				);
+			})();
+			delay += delayDelta;
+		}
 	}
 
 	createAtmosTimeline = function(id, name, description, url, searchCondition) {
