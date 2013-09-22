@@ -7,6 +7,7 @@ var createAtmosTimeline = undefined;
 		this.description(description);
 		this.url(url);
 		this.searchCondition(searchCondition);
+		this.scrollbarWasSet = false;
 	};
 	AtmosTimeline.prototype = {
 		id : id,
@@ -24,6 +25,7 @@ var createAtmosTimeline = undefined;
 		updateTimelineItemReaction : updateTimelineItemReaction,
 		refreshMessage : refreshMessage,
 		removeMessage : removeMessage,
+		setScrollbar : setScrollbar,
 	}
 
 	function id(tlId) {
@@ -181,6 +183,7 @@ var createAtmosTimeline = undefined;
 							})();
 							delay += delayDelta;
 						}
+						this.setScrollbar();
 					}
 				}
 			},
@@ -336,6 +339,13 @@ var createAtmosTimeline = undefined;
 				);
 			})();
 			delay += delayDelta;
+		}
+	}
+
+	function setScrollbar() {
+		if (this.scrollbarWasSet === false) {
+			$('#' + this.id()).parent().perfectScrollbar(atmos.perfectScrollbarSetting);
+			this.scrollbarWasSet = true;
 		}
 	}
 

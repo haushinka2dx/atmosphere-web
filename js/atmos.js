@@ -36,11 +36,13 @@ var atmos = null;
 		createTimelineItem : createTimelineItem,
 		init : init,
 		initSockJS : initSockJS,
+		initScrollbars : initScrollbars,
 		processServerNotification : processServerNotification,
 		refreshTimelines : refreshTimelines,
 		allUserIds : allUserIds,
 		allGroupIds : allGroupIds,
 		clearCurrentInfo : clearCurrentInfo,
+		perfectScrollbarSetting : { wheelSpeed: 70, minScrollbarLength: 100 },
 	}
 
 	function atmosSessionId(id) {
@@ -783,6 +785,8 @@ var atmos = null;
 		var scTalk = createAtmosSearchCondition();
 		var tlTalk = createAtmosTimeline('tl_talk_timeline', 'Talk', '', this.createUrl('/messages/talk_timeline'), scTalk);
 		this.addTimeline(tlTalk);
+
+		this.initScrollbars();
 	}
 
 	function initSockJS() {
@@ -793,6 +797,11 @@ var atmos = null;
 		);
 		this._sockjs.addNotificationReceiver(cb);
 		this._sockjs.start(this.atmosSessionId());
+	}
+
+	function initScrollbars() {
+		$('.contents').perfectScrollbar(atmos.perfectScrollbarSetting);
+		this.getTimelines().forEach(function(tl) { tl.setScrollbar(); });
 	}
 
 	function processServerNotification(msgJSON) {
