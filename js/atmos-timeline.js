@@ -157,7 +157,8 @@ var createAtmosTimeline = undefined;
 						var delay = 0;
 						var delayDelta = 60;
 						var animationClasses = 'magictime swashIn';
-						for (var i=newItems.length - 1; i >= 0; i--) {
+						var newItemsLength = newItems.length;
+						for (var i = 0; i < newItemsLength; i++) {
 							var targetNewItem = newItems[i];
 							$(targetNewItem).removeClass('new-item');
 							(function(){
