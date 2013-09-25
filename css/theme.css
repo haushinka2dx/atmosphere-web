@@ -134,11 +134,7 @@
 }
 
 .timeline-item-message a {
-  text-decoration: underline;
-}
-
-.timeline-item-message a:link {
-	color: #0000C4;
+	color: #ffffff;
 }
 
 .timeline-item-message a:hover {
