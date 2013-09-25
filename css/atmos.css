@@ -219,18 +219,6 @@ html, body {
 	margin-bottom: 2px;
 }
 
-.timeline-item-message a {
-  text-decoration: underline;
-}
-
-.timeline-item-message a:link {
-	color: #0000C4;
-}
-
-.timeline-item-message a:hover {
-	color: #d5d5d5;
-}
-
 .timeline-item-footer {
 	font-size: 0.8em;
 }
