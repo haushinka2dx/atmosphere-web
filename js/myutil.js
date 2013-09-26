@@ -42,3 +42,8 @@ function utc2jstRelative(utcString) {
 		return utc.toLocaleTimeString();
 	}
 }
+
+function autolink(src) {
+	var pattern = /(\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	return src.replace(pattern, "<a target=\"_blank\" href='$1'>$1</a>");
+}

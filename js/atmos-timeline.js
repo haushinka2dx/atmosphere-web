@@ -127,6 +127,12 @@ var createAtmosTimeline = undefined;
 							var tlItem = tlResult['results'][itemIndex];
 							var tlItemHtml = this.createTimelineItem(tlItem);
 							$("#" + this.id()).prepend(tlItemHtml);
+
+							(function(id) {
+								var message = $("#" + id + ' > div:first .timeline-item-message');
+								message.html(autolink(message.html()));
+							})(this.id())
+
 							$("#" + this.id() + ' > div:first').on('click', function(e) {
 								e.stopPropagation();
 								var selfMessageId = $(this).find('input[name=message-id]').val();

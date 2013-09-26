@@ -461,7 +461,8 @@ html, body {
 }
 
 /* Button 5b */
-.atmos-modal-footer button:hover span {
+.atmos-modal-footer button:hover span,
+.atmos-modal-footer button:focus span {
 	-webkit-transform: translateX(200%);
 	-moz-transform: translateX(200%);
 	-ms-transform: translateX(200%);
@@ -473,7 +474,8 @@ html, body {
 	top: 0;
 }
 
-.atmos-modal-footer button:hover:before {
+.atmos-modal-footer button:hover:before,
+.atmos-modal-footer button:focus:before {
 	left: 0;
 	padding-top: 5px;
 }
