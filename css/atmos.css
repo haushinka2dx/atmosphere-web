@@ -140,7 +140,7 @@ html, body {
 	height: 100%;
 	font-size: 0;
 	white-space: nowrap;
-	overflow-x: auto;
+	overflow-x: hidden;
 }
 
 .timeline {
@@ -170,9 +170,9 @@ html, body {
 
 .timeline-items-wrapper {
 	position: relative;
-	width: 320px;
+	width: 100%;
 	height: 100%;
-	overflow-y: auto;
+	overflow-y: hidden;
 }
 
 .timeline-items {
@@ -193,7 +193,6 @@ html, body {
 
 .timeline-item {
 	padding: 4px;
-	padding-right: 28px;
 }
 
 .timeline-item-avator {
@@ -403,7 +402,8 @@ html, body {
 }
 
 /* Button 5b */
-.atmos-modal-footer button:hover span {
+.atmos-modal-footer button:hover span,
+.atmos-modal-footer button:focus span {
 	-webkit-transform: translateX(200%);
 	-moz-transform: translateX(200%);
 	-ms-transform: translateX(200%);
@@ -415,7 +415,8 @@ html, body {
 	top: 0;
 }
 
-.atmos-modal-footer button:hover:before {
+.atmos-modal-footer button:hover:before,
+.atmos-modal-footer button:focus:before {
 	left: 0;
 	padding-top: 5px;
 }
