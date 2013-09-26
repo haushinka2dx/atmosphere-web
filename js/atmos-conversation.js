@@ -19,6 +19,7 @@ var createAtmosConversation = undefined;
 		createPastMessageProcessor : createPastMessageProcessor,
 		createFutureMessageProcessor : createFutureMessageProcessor,
 		createConversationItem : createConversationItem,
+		createHyperLink : createHyperLink,
 		applyItemEvents : applyItemEvents,
 		showNewItems : showNewItems,
 		updateConversationItemReaction : updateConversationItemReaction,
@@ -61,8 +62,6 @@ var createAtmosConversation = undefined;
 		});
 		var method = 'GET';
 		var data = { "message_ids":this.mainMessageId() };
-//Messages.prototype.pnMessageIds = 'message_ids';
-//Messages.prototype.pnReplyToMessageId = 'reply_to_message_id';
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var tlResult = JSON.parse(res);
@@ -71,6 +70,9 @@ var createAtmosConversation = undefined;
 						var tlItem = tlResult['results'][0];
 						var tlItemHtml = this.createConversationItem(tlItem, true);
 						$("#" + this.id()).prepend(tlItemHtml);
+
+						this.createHyperLink(this.id(), 'first');
+
 						this.applyItemEvents($("#" + this.id() + ' > div:first'));
 
 						var newItems = $("#" + this.id() + " > div.new-item");
@@ -129,6 +131,8 @@ var createAtmosConversation = undefined;
 							var convItemHtml = this.createConversationItem(tlItem, false);
 							$("#" + this.id()).prepend(convItemHtml);
 
+							this.createHyperLink(this.id(), 'first');
+
 							this.applyItemEvents($("#" + this.id() + " > div:first"));
 
 							// show
@@ -173,6 +177,8 @@ var createAtmosConversation = undefined;
 							var tlItem = tlResult['results'][0];
 							var convItemHtml = this.createConversationItem(tlItem, false);
 							$("#" + this.id()).append(convItemHtml);
+
+							this.createHyperLink(this.id(), 'last');
 
 							this.applyItemEvents($("#" + this.id() + " > div:last"));
 
@@ -242,6 +248,11 @@ var createAtmosConversation = undefined;
 		context["reactions"] = reactions;
 		var generated = tmpl.render(context);
 		return generated;
+	}
+
+	function createHyperLink(id, firstOrLast) {
+		var message = $("#" + id + ' > div:' + firstOrLast + ' .conversation-item-message');
+		message.html(autolink(message.html()));
 	}
 
 	function applyItemEvents(target) {

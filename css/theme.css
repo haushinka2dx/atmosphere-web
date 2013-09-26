@@ -169,11 +169,13 @@
 	background-color: #1abc9c;
 }
 
-.timeline-item-message a {
+.timeline-item-message a,
+.conversation-item-message a {
 	color: #ffffff;
 }
 
-.timeline-item-message a:hover {
+.timeline-item-message a:hover,
+.conversation-item-message a:hover {
 	color: #d5d5d5;
 }
 
