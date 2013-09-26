@@ -157,6 +157,7 @@ var createAtmosDialog = undefined;
 			}}
 		);
 		$("#" + this.id()).show();
+		$("input[type='text'],input[type='password'],textarea", "#" + this.id() + " .atmos-modal-wrapper .atmos-modal-body").first().focus();
 	}
 
 	function close(action, remainDom) {
