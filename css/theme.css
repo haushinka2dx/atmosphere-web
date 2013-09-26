@@ -40,12 +40,14 @@
 	background-color: #3692c9;
 }
 
-.atmos-modal-footer button:active {
+.atmos-modal-footer button:active,
+.atmos-modal-footer button:focus {
 	color: #fff;
 	background-color: #69c5fc;
 }
 
-.atmos-modal-footer button:active:before {
+.atmos-modal-footer button:active:before,
+.atmos-modal-footer button:focus:before {
 	color: #fff;
 }
 
