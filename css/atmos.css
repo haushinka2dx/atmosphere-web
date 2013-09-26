@@ -143,7 +143,8 @@ html, body {
 	overflow-x: hidden;
 }
 
-.timeline {
+.timeline,
+.conversation {
 	display: inline-block;
 	font-size: 1rem;
 	white-space: normal;
@@ -159,7 +160,8 @@ html, body {
 	border-width: 2px;
 }
 
-.timeline-header {
+.timeline-header,
+.conversation-header {
 	position: relative;
 	height: 31px;
 	font-size: 1.1em;
@@ -168,20 +170,23 @@ html, body {
 	padding-bottom: 13px;
 }
 
-.timeline-items-wrapper {
+.timeline-items-wrapper,
+.conversation-items-wrapper {
 	position: relative;
 	width: 100%;
 	height: 100%;
 	overflow-y: hidden;
 }
 
-.timeline-items {
+.timeline-items,
+.conversation-items {
 	position: relative;
 	padding-bottom: 57px;
 	font-size: 0.9em;
 }
 
-.timeline-item-wrapper {
+.timeline-item-wrapper,
+.conversation-item-wrapper {
 	padding-left: 52px;
 	border-top-style: none;
 	border-left-style: none;
@@ -191,35 +196,41 @@ html, body {
 	transition: all 0.5s ease-out 0;
 }
 
-.timeline-item {
+.timeline-item,
+.conversation-item {
 	padding: 4px;
 }
 
-.timeline-item-avator {
+.timeline-item-avator,
+.conversation-item-avator {
 	float: left;
 	width: 48px;
 	margin-left: -52px;
 	margin-right: 4px;
 }
 
-.timeline-item-avator > img {
+.timeline-item-avator > img,
+.conversation-item-avator > img {
 	max-width: 48px;
 	max-height: 48px;
 }
 
-.timeline-item-timestamp {
+.timeline-item-timestamp,
+.conversation-item-timestamp {
 	float: right;
 	font-size: 0.8em;
 	padding-top: 2px;
 }
 
-.timeline-item-message {
+.timeline-item-message,
+.conversation-item-message {
 	word-wrap: break-word;
 	margin-top: 2px;
 	margin-bottom: 2px;
 }
 
-.timeline-item-footer {
+.timeline-item-footer,
+.conversation-item-footer {
 	font-size: 0.8em;
 }
 
@@ -235,7 +246,8 @@ html, body {
 	transition: opacity 0.5s ease-out 0;
 }
 
-.timeline-item:hover > .timeline-item-footer > .reaction-panel {
+.timeline-item:hover > .timeline-item-footer > .reaction-panel,
+.conversation-item:hover > .conversation-item-footer > .reaction-panel {
 	opacity: 1;
 }
 
@@ -244,6 +256,53 @@ html, body {
 
 .reaction-count {
 	padding-left: 0.3em;
+}
+
+.conversation-main.conversation-item-wrapper {
+	padding-left: 0;
+}
+
+.conversation-main .conversation-header {
+	float: none;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.conversation-main .conversation-item-user {
+	display: inline-block;
+}
+
+.conversation-main .conversation-item-avator {
+	float: none;
+	margin-left: 0;
+	margin-right: 0;
+	display: inline-block;
+}
+
+.conversation-main .conversation-item-username {
+	display: inline-block;
+	padding-top: 1em;
+	vertical-align: top;
+}
+
+.conversation-main .conversation-item-message {
+	font-size: 1.2em;
+}
+
+.conversation-main .conversation-item-timestamp {
+	float: none;
+	text-align: right;
+}
+
+.conversation-main .conversation-item-footer hr {
+	border: none;
+	height: 2px;
+	margin-bottom: 5px;
+}
+
+.conversation-main .conversation-item-footer .reaction-panel {
+	float: right;
+	opacity: 1;
 }
 
 .atmos-modal-bg {

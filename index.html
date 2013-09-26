@@ -45,7 +45,7 @@
 			</header>
 			<div class="contents-wrapper">
 				<div class="contents">
-					<div class="timeline timeline-row1">
+					<div class="timeline timeline-row1" id="tl_global_timeline-root">
 						<header class="timeline-header">
 							<span class="timeline-title">everyone's message</span>
 						</header>
@@ -54,7 +54,7 @@
 							</div> <!-- timeline-items -->
 						</div> <!-- timeline-itmes-wrapper -->
 					</div> <!-- timeline -->
-					<div class="timeline timeline-row2">
+					<div class="timeline timeline-row2" id="tl_talk_timeline-root">
 						<header class="timeline-header">
 							<span class="timeline-title">messages to you</span>
 						</header>
@@ -130,6 +130,89 @@
 				</article>
 			</div>
 		</script>
+		<script type="text/template" id="tmpl-conversation">
+			<div class="conversation" id="{{conversation-id}}-root" style="display:none;">
+				<header class="conversation-header">
+					<a href="#" class="back">&lt;- Back to Timeline</a>
+				</header>
+				<div class="conversation-items-wrapper">
+					<div class="conversation-items" id="{{conversation-id}}">
+					</div>
+				</div>
+			</div>
+		</script>
+		<script type="text/template" id="tmpl-conversation-item-wrapper">
+			<div class="conversation-item-wrapper new-item" style="display:none;">
+				<article class="conversation-item msg_{{conversation-item-message-id}}">
+					<header class="conversation-item-header">
+						<div class="conversation-item-timestamp">{{conversation-item-timestamp}}</div>
+						<div class="conversation-item-user">
+							<div class="conversation-item-avator"><img src="{{conversation-item-avator-img-url}}" /></div>
+							<div class="conversation-item-username">{{conversation-item-username}}</div>
+						</div>
+						<div style="float: clear;" ></div>
+					</header>
+					<div class="conversation-item-message">{{conversation-item-message}}</div>
+					<footer class="conversation-item-footer">
+						<input type="hidden" name="message-id" value="{{conversation-item-message-id}}" />
+						<input type="hidden" name="message-created-by" value="{{conversation-item-username}}" />
+						<input type="hidden" name="message-body" value="{{conversation-item-message}}" />
+						<input type="hidden" name="message-address-users" value="{{conversation-item-address-users}}" />
+						<input type="hidden" name="message-address-groups" value="{{conversation-item-address-groups}}" />
+						<div class="reaction-panel">
+							{{#reactions}}
+							<a href="#" class="reaction" reaction-type="{{reaction-type}}"><i class="{{reaction-icon-class}}"></i></a>
+							<a href="#" class="reaction-count" reaction-type="{{reaction-type}}">{{reaction-count}}</a>
+							{{/reactions}}
+						</div>
+						<div class="reply-panel">
+							<a href="#" class="reply" reply-type="quote"><i class="foundicon-quote"></i></a>
+							<a href="#" class="reply" reply-type="no-quote"><i class="foundicon-left-arrow"></i></a>
+							<a href="#"><i class="foundicon-people"></i></a>
+							{{#is-own-message}}
+							<a href="#" class="remove"><i class="foundicon-trash"></i></a>
+							{{/is-own-message}}
+						</div>
+					</footer>
+				</article>
+			</div>
+		</script>
+		<script type="text/template" id="tmpl-conversation-item-wrapper-main">
+			<div class="conversation-item-wrapper conversation-main new-item" style="display:none;">
+				<article class="conversation-item msg_{{conversation-item-message-id}}">
+					<header class="conversation-item-header">
+						<div class="conversation-item-user">
+							<div class="conversation-item-avator"><img src="{{conversation-item-avator-img-url}}" /></div>
+						</div>
+						<div class="conversation-item-username">{{conversation-item-username}}</div>
+					</header>
+					<div class="conversation-item-message">{{conversation-item-message}}</div>
+					<footer class="conversation-item-footer">
+						<div class="conversation-item-timestamp">{{conversation-item-timestamp}}</div>
+						<hr>
+						<input type="hidden" name="message-id" value="{{conversation-item-message-id}}" />
+						<input type="hidden" name="message-created-by" value="{{conversation-item-username}}" />
+						<input type="hidden" name="message-body" value="{{conversation-item-message}}" />
+						<input type="hidden" name="message-address-users" value="{{conversation-item-address-users}}" />
+						<input type="hidden" name="message-address-groups" value="{{conversation-item-address-groups}}" />
+						<div class="reaction-panel">
+							{{#reactions}}
+							<a href="#" class="reaction" reaction-type="{{reaction-type}}"><i class="{{reaction-icon-class}}"></i></a>
+							<a href="#" class="reaction-count" reaction-type="{{reaction-type}}">{{reaction-count}}</a>
+							{{/reactions}}
+						</div>
+						<div class="reply-panel">
+							<a href="#" class="reply" reply-type="quote"><i class="foundicon-quote"></i></a>
+							<a href="#" class="reply" reply-type="no-quote"><i class="foundicon-left-arrow"></i></a>
+							<a href="#"><i class="foundicon-people"></i></a>
+							{{#is-own-message}}
+							<a href="#" class="remove"><i class="foundicon-trash"></i></a>
+							{{/is-own-message}}
+						</div>
+					</footer>
+				</article>
+			</div>
+		</script>
 		<script type="text/template" id="tmpl-modal-dialog">
 			<div class="atmos-modal-bg" id="{{modal-dialog-id}}">
 				<div class="atmos-modal-wrapper">
@@ -176,6 +259,7 @@
 		<script src="js/myutil.js"></script>
 		<script src="js/atmos-search-condition.js"></script>
 		<script src="js/atmos-timeline.js"></script>
+		<script src="js/atmos-conversation.js"></script>
 		<script src="js/atmos-dialog.js"></script>
 		<script src="js/atmos-sockjs.js"></script>
 		<script src="js/atmos.js"></script>
