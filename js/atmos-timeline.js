@@ -3,6 +3,7 @@ var createAtmosTimeline = undefined;
 (function() {
 	function AtmosTimeline(id, name, description, url, searchCondition) {
 		this.id(id);
+		this.rootId(id + '-root');
 		this.name(name);
 		this.description(description);
 		this.url(url);
@@ -11,6 +12,7 @@ var createAtmosTimeline = undefined;
 	};
 	AtmosTimeline.prototype = {
 		id : id,
+		rootId : rootId,
 		name : name,
 		description : description,
 		url : url,
@@ -20,6 +22,8 @@ var createAtmosTimeline = undefined;
 		oldestMessageDateTime : oldestMessageDateTime,
 		createParameters : createParameters,
 		init : init,
+		show : show,
+		hide : hide,
 		readMore : readMore,
 		createTimelineItem : createTimelineItem,
 		updateTimelineItemReaction : updateTimelineItemReaction,
@@ -33,6 +37,13 @@ var createAtmosTimeline = undefined;
 			this._id = tlId;
 		}
 		return this._id;
+	}
+
+	function rootId(tlRootId) {
+		if (can(tlRootId) && tlRootId.length > 0) {
+			this._rootId = tlRootId;
+		}
+		return this._rootId;
 	}
 
 	function name(tlName) {
@@ -108,6 +119,7 @@ var createAtmosTimeline = undefined;
 		var data = this.createParameters();
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
+				var that = this;
 				var tlResult = JSON.parse(res);
 				if (tlResult['status'] === 'ok') {
 					if (tlResult['count'] > 0) {
@@ -115,7 +127,24 @@ var createAtmosTimeline = undefined;
 							var tlItem = tlResult['results'][itemIndex];
 							var tlItemHtml = this.createTimelineItem(tlItem);
 							$("#" + this.id()).prepend(tlItemHtml);
+							$("#" + this.id() + ' > div:first').on('click', function(e) {
+								e.stopPropagation();
+								var selfMessageId = $(this).find('input[name=message-id]').val();
+								var conversationId = that.id() + '_conversation';
+								var conversation = createAtmosConversation(conversationId, selfMessageId);
+								that._conversation = conversation;
+
+								var closeHandler = function(conversationPanel) {
+									var t = conversationPanel;
+									t.hide("normal", function() { t.close(); that._conversation = undefined; });
+									that.show("normal");
+								}
+								conversation.init($("#" + that.rootId()), closeHandler);
+								that.hide("normal");
+								conversation.show("normal");
+							});
 							$("#" + this.id() + ' > div:first a.reaction').on('click', function(e) {
+								e.stopPropagation();
 								var targetLink = e.currentTarget;
 								var base = $(targetLink).parent().parent();
 								var targetMessageId = $(base).find('input[name=message-id]').val();
@@ -124,6 +153,7 @@ var createAtmosTimeline = undefined;
 								atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody);
 							});
 							$("#" + this.id() + ' > div:first a.reply').on('click', function(e) {
+								e.stopPropagation();
 								var targetLink = e.currentTarget;
 								var base = $(targetLink).parent().parent();
 								var targetMessageId = $(base).find('input[name=message-id]').val();
@@ -144,6 +174,7 @@ var createAtmosTimeline = undefined;
 								atmos.showMessageSenderDialog(defaultMessage, targetMessageId, targetMessageBody, addresses);
 							});
 							$("#" + this.id() + ' > div:first a.remove').on('click', function(e) {
+								e.stopPropagation();
 								var targetLink = e.currentTarget;
 								var targetMessageId = $(targetLink).parent().parent().find('input[name=message-id]').val();
 								var targetMessageBody = $(targetLink).parent().parent().find('input[name=message-body]').val();
@@ -184,6 +215,7 @@ var createAtmosTimeline = undefined;
 							})();
 							delay += delayDelta;
 						}
+
 						this.setScrollbar();
 					}
 				}
@@ -202,6 +234,14 @@ var createAtmosTimeline = undefined;
 			data,
 			successCallback,
 			failureCallback);
+	}
+
+	function show(speed, callback) {
+		$("#" + this.rootId()).show(speed, callback);
+	}
+
+	function hide(speed, callback) {
+		$("#" + this.rootId()).hide(speed, callback);
 	}
 
 	function readMore() {
@@ -309,6 +349,10 @@ var createAtmosTimeline = undefined;
 			successCallback,
 			failureCallback
 		);
+
+		if (can(this._conversation)) {
+			this._conversation.refreshMessage(messageId);
+		}
 	}
 
 	function removeMessage(messageId) {
@@ -340,6 +384,9 @@ var createAtmosTimeline = undefined;
 				);
 			})();
 			delay += delayDelta;
+		}
+		if (can(this._conversation)) {
+			this._conversation.removeMessage(messageId);
 		}
 	}
 
