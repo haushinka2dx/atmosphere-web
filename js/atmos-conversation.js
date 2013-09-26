@@ -51,60 +51,44 @@ var createAtmosConversation = undefined;
 
 	function init(beforeConversationElement, backLinkHandler) {
 		var that = this;
-		var tmpl = Hogan.compile($("#tmpl-conversation").text());
-		var context = { "conversation-id": this.id() };
-		var generated = tmpl.render(context);
-		$(beforeConversationElement).after(generated);
+		$(beforeConversationElement).after(Hogan.compile($("#tmpl-conversation").text()).render({ "conversation-id": this.id() }));
 		$("#" + this.id() + "-root a.back").on('click', function(e) {
 			if (can(backLinkHandler)) {
 				backLinkHandler(that);
 			}
 		});
-		var method = 'GET';
-		var data = { "message_ids":this.mainMessageId() };
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var tlResult = JSON.parse(res);
-				if (tlResult['status'] === 'ok') {
-					if (tlResult['count'] === 1) {
-						var tlItem = tlResult['results'][0];
-						var tlItemHtml = this.createConversationItem(tlItem, true);
-						$("#" + this.id()).prepend(tlItemHtml);
+				if (tlResult['status'] === 'ok' && tlResult['count'] === 1) {
+					var tlItem = tlResult['results'][0];
+					$("#" + this.id()).prepend(this.createConversationItem(tlItem, true));
 
-						this.createHyperLink(this.id(), 'first');
+					this.createHyperLink(this.id(), 'first');
 
-						this.applyItemEvents($("#" + this.id() + ' > div:first'));
+					this.applyItemEvents($("#" + this.id() + ' > div:first'));
 
-						var newItems = $("#" + this.id() + " > div.new-item");
-						this.showNewItems(newItems);
+					this.showNewItems($("#" + this.id() + " > div.new-item"));
 
-						this.setScrollbar();
+					this.setScrollbar();
 
-						// past messages
-						var mainReplyToMessageId = tlItem['reply_to'];
-						if (can(mainReplyToMessageId) && mainReplyToMessageId.length > 0) {
-							this.createPastMessageProcessor(tlItem['reply_to'])();
-						}
-
-						// future messages
-						this.createFutureMessageProcessor(tlItem['_id'])();
+					// past messages
+					var mainReplyToMessageId = tlItem['reply_to'];
+					if (can(mainReplyToMessageId) && mainReplyToMessageId.length > 0) {
+						this.createPastMessageProcessor(tlItem['reply_to'])();
 					}
+
+					// future messages
+					this.createFutureMessageProcessor(tlItem['_id'])();
 				}
-			},
-			this
-		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				console.log(errorThrown);
 			},
 			this
 		);
 		atmos.sendRequest(
 			atmos.createUrl('/messages/search'),
-			method,
-			data,
-			successCallback,
-			failureCallback);
+			'GET',
+			{ "message_ids":this.mainMessageId() },
+			successCallback);
 	}
 
 	function show(speed, callback) {
@@ -125,34 +109,23 @@ var createAtmosConversation = undefined;
 			var pastSuccessCallback = new CallbackInfo(
 				function(res, textStatus, xhr) {
 					var tlResult = JSON.parse(res);
-					if (tlResult['status'] === 'ok') {
-						if (tlResult['count'] === 1) {
-							var tlItem = tlResult['results'][0];
-							var convItemHtml = this.createConversationItem(tlItem, false);
-							$("#" + this.id()).prepend(convItemHtml);
+					if (tlResult['status'] === 'ok' && tlResult['count'] === 1) {
+						var tlItem = tlResult['results'][0];
+						$("#" + this.id()).prepend(this.createConversationItem(tlItem, false));
 
-							this.createHyperLink(this.id(), 'first');
+						this.createHyperLink(this.id(), 'first');
 
-							this.applyItemEvents($("#" + this.id() + " > div:first"));
+						this.applyItemEvents($("#" + this.id() + " > div:first"));
 
-							// show
-							var newItems = $("#" + this.id() + " > div.new-item:first");
-							this.showNewItems(newItems);
+						// show
+						this.showNewItems($("#" + this.id() + " > div.new-item:first"));
 
-							//next message
-							var replyToMessageId = tlItem['reply_to'];
-							if (can(replyToMessageId) && replyToMessageId.length > 0) {
-								var processor = this.createPastMessageProcessor(replyToMessageId);
-								processor();
-							}
+						//next message
+						var replyToMessageId = tlItem['reply_to'];
+						if (can(replyToMessageId) && replyToMessageId.length > 0) {
+							this.createPastMessageProcessor(replyToMessageId)();
 						}
 					}
-				},
-				that
-			);
-			var pastFailureCallback = new CallbackInfo(
-				function(xhr, textStatus, errorThrown) {
-					console.log(errorThrown);
 				},
 				that
 			);
@@ -160,8 +133,7 @@ var createAtmosConversation = undefined;
 				atmos.createUrl('/messages/search'),
 				'GET',
 				{ "message_ids":targetMessageId },
-				pastSuccessCallback,
-				pastFailureCallback
+				pastSuccessCallback
 			);
 		}
 	}
@@ -172,31 +144,20 @@ var createAtmosConversation = undefined;
 			var futureSuccessCallback = new CallbackInfo(
 				function(res, textStatus, xhr) {
 					var tlResult = JSON.parse(res);
-					if (tlResult['status'] === 'ok') {
-						if (tlResult['count'] > 0) {
-							var tlItem = tlResult['results'][0];
-							var convItemHtml = this.createConversationItem(tlItem, false);
-							$("#" + this.id()).append(convItemHtml);
+					if (tlResult['status'] === 'ok' && tlResult['count'] > 0) {
+						var tlItem = tlResult['results'][0];
+						$("#" + this.id()).append(this.createConversationItem(tlItem, false));
 
-							this.createHyperLink(this.id(), 'last');
+						this.createHyperLink(this.id(), 'last');
 
-							this.applyItemEvents($("#" + this.id() + " > div:last"));
+						this.applyItemEvents($("#" + this.id() + " > div:last"));
 
-							// show
-							var newItems = $("#" + this.id() + " > div.new-item:last");
-							this.showNewItems(newItems);
+						// show
+						this.showNewItems($("#" + this.id() + " > div.new-item:last"));
 
-							//display next message
-							var processor = this.createFutureMessageProcessor(tlItem['_id']);
-							processor();
-						}
+						//display next message
+						this.createFutureMessageProcessor(tlItem['_id'])();
 					}
-				},
-				that
-			);
-			var futureFailureCallback = new CallbackInfo(
-				function(xhr, textStatus, errorThrown) {
-					console.log(errorThrown);
 				},
 				that
 			);
@@ -204,19 +165,12 @@ var createAtmosConversation = undefined;
 				atmos.createUrl('/messages/search'),
 				'GET',
 				{ "reply_to_message_id":targetMessageId },
-				futureSuccessCallback,
-				futureFailureCallback
+				futureSuccessCallback
 			);
 		}
 	}
 
 	function createConversationItem(msg, isMain) {
-		if (isMain) {
-			var tmpl = Hogan.compile($("#tmpl-conversation-item-wrapper-main").text());
-		}
-		else {
-			var tmpl = Hogan.compile($("#tmpl-conversation-item-wrapper").text());
-		}
 		var context = {};
 		context["is-own-message"] = atmos.currentUserId() === msg['created_by'];
 		context["conversation-item-message-id"] = msg['_id'];
@@ -246,32 +200,37 @@ var createAtmosConversation = undefined;
 			reactions.push(responseInfo);
 		});
 		context["reactions"] = reactions;
-		var generated = tmpl.render(context);
-		return generated;
+		if (isMain) {
+			var tmplId = 'tmpl-conversation-item-wrapper-main';
+		}
+		else {
+			var tmplId = 'tmpl-conversation-item-wrapper';
+		}
+		return Hogan.compile($('#' + tmplId).text()).render(context);
 	}
 
 	function createHyperLink(id, firstOrLast) {
-		var message = $("#" + id + ' > div:' + firstOrLast + ' .conversation-item-message');
-		message.html(autolink(message.html()));
+		var $message = $("#" + id + ' > div:' + firstOrLast + ' .conversation-item-message');
+		$message.html(autolink($message.html()));
 	}
 
-	function applyItemEvents(target) {
-		$(target).find('a.reaction').on('click', function(e) {
+	function applyItemEvents($target) {
+		$target.find('a.reaction').on('click', function(e) {
 			var targetLink = e.currentTarget;
-			var base = $(targetLink).parent().parent();
-			var targetMessageId = $(base).find('input[name=message-id]').val();
-			var targetMessageBody = $(base).find('input[name=message-body]').val();
+			var $base = $(targetLink).parent().parent();
+			var targetMessageId = $base.find('input[name=message-id]').val();
+			var targetMessageBody = $base.find('input[name=message-body]').val();
 			var reactionType = $(targetLink).attr('reaction-type');
 			atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody);
 		});
-		$(target).find('a.reply').on('click', function(e) {
+		$target.find('a.reply').on('click', function(e) {
 			var targetLink = e.currentTarget;
-			var base = $(targetLink).parent().parent();
-			var targetMessageId = $(base).find('input[name=message-id]').val();
-			var targetMessageBody = $(base).find('input[name=message-body]').val();
-			var addressUsers = $(base).find('input[name=message-address-users]').val();
-			var addressGroups = $(base).find('input[name=message-address-groups]').val();
-			var originalMsgCreatedBy = $(base).find('input[name=message-created-by]').val();
+			var $base = $(targetLink).parent().parent();
+			var targetMessageId = $base.find('input[name=message-id]').val();
+			var targetMessageBody = $base.find('input[name=message-body]').val();
+			var addressUsers = $base.find('input[name=message-address-users]').val();
+			var addressGroups = $base.find('input[name=message-address-groups]').val();
+			var originalMsgCreatedBy = $base.find('input[name=message-created-by]').val();
 
 			var addresses = [];
 			addresses = addresses.concat(addressUsers.split(' '), addressGroups.split(' '));
@@ -284,39 +243,40 @@ var createAtmosConversation = undefined;
 			}
 			atmos.showMessageSenderDialog(defaultMessage, targetMessageId, targetMessageBody, addresses);
 		});
-		$(target).find('a.remove').on('click', function(e) {
+		$target.find('a.remove').on('click', function(e) {
 			var targetLink = e.currentTarget;
-			var targetMessageId = $(targetLink).parent().parent().find('input[name=message-id]').val();
-			var targetMessageBody = $(targetLink).parent().parent().find('input[name=message-body]').val();
+			var $base = $(targetLink).parent().parent();
+			var targetMessageId = $base.find('input[name=message-id]').val();
+			var targetMessageBody = $base.find('input[name=message-body]').val();
 			atmos.showMessageRemoveDialog(targetMessageId, targetMessageBody);
 		});
 	}
 
-	function showNewItems(newItems) {
+	function showNewItems($newItems) {
 		var delay = 0;
 		var delayDelta = 60;
 		var animationClasses = 'magictime swashIn';
-		var newItemsLength = newItems.length;
+		var newItemsLength = $newItems.length;
 		for (var i = 0; i < newItemsLength; i++) {
-			var targetNewItem = newItems[i];
-			$(targetNewItem).removeClass('new-item');
+			var $targetNewItem = $($newItems[i]);
+			$targetNewItem.removeClass('new-item');
 			(function(){
 				var delayms = delay;
-				var item = targetNewItem;
+				var $item = $targetNewItem;
 				setTimeout(
 					function() {
-						$(item).addClass(animationClasses);
-						$(item).show();
+						$item.addClass(animationClasses);
+						$item.show();
 					},
 					delayms
 				);
 			})();
 			(function(){
 				var delayms = delay + 1500;
-				var item = targetNewItem;
+				var $item = $targetNewItem;
 				setTimeout(
 					function() {
-						$(item).removeClass(animationClasses);
+						$item.removeClass(animationClasses);
 					},
 					delayms
 				);
@@ -333,28 +293,28 @@ var createAtmosConversation = undefined;
 			var responderUserIds = responses[resType];
 			reactionPanels.find("a.reaction-count[reaction-type=" + resType + "]").text(responderUserIds.length);
 		});
-		var reactionTargetArticles = $("#" + this.id() + " article.msg_" + msgId);
+		var $reactionTargetArticles = $("#" + this.id() + " article.msg_" + msgId);
 		var delay = 0;
 		var delayDelta = 60;
 		var animationClasses = 'magictime tada';
-		for (var i=reactionTargetArticles.length - 1; i >= 0; i--) {
-			var targetItem = $(reactionTargetArticles[i]).parent();
+		for (var i=$reactionTargetArticles.length - 1; i >= 0; i--) {
+			var $targetItem = $($reactionTargetArticles[i]).parent();
 			(function(){
 				var delayms = delay;
-				var item = targetItem;
+				var $item = $targetItem;
 				setTimeout(
 					function() {
-						$(item).addClass(animationClasses);
+						$item.addClass(animationClasses);
 					},
 					delayms
 				);
 			})();
 			(function(){
 				var delayms = delay + 1500;
-				var item = targetItem;
+				var $item = $targetItem;
 				setTimeout(
 					function() {
-						$(item).removeClass(animationClasses);
+						$item.removeClass(animationClasses);
 					},
 					delayms
 				);
@@ -364,39 +324,27 @@ var createAtmosConversation = undefined;
 	}
 
 	function refreshMessage(messageId) {
-		var url = atmos.createUrl("/messages/search");
-		var method = 'GET';
-		var data = { "message_ids" : messageId };
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var tlResult = JSON.parse(res);
 				if (tlResult['status'] === 'ok') {
 					if (tlResult['count'] === 1) {
-						var tlItem = tlResult['results'][0];
-						this.updateConversationItemReaction(tlItem);
+						this.updateConversationItemReaction(tlResult['results'][0]);
 					}
 				}
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				console.log(errorThrown);
-			},
-			this
-		);
 		atmos.sendRequest(
-			url,
-			method,
-			data,
-			successCallback,
-			failureCallback
+			atmos.createUrl("/messages/search"),
+			'GET',
+			{ "message_ids" : messageId },
+			successCallback
 		);
 	}
 
 	function removeMessage(messageId) {
-		var msgId = messageId;
-		var removedMessageArticle = $("#" + this.id() + " article.msg_" + msgId);
+		var removedMessageArticle = $("#" + this.id() + " article.msg_" + messageId);
 		var delay = 0;
 		var delayDelta = 60;
 		var animationClasses = 'magictime holeOut';
@@ -423,7 +371,7 @@ var createAtmosConversation = undefined;
 				);
 			})();
 			delay += delayDelta;
-r	}
+		}
 	}
 
 	function setScrollbar() {
