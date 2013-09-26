@@ -723,7 +723,9 @@ var atmos = null;
 			if (can(failureCallback)) {
 				failureCallback.fire(xhr, textStatus, errorThrown);
 			}
-	        //window.console.debug(errorThrown);
+			else {
+				console.log(errorThrown);
+			}
 	    })
 	    .always(function(xhr, textStatus, errorThrown){
 	        //window.console.debug(textStatus);
