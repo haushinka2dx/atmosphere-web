@@ -224,6 +224,7 @@ html, body {
 
 .timeline-item-message,
 .conversation-item-message {
+	white-space: pre-wrap;
 	word-wrap: break-word;
 	margin-top: 2px;
 	margin-bottom: 2px;
