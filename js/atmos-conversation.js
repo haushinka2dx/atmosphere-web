@@ -212,9 +212,6 @@ var createAtmosConversation = undefined;
 	function createHyperLink(id, firstOrLast) {
 		var $message = $("#" + id + ' > div:' + firstOrLast + ' .conversation-item-message');
 		$message.html(autolink($message.html()));
-		$message.find('a').on('click', function(e) {
-			e.stopPropagation();
-		});
 	}
 
 	function applyItemEvents($target) {
