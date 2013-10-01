@@ -241,7 +241,7 @@ var createAtmosConversation = undefined;
 			if (replyType === 'quote') {
 				defaultMessage = targetMessageBody;
 			}
-			atmos.showMessageSenderDialog(defaultMessage, targetMessageId, targetMessageBody, addresses);
+			atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses);
 		});
 		$target.find('a.remove').on('click', function(e) {
 			var targetLink = e.currentTarget;

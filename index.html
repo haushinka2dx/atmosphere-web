@@ -290,6 +290,23 @@
 				</div>
 			</div>
 		</script>
+		<script type="text/template" id="tmpl-sender-panel">
+			<div class="sender-panel" id="{{sender-panel-id}}">
+				<header class="sender-panel-header">
+					<a href="#" class="sender-panel-close-button"><i class="foundicon-remove"></i></a>
+					<p class="sender-panel-title">New Message</p>
+					<p class="sender-panel-original-message"></p>
+				</header>
+				<div class="sender-panel-contents">
+					<textarea placeholder="Please input message." name="sender-panel-message"></textarea>
+					<input type="hidden" name="sender-panel-reply-to-msg-id" value="" />
+				</div>
+				<footer class="sender-panel-footer">
+					<button data-hover="OK" class="ok-button foundicon-ok" name="ok"><span>OK</span></button>
+					<label>stay open<input type="checkbox" name="sender-panel-stay-open" value="true" /></label>
+				</footer>
+			</div>
+		</script>
 
 		<!-- atmospheres -->
 		<script src="js/callback.js"></script>
@@ -297,13 +314,14 @@
 		<script src="js/atmos-search-condition.js"></script>
 		<script src="js/atmos-timeline.js"></script>
 		<script src="js/atmos-conversation.js"></script>
+		<script src="js/atmos-sender-panel.js"></script>
 		<script src="js/atmos-dialog.js"></script>
 		<script src="js/atmos-sockjs.js"></script>
 		<script src="js/atmos.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function() {
 
-				$('#menuItemSendMessage').on('click', function(e) { atmos.showMessageSenderDialog(); });
+				$('#menuItemSendMessage').on('click', function(e) { atmos.showMessageSenderPanel(); });
 				$('#menuItemSendPrivate').on('click', function(e) { atmos.showPrivateMessageSenderDialog(); });
 				$('#menuItemChangeAvator').on('click', function(e) { atmos.showAvatorChangeDialog(); });
 				$('#menuItemChangePassword').on('click', function(e) { atmos.showPasswordChangeDialog(); });
