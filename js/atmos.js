@@ -901,45 +901,45 @@ var atmos = null;
 
 	function applyAutoComplete($target) {
 		var that = this;
-		$target.textcomplete({
-			// user id strategy
-			user: {
-				//match: /(^@|[^@.\-_a-zA-Z0-9]@)([a-zA-Z0-9.\-_]*)$/,
-				match: /(^|\s)@(\w*)$/,
-				search: function (term, callback) {
-					var regexp = new RegExp('^' + term);
-					callback($.map(that.allUserIds(), function(userId) {
-						return regexp.test(userId) ? userId : null;
-					}));
+		if (!can(this._autoCompleteConfig)) {
+			this._autoCompleteConfig = {
+				// user id strategy
+				user: {
+					match: /(^|\s)@(\w*)$/,
+					search: function (term, callback) {
+						var regexp = new RegExp('^' + term);
+						callback($.map(that.allUserIds(), function(userId) {
+							return regexp.test(userId) ? userId : null;
+						}));
+					},
+					template: function(value) {
+						return '<img class="avator-mini" src="' + that.createUrl("/user/avator") + '?user_id=' + value + '" />' + value;
+					},
+					replace: function (value) {
+						return '$1@' + value + ' ';
+					},
+					cache: false
 				},
-				template: function(value) {
-					return '<img class="avator-mini" src="' + that.createUrl("/user/avator") + '?user_id=' + value + '" />' + value;
-				},
-				replace: function (value) {
-					return '$1@' + value + ' ';
-				},
-				cache: false
-			},
 
-			// user id strategy
-			group: {
-				//match: /(^@@|[^@.\-_a-zA-Z0-9]@@)([a-zA-Z0-9.\-_]*)$/,
-				match: /(^|\s)\$(\w*)$/,
-				search: function (term, callback) {
-					var regexp = new RegExp('^' + term);
-					callback($.map(that.allGroupIds(), function(groupId) {
-						return regexp.test(groupId) ? groupId : null;
-					}));
-				},
-				template: function(value) {
-					return value;
-				},
-				replace: function (value) {
-					return '$1$' + value + ' ';
-				},
-				cache: false
-			}}
-		);
+				// group id strategy
+				group: {
+					match: /(^|\s)\$(\w*)$/,
+					search: function (term, callback) {
+						var regexp = new RegExp('^' + term);
+						callback($.map(that.allGroupIds(), function(groupId) {
+							return regexp.test(groupId) ? groupId : null;
+						}));
+					},
+					template: function(value) {
+						return value;
+					},
+					replace: function (value) {
+						return '$1$' + value + ' ';
+					},
+					cache: false
+				}}
+		};
+		$target.textcomplete(this._autoCompleteConfig);
 	}
 
 	atmos = new Atmos();
