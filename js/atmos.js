@@ -33,6 +33,7 @@ var atmos = null;
 		showMessageRemoveDialog : showMessageRemoveDialog,
 		showPrivateMessageSenderDialog : showPrivateMessageSenderDialog,
 		showResponseDialog : showResponseDialog,
+		showMessageSenderPanel : showMessageSenderPanel,
 		createTimelineItem : createTimelineItem,
 		init : init,
 		initSockJS : initSockJS,
@@ -43,6 +44,7 @@ var atmos = null;
 		allGroupIds : allGroupIds,
 		clearCurrentInfo : clearCurrentInfo,
 		perfectScrollbarSetting : { wheelSpeed: 70, minScrollbarLength: 100 },
+		applyAutoComplete : applyAutoComplete,
 	}
 
 	function atmosSessionId(id) {
@@ -673,6 +675,16 @@ var atmos = null;
 		dialog.show();
 	}
 
+	function showMessageSenderPanel(defaultMessage, replyToMsgId, replyToMessage, addresses) {
+		var that = this;
+		if (!can(this._senderPanel)) {
+			var id = 'sender-panel-' + uuid()
+			this._senderPanel = createAtmosSenderPanel(id, $("div.contents-wrapper:first"), function() { that._senderPanel = undefined; });
+		}
+		this._senderPanel.setVariables(defaultMessage, replyToMsgId, replyToMessage, addresses);
+		this._senderPanel.show("normal");
+	}
+
 	function sendRequest(url, method, dataJSON, successCallback, failureCallback) {
 		var that = this;
 
@@ -885,6 +897,49 @@ var atmos = null;
 		this._timelines = [];
 		this._allUserIds = [];
 		this._allGroupIds = [];
+	}
+
+	function applyAutoComplete($target) {
+		var that = this;
+		if (!can(this._autoCompleteConfig)) {
+			this._autoCompleteConfig = {
+				// user id strategy
+				user: {
+					match: /(^|\s)@(\w*)$/,
+					search: function (term, callback) {
+						var regexp = new RegExp('^' + term);
+						callback($.map(that.allUserIds(), function(userId) {
+							return regexp.test(userId) ? userId : null;
+						}));
+					},
+					template: function(value) {
+						return '<img class="avator-mini" src="' + that.createUrl("/user/avator") + '?user_id=' + value + '" />' + value;
+					},
+					replace: function (value) {
+						return '$1@' + value + ' ';
+					},
+					cache: false
+				},
+
+				// group id strategy
+				group: {
+					match: /(^|\s)\$(\w*)$/,
+					search: function (term, callback) {
+						var regexp = new RegExp('^' + term);
+						callback($.map(that.allGroupIds(), function(groupId) {
+							return regexp.test(groupId) ? groupId : null;
+						}));
+					},
+					template: function(value) {
+						return value;
+					},
+					replace: function (value) {
+						return '$1$' + value + ' ';
+					},
+					cache: false
+				}}
+		};
+		$target.textcomplete(this._autoCompleteConfig);
 	}
 
 	atmos = new Atmos();

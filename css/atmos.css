@@ -124,6 +124,51 @@ html, body {
     font-family: "GeneralFoundicons";
 }
 
+.sender-panel {
+	width: 288px;
+	height: 100%;
+	background-color: yellow;
+	margin-left: 56px;
+	padding: 6px;
+}
+
+.sender-panel textarea {
+	width: 280px;
+	height: 100px;
+	padding: 4px;
+}
+
+.sender-panel-close-button {
+	float: right;
+}
+
+.sender-panel-avator {
+	width: 48px;
+	margin-left: 4px;
+}
+
+.sender-panel-avator > img {
+	max-width: 48px;
+	max-height: 48px;
+}
+
+.sender-panel-footer {
+	margin-top: 0.3em;
+	text-align: right;
+	line-height: 1.5em;
+}
+
+.sender-panel-footer label {
+	float: right;
+	width: 80%;
+}
+
+.sender-panel-footer label input {
+	float: none;
+	width: 1em;
+	margin-left: 3px;
+}
+
 .contents-wrapper {
 	position: fixed;
 	left: 56px;
@@ -359,7 +404,9 @@ html, body {
 }
 
 .atmos-modal-body input,
-.atmos-modal-body textarea {
+.atmos-modal-body textarea,
+.sender-panel input,
+.sender-panel textarea {
 	border-radius: 2px;
 	box-shadow: none;
 	-webkit-box-shadow: none;
@@ -390,7 +437,8 @@ html, body {
 	text-align: center;
 }
 
-.atmos-modal-footer button {
+.atmos-modal-footer button,
+.sender-panel button {
 	border: none;
 	font-family: inherit;
 	font-size: inherit;
@@ -421,7 +469,8 @@ html, body {
 	backface-visibility: hidden;
 }
 
-.atmos-modal-footer button:after {
+.atmos-modal-footer button:after,
+.sender-panel button:after {
 	content: '';
 	position: absolute;
 	z-index: -1;
@@ -430,11 +479,13 @@ html, body {
 	transition: all 0.3s;
 }
 
-.atmos-modal-footer button:active {
+.atmos-modal-footer button:active,
+.sender-panel button:active {
 	top: 2px;
 }
 
-.atmos-modal-footer button span {
+.atmos-modal-footer button span,
+.sender-panel button span {
 	display: inline-block;
 	width: 100%;
 	height: 100%;
@@ -446,7 +497,8 @@ html, body {
 	backface-visibility: hidden;
 }
 
-.atmos-modal-footer button:before {
+.atmos-modal-footer button:before,
+.sender-panel button:before {
 	position: absolute;
 	height: 100%;
 	width: 100%;
@@ -457,26 +509,32 @@ html, body {
 	transition: all 0.3s;
 }
 
-.atmos-modal-footer button:active:before {
+.atmos-modal-footer button:active:before,
+.sender-panel button:active:before {
 	color: #703b87;
 }
 
 /* Button 5b */
 .atmos-modal-footer button:hover span,
-.atmos-modal-footer button:focus span {
+.atmos-modal-footer button:focus span,
+.sender-panel button:hover span,
+.sender-panel button:focus span {
 	-webkit-transform: translateX(200%);
 	-moz-transform: translateX(200%);
 	-ms-transform: translateX(200%);
 	transform: translateX(200%);
 }
 
-.atmos-modal-footer button:before {
+.atmos-modal-footer button:before,
+.sender-panel button:before {
 	left: -100%;
 	top: 0;
 }
 
 .atmos-modal-footer button:hover:before,
-.atmos-modal-footer button:focus:before {
+.atmos-modal-footer button:focus:before,
+.sender-panel button:hover:before,
+.sender-panel button:focus:before {
 	left: 0;
 	padding-top: 5px;
 }

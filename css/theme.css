@@ -6,7 +6,8 @@
 	background-color: rgba(0,0,0,0.7);
 }
 
-.atmos-modal {
+.atmos-modal,
+.sender-panel {
 	color: #fff;
 	background-color: #47a3da;
 }
@@ -15,43 +16,56 @@
 	background-color: #3692c9;
 }
 
-.atmos-modal-header a {
+.atmos-modal-header a,
+.sender-panel-header a {
 	color: #58b4eb;
 }
 
-.atmos-modal-body ul {
+.atmos-modal-body ul,
+.sender-panel-contents ul {
 	list-style: none;
 }
 
 .atmos-modal-body input,
-.atmos-modal-body textarea {
+.atmos-modal-body textarea,
+.sender-panel input,
+.sender-panel textarea {
 	background-color: #69c5fc;
 	color: #fff;
 }
 
 .atmos-modal-body input::-webkit-input-placeholder,
-.atmos-modal-body textarea::-webkit-input-placeholder {
+.atmos-modal-body textarea::-webkit-input-placeholder,
+.sender-panel input::-webkit-input-placeholder,
+.sender-panel textarea::-webkit-input-placeholder {
 	color: #3692c9;
 }
 
 .atmos-modal-body input::-moz-placeholder,
-.atmos-modal-body textarea::-moz-placeholder {
+.atmos-modal-body textarea::-moz-placeholder,
+.sender-panel input::-moz-placeholder,
+.sender-panel textarea::-moz-placeholder {
 	color: #3692c9;
 }
 
-.atmos-modal-footer button {
+.atmos-modal-footer button,
+.sender-panel button {
 	color: #fff;
 	background-color: #3692c9;
 }
 
 .atmos-modal-footer button:active,
-.atmos-modal-footer button:focus {
+.atmos-modal-footer button:focus,
+.sender-panel button:active,
+.sender-panel button:focus {
 	color: #fff;
 	background-color: #69c5fc;
 }
 
 .atmos-modal-footer button:active:before,
-.atmos-modal-footer button:focus:before {
+.atmos-modal-footer button:focus:before,
+.sender-panel button:active:before,
+.sender-panel button:focus:before {
 	color: #fff;
 }
 
