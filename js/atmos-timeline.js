@@ -178,7 +178,7 @@ var createAtmosTimeline = undefined;
 								if (replyType === 'quote') {
 									defaultMessage = targetMessageBody;
 								}
-								atmos.showMessageSenderDialog(defaultMessage, targetMessageId, targetMessageBody, addresses);
+								atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses);
 							});
 							$("#" + this.id() + ' > div:first a.remove').on('click', function(e) {
 								e.stopPropagation();
