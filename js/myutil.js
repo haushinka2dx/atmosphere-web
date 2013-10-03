@@ -2,6 +2,10 @@ function can(v) {
 	return typeof(v) != 'undefined' && v != null;
 }
 
+function canl(v) {
+	return can(v) && can.length > 0;
+}
+
 function escapeHtml(src) {
 	return src.replace(/&/g, '&amp;')
 		.replace(/>/g, '&gt;')

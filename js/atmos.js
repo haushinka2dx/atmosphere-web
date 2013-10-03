@@ -48,14 +48,14 @@ var atmos = null;
 	}
 
 	function atmosSessionId(id) {
-		if (can(id) && id.length > 0) {
+		if (canl(id)) {
 			this._atmosAuthSessionId = id;
 		}
 		return this._atmosAuthSessionId;
 	}
 
 	function currentUserId(userId) {
-		if (can(userId) && userId.length > 0) {
+		if (canl(userId)) {
 			this._atmosCurrentUserId = userId;
 		}
 		return this._atmosCurrentUserId;
