@@ -84,17 +84,7 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				console.log(errorThrown);
-			},
-			this
-		);
+		var failureCallback = createDefaultFailureCallback(this, callback);
 		this.sendRequest(this.createUrl('/auth/login'), 'POST', { user_id: id, password: pw }, successCallback, failureCallback);
 	}
 
@@ -120,17 +110,7 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				console.log(errorThrown);
-			},
-			this
-		);
+		var failureCallback = createDefaultFailureCallback(this, callback);
 		this.sendRequest(this.createUrl('/auth/whoami'), 'GET', {}, successCallback, failureCallback);
 	}
 
@@ -213,17 +193,7 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				console.log(errorThrown);
-			},
-			this
-		);
+		var failureCallback = createDefaultFailureCallback(this, callback);
 		this.sendRequest(this.createUrl('/user/list'), 'GET', {}, successCallback, failureCallback);
 	}
 
@@ -245,17 +215,7 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				console.log(errorThrown);
-			},
-			this
-		);
+		var failureCallback = createDefaultFailureCallback(this, callback);
 		this.sendRequest(this.createUrl('/group/list'), 'GET', {}, successCallback, failureCallback);
 	}
 
@@ -282,17 +242,7 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				$.jGrowl('Message was not sent. ' + errorThrown);
-			},
-			this
-		);
+		var failureCallback = createDefaultFailureCallback(this, callback, 'Message was not sent.');
 		this.sendRequest(this.createUrl('/messages/send'), 'POST', { message : message, message_type : messageType, reply_to : replyToMessageId }, successCallback, failureCallback);
 	}
 
@@ -319,17 +269,7 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				$.jGrowl('Message was not removed. ' + errorThrown);
-			},
-			this
-		);
+		var failureCallback = createDefaultFailureCallback(this, callback, 'Message was not removed.');
 		this.sendRequest(this.createUrl('/messages/destroy'), 'POST', { _id: targetMessageId }, successCallback, failureCallback);
 	}
 
@@ -356,17 +296,7 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				$.jGrowl('Private Message was not sent. ' + errorThrown);
-			},
-			this
-		);
+		var failureCallback = createDefaultFailureCallback(this, callback, 'Private Message was not sent.');
 		this.sendRequest(this.createUrl('/private/send'), 'POST', { to_user_id : addressUserId, message : message }, successCallback, failureCallback);
 	}
 
@@ -393,17 +323,7 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				$.jGrowl('Responding to Message was failed. ' + errorThrown);
-			},
-			this
-		);
+		var failureCallback = createDefaultFailureCallback(this, callback, 'Responding to Message was failed.');
 		this.sendRequest(this.createUrl('/messages/response'), 'POST', { target_id : targetMessageId, action : reactionType }, successCallback, failureCallback);
 	}
 
@@ -854,6 +774,27 @@ var atmos = null;
 				}}
 		};
 		$target.textcomplete(this._autoCompleteConfig);
+	}
+
+	function createDefaultFailureCallback(caller, callback, hoverMessage) {
+		return (function() {
+			var cb = callback;
+			var cl = caller;
+			return new CallbackInfo(
+				function(xhr, textStatus, errorThrown) {
+					if (can(cb)) {
+						var callbackResult = {};
+						callbackResult['status'] = 'error';
+						cb.fire(callbackResult);
+					}
+					console.log(errorThrown);
+					if (canl(hoverMessage)) {
+						$.jGrowl(hoverMessage);
+					}
+				},
+				cl
+			);
+		})();
 	}
 
 	atmos = new Atmos();
