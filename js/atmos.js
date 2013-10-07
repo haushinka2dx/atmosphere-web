@@ -160,18 +160,7 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callbackResult['message'] = errorThrown;
-					callback.fire(callbackResult);
-				}
-				console.log(errorThrown);
-			},
-			this
-		);
+		var failureCallback = createDefaultFailureCallback(this, callback, 'Changing password was failed.');
 		this.sendRequest(this.createUrl('/user/change_password'), 'POST', { current_user_password : currentPassword, new_user_password : newPassword }, successCallback, failureCallback);
 	}
 
