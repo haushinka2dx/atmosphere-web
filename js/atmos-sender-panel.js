@@ -33,7 +33,7 @@ var createAtmosSenderPanel = undefined;
 	}
 
 	function id(panelId) {
-		if (can(panelId) && panelId.length > 0) {
+		if (canl(panelId)) {
 			this._id = panelId;
 		}
 		return this._id;
@@ -94,7 +94,7 @@ var createAtmosSenderPanel = undefined;
 		$(this.selector(":input[name=sender-panel-reply-to-msg-id]")).val('').val(replyToMsgId);
 		$(this.selector(".sender-panel-header .sender-panel-original-message")).text('').text(replyToMessage);
 
-		if (can(replyToMsgId) && replyToMsgId.length > 0) {
+		if (canl(replyToMsgId)) {
 			$(this.selector(".sender-panel-header .sender-panel-title")).text('Reply Message');
 		}
 		else {
