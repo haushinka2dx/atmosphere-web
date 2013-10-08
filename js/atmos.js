@@ -701,14 +701,14 @@ var atmos = null;
 
 	function allUserIds(ids) {
 		if (can(ids)) {
-			this._allUserIds = ids.concat();
+			this._allUserIds = $.extend(true, [], ids);
 		}
 		return this._allUserIds;
 	}
 
 	function allGroupIds(ids) {
 		if (can(ids)) {
-			this._allGroupIds = ids.concat();
+			this._allGroupIds = $.extend(true, [], ids);
 		}
 		return this._allGroupIds;
 	}
