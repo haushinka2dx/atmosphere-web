@@ -302,7 +302,7 @@ var atmos = null;
 					$.jGrowl('Responding to Message was succeeded.');
 				}
 				else {
-					$.jGrowl('Responding to Message was failed. ' + errorThrown);
+					$.jGrowl('Responding to Message was failed.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -767,21 +767,19 @@ var atmos = null;
 
 	function createDefaultFailureCallback(caller, callback, hoverMessage) {
 		return (function() {
-			var cb = callback;
-			var cl = caller;
 			return new CallbackInfo(
 				function(xhr, textStatus, errorThrown) {
-					if (can(cb)) {
+					if (can(callback)) {
 						var callbackResult = {};
 						callbackResult['status'] = 'error';
-						cb.fire(callbackResult);
+						callback.fire(callbackResult);
 					}
 					console.log(errorThrown);
 					if (canl(hoverMessage)) {
 						$.jGrowl(hoverMessage);
 					}
 				},
-				cl
+				caller
 			);
 		})();
 	}
