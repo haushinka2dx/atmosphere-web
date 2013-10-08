@@ -21,8 +21,9 @@ describe('canl', function(){
 		expect(canl({})).toBe(false);
 	});
 
-	it('if not undefined, not null, and has length more than 0 return true', function(){
+	it('if not undefined, not null, and has length more than 0, or function object return true', function(){
 		expect(canl(' ')).toBe(true);
 		expect(canl(['a','e'])).toBe(true);
+		expect(canl(function() { return 1; })).toBe(true);
 	});
 });

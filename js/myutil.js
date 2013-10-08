@@ -3,7 +3,7 @@ function can(v) {
 }
 
 function canl(v) {
-	return can(v) && v.length > 0;
+	return can(v) && (typeof(v) === 'function' || v.length > 0);
 }
 
 function escapeHtml(src) {
