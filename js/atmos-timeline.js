@@ -33,42 +33,42 @@ var createAtmosTimeline = undefined;
 	}
 
 	function id(tlId) {
-		if (can(tlId) && tlId.length > 0) {
+		if (canl(tlId)) {
 			this._id = tlId;
 		}
 		return this._id;
 	}
 
 	function rootId(tlRootId) {
-		if (can(tlRootId) && tlRootId.length > 0) {
+		if (canl(tlRootId)) {
 			this._rootId = tlRootId;
 		}
 		return this._rootId;
 	}
 
 	function name(tlName) {
-		if (can(tlName) && tlName.length > 0) {
+		if (canl(tlName)) {
 			this._name = tlName;
 		}
 		return this._name;
 	}
 
 	function description(tlDescription) {
-		if (can(tlDescription) && tlDescription.length > 0) {
+		if (canl(tlDescription)) {
 			this._description = tlDescription;
 		}
 		return this._description;
 	}
 
 	function alreadyReadDateTime(tlAlreadyReadDateTime) {
-		if (can(tlAlreadyReadDateTime) && tlAlreadyReadDateTime.length > 0) {
+		if (canl(tlAlreadyReadDateTime)) {
 			this._alreadyReadDateTime = tlAlreadyReadDateTime;
 		}
 		return this._alreadyReadDateTime;
 	}
 
 	function latestMessageDateTime(tlLatestMessageDateTime) {
-		if (can(tlLatestMessageDateTime) && tlLatestMessageDateTime.length > 0) {
+		if (canl(tlLatestMessageDateTime)) {
 			if (!can(this._latestMessageDateTime)) {
 				this._latestMessageDateTime = tlLatestMessageDateTime;
 			}
@@ -80,7 +80,7 @@ var createAtmosTimeline = undefined;
 	}
 
 	function oldestMessageDateTime(tlOldestMessageDateTime) {
-		if (can(tlOldestMessageDateTime) && tlOldestMessageDateTime.length > 0) {
+		if (canl(tlOldestMessageDateTime)) {
 			if (!can(this._oldestMessageDateTime)) {
 				this._oldestMessageDateTime = tlOldestMessageDateTime;
 			}
@@ -92,7 +92,7 @@ var createAtmosTimeline = undefined;
 	}
 
 	function url(tlUrl) {
-		if (can(tlUrl) && tlUrl.length > 0) {
+		if (canl(tlUrl)) {
 			this._url = tlUrl;
 		}
 		return this._url;
