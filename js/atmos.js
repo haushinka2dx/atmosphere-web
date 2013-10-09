@@ -48,14 +48,14 @@ var atmos = null;
 	}
 
 	function atmosSessionId(id) {
-		if (can(id) && id.length > 0) {
+		if (canl(id)) {
 			this._atmosAuthSessionId = id;
 		}
 		return this._atmosAuthSessionId;
 	}
 
 	function currentUserId(userId) {
-		if (can(userId) && userId.length > 0) {
+		if (canl(userId)) {
 			this._atmosCurrentUserId = userId;
 		}
 		return this._atmosCurrentUserId;
@@ -69,12 +69,6 @@ var atmos = null;
 	// callback(when successed): { "status":"ok" }
 	// callback(when failed): { "status":"error" }
 	function login(id, pw, callback) {
-		var url = this.createUrl('/auth/login');
-		var method = 'POST';
-		var data = {
-			user_id : id,
-			password : pw
-		}
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var loginResult = JSON.parse(res);
@@ -90,32 +84,18 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				console.log(errorThrown);
-			},
-			this
-		);
-		this.sendRequest(url, method, data, successCallback, failureCallback);
+		var failureCallback = createDefaultFailureCallback(this, callback);
+		this.sendRequest(this.createUrl('/auth/login'), 'POST', { user_id: id, password: pw }, successCallback, failureCallback);
 	}
 
 	// determine who am I
 	// callback(when successed): { "status":"ok", "user_id":user id of current user }
 	// callback(when failed): { "status":"error" }
 	function whoami(callback) {
-		var url = this.createUrl('/auth/whoami');
-		var method = 'GET';
-		var data = {};
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var whoamiResult = JSON.parse(res);
 				var resultStatus = 'ng';
-				var reusltUserId = null;
 				if (whoamiResult['status'] === 'ok') {
 					resultStatus = 'ok';
 					resultUserId = whoamiResult['user_id'];
@@ -130,27 +110,14 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				console.log(errorThrown);
-			},
-			this
-		);
-		this.sendRequest(url, method, data, successCallback, failureCallback);
+		var failureCallback = createDefaultFailureCallback(this, callback);
+		this.sendRequest(this.createUrl('/auth/whoami'), 'GET', {}, successCallback, failureCallback);
 	}
 
 	// logout
 	// callback(when successed): { "status":"ok" }
 	// callback(when failed): { "status":"error" }
 	function logout() {
-		var url = this.createUrl('/auth/logout');
-		var method = 'GET';
-		var data = {};
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var logoutResult = JSON.parse(res);
@@ -167,24 +134,18 @@ var atmos = null;
 			},
 			this
 		);
-		this.sendRequest(url, method, data, successCallback, failureCallback);
+		this.sendRequest(this.createUrl('/auth/logout'), 'GET', {}, successCallback, failureCallback);
 	}
 
 	// change password
 	// callback(when successed): { "status":"ok" }
 	// callback(when failed): { "status":"error" }
 	function changePassword(currentPassword, newPassword, callback) {
-		var url = this.createUrl('/user/change_password');
-		var method = 'POST';
-		var data = {
-			current_user_password : currentPassword,
-			new_user_password : newPassword,
-		}
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
-				var loginResult = JSON.parse(res);
+				var changedResult = JSON.parse(res);
 				var resultStatus = 'ng';
-				if (loginResult['status'] === 'ok') {
+				if (changedResult['status'] === 'ok') {
 					resultStatus = 'ok';
 					$.jGrowl('Changing password was done successfully.');
 				}
@@ -199,42 +160,19 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callbackResult['message'] = errorThrown;
-					console.dir(errorThrown);
-					callback.fire(callbackResult);
-				}
-				console.log(errorThrown);
-			},
-			this
-		);
-		this.sendRequest(url, method, data, successCallback, failureCallback);
+		var failureCallback = createDefaultFailureCallback(this, callback, 'Changing password was failed.');
+		this.sendRequest(this.createUrl('/user/change_password'), 'POST', { current_user_password : currentPassword, new_user_password : newPassword }, successCallback, failureCallback);
 	}
 
 	// obtain all user id(s)
-	// callback(when successed): { "status":"ok", "user_id":user id of current user }
-	// callback(when failed): { "status":"error" }
 	function loadAllUserIds(callback) {
-		var url = this.createUrl('/user/list');
-		var method = 'GET';
-		var data = {};
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var result = JSON.parse(res);
 				var resultStatus = 'ng';
 				if (result['status'] === 'ok') {
 					resultStatus = 'ok';
-					var userCount = result['count'];
-					var userIds = [];
-					for (var i=0; i<userCount; i++) {
-						var userInfo = result['results'][i];
-						userIds.push(userInfo['user_id']);
-					}
-					this.allUserIds(userIds);
+					this.allUserIds(result['results'].map(function(u) { return u['user_id']; }));
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -244,40 +182,19 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				console.log(errorThrown);
-			},
-			this
-		);
-		this.sendRequest(url, method, data, successCallback, failureCallback);
+		var failureCallback = createDefaultFailureCallback(this, callback);
+		this.sendRequest(this.createUrl('/user/list'), 'GET', {}, successCallback, failureCallback);
 	}
 
-	// obtain all user id(s)
-	// callback(when successed): { "status":"ok", "user_id":user id of current user }
-	// callback(when failed): { "status":"error" }
+	// obtain all group id(s)
 	function loadAllGroupIds(callback) {
-		var url = this.createUrl('/group/list');
-		var method = 'GET';
-		var data = {};
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var result = JSON.parse(res);
 				var resultStatus = 'ng';
 				if (result['status'] === 'ok') {
 					resultStatus = 'ok';
-					var groupCount = result['count'];
-					var groupIds = [];
-					for (var i=0; i<groupCount; i++) {
-						var groupInfo = result['results'][i];
-						groupIds.push(groupInfo['group_id']);
-					}
-					this.allGroupIds(groupIds);
+					this.allGroupIds(result['results'].map(function(g) { return g['group_id']; }));
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -287,31 +204,14 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				console.log(errorThrown);
-			},
-			this
-		);
-		this.sendRequest(url, method, data, successCallback, failureCallback);
+		var failureCallback = createDefaultFailureCallback(this, callback);
+		this.sendRequest(this.createUrl('/group/list'), 'GET', {}, successCallback, failureCallback);
 	}
 
 	// send message
 	// callback(when successed): { "status":"ok" }
 	// callback(when failed): { "status":"error" }
 	function sendMessage(message, messageType, replyToMessageId, callback) {
-		var url = this.createUrl('/messages/send');
-		var method = 'POST';
-		var data = {
-			message : message,
-			message_type : messageType,
-			reply_to : replyToMessageId
-		}
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var sendResult = JSON.parse(res);
@@ -331,29 +231,14 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				$.jGrowl('Message was not sent. ' + errorThrown);
-			},
-			this
-		);
-		this.sendRequest(url, method, data, successCallback, failureCallback);
+		var failureCallback = createDefaultFailureCallback(this, callback, 'Message was not sent.');
+		this.sendRequest(this.createUrl('/messages/send'), 'POST', { message : message, message_type : messageType, reply_to : replyToMessageId }, successCallback, failureCallback);
 	}
 
 	// remove  message
 	// callback(when successed): { "status":"ok" }
 	// callback(when failed): { "status":"error" }
 	function removeMessage(targetMessageId, callback) {
-		var url = this.createUrl('/messages/destroy');
-		var method = 'POST';
-		var data = {
-			_id : targetMessageId,
-		}
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var sendResult = JSON.parse(res);
@@ -373,30 +258,14 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				$.jGrowl('Message was not removed. ' + errorThrown);
-			},
-			this
-		);
-		this.sendRequest(url, method, data, successCallback, failureCallback);
+		var failureCallback = createDefaultFailureCallback(this, callback, 'Message was not removed.');
+		this.sendRequest(this.createUrl('/messages/destroy'), 'POST', { _id: targetMessageId }, successCallback, failureCallback);
 	}
 
 	// send message
 	// callback(when successed): { "status":"ok" }
 	// callback(when failed): { "status":"error" }
 	function sendPrivate(addressUserId, message, callback) {
-		var url = this.createUrl('/private/send');
-		var method = 'POST';
-		var data = {
-			to_user_id : addressUserId,
-			message : message,
-		}
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var sendResult = JSON.parse(res);
@@ -416,30 +285,14 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				$.jGrowl('Private Message was not sent. ' + errorThrown);
-			},
-			this
-		);
-		this.sendRequest(url, method, data, successCallback, failureCallback);
+		var failureCallback = createDefaultFailureCallback(this, callback, 'Private Message was not sent.');
+		this.sendRequest(this.createUrl('/private/send'), 'POST', { to_user_id : addressUserId, message : message }, successCallback, failureCallback);
 	}
 
 	// response to message
 	// callback(when successed): { "status":"ok" }
 	// callback(when failed): { "status":"error" }
 	function responseToMessage(targetMessageId, reactionType, callback) {
-		var url = this.createUrl('/messages/response');
-		var method = 'POST';
-		var data = {
-			target_id : targetMessageId,
-			action : reactionType
-		}
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var sendResult = JSON.parse(res);
@@ -449,7 +302,7 @@ var atmos = null;
 					$.jGrowl('Responding to Message was succeeded.');
 				}
 				else {
-					$.jGrowl('Responding to Message was failed. ' + errorThrown);
+					$.jGrowl('Responding to Message was failed.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -459,18 +312,8 @@ var atmos = null;
 			},
 			this
 		);
-		var failureCallback = new CallbackInfo(
-			function(xhr, textStatus, errorThrown) {
-				if (can(callback)) {
-					var callbackResult = {};
-					callbackResult['status'] = 'error';
-					callback.fire(callbackResult);
-				}
-				$.jGrowl('Responding to Message was failed. ' + errorThrown);
-			},
-			this
-		);
-		this.sendRequest(url, method, data, successCallback, failureCallback);
+		var failureCallback = createDefaultFailureCallback(this, callback, 'Responding to Message was failed.');
+		this.sendRequest(this.createUrl('/messages/response'), 'POST', { target_id : targetMessageId, action : reactionType }, successCallback, failureCallback);
 	}
 
 	function getTimelines() {
@@ -483,10 +326,9 @@ var atmos = null;
 	}
 
 	function showLoginDialog(message, defaultUserId) {
-		var dialogMsg = can(message) ? message : '';
-		var dialog = createAtmosDialog(
+		createAtmosDialog(
 			'Atmosphere',
-			[ dialogMsg ],
+			[ can(message) ? message : ''],
 			[ {"input-type":"text", "input-place-holder":"user id", "input-name":"user_id", "input-value":defaultUserId },
 			  {"input-type":"password", "input-place-holder":"password", "input-name":"password", "input-value":"" } ],
 			true,
@@ -508,12 +350,11 @@ var atmos = null;
 					atmos.login(userId, password, postLogin);
 				}
 			}
-		);
-		dialog.show();
+		).show();
 	}
 
 	function showLogoutDialog(message, defaultUserId) {
-		var dialog = createAtmosDialog(
+		createAtmosDialog(
 			'Logout?',
 			[ ],
 			[ ],
@@ -523,15 +364,13 @@ var atmos = null;
 					atmos.logout();
 				}
 			}
-		);
-		dialog.show();
+		).show();
 	}
 
 	function showPasswordChangeDialog(message) {
-		var dialogMsg = can(message) ? message : '';
-		var dialog = createAtmosDialog(
+		createAtmosDialog(
 			'Change password',
-			[ dialogMsg ],
+			[ can(message) ? message : '' ],
 			[ {"input-type":"password", "input-place-holder":"current password", "input-name":"current-password", "input-value":"" },
 			  {"input-type":"password", "input-place-holder":"New password", "input-name":"new-password", "input-value":"" } ],
 			true,
@@ -552,8 +391,7 @@ var atmos = null;
 					atmos.changePassword(currentPassword, newPassword, postChange);
 				}
 			}
-		);
-		dialog.show();
+		).show();
 	}
 
 	function showAvatorChangeDialog() {
@@ -577,7 +415,7 @@ var atmos = null;
 					}
 				}
 			}
-		);
+		)
 		dialog.show();
 	}
 
@@ -598,7 +436,7 @@ var atmos = null;
 				}
 			}
 		}
-		var dialog = createAtmosDialog(
+		createAtmosDialog(
 			'Send Message',
 			msgs,
 			[ {"is-textarea":true, "input-place-holder":"message", "input-name":"message", "input-id":"inputted-message", "input-value":defaultMessage } ],
@@ -610,8 +448,7 @@ var atmos = null;
 					atmos.sendMessage(message, messageType, replyToMessageId);
 				}
 			}
-		);
-		dialog.show();
+		).show();
 	}
 
 	function showMessageRemoveDialog(targetMessageId, targetMessageBody) {
@@ -619,7 +456,7 @@ var atmos = null;
 		msgs.push('Are you sure to remove message?');
 		msgs.push('');
 		msgs.push(targetMessageBody);
-		var dialog = createAtmosDialog(
+		createAtmosDialog(
 			'Remove Message',
 			msgs,
 			[ ],
@@ -629,8 +466,7 @@ var atmos = null;
 					atmos.removeMessage(targetMessageId);
 				}
 			}
-		);
-		dialog.show();
+		).show();
 	}
 
 	function showPrivateMessageSenderDialog(addressUserId, defaultMessage, replyToMessageId, originalMessageBody) {
@@ -640,7 +476,7 @@ var atmos = null;
 			msgs.push('');
 			msgs.push(originalMessageBody);
 		}
-		var dialog = createAtmosDialog(
+		createAtmosDialog(
 			'Send Private',
 			msgs,
 			[ {"is-textarea":false, "input-type":"text", "input-place-holder":"user id of destination", "input-name":"address-user-id", "input-id":"inputted-address-user-id", "input-value":addressUserId },
@@ -653,12 +489,11 @@ var atmos = null;
 					atmos.sendPrivate(dstUserId, message);
 				}
 			}
-		);
-		dialog.show();
+		).show();
 	}
 
 	function showResponseDialog(targetMessageId, reactionType, messageBody) {
-		var dialog = createAtmosDialog(
+		createAtmosDialog(
 			'Response',
 			[ 'Are you sure to response "' + reactionType + '" ?',
 			  '',
@@ -670,8 +505,7 @@ var atmos = null;
 					atmos.responseToMessage(targetMessageId, reactionType);
 				}
 			}
-		);
-		dialog.show();
+		).show();
 	}
 
 	function showMessageSenderPanel(defaultMessage, replyToMsgId, replyToMessage, addresses) {
@@ -700,8 +534,7 @@ var atmos = null;
 				if (query.length > 0) {
 					query += '&';
 				}
-				var pValue = dataJSON[pName];
-				query += pName + '=' + pValue;
+				query += pName + '=' + dataJSON[pName];
 			});
 			reqData = query;
 		}
@@ -805,11 +638,7 @@ var atmos = null;
 
 	function initSockJS() {
 		this._sockjs.end();
-		var cb = new CallbackInfo(
-			this.processServerNotification,
-			this
-		);
-		this._sockjs.addNotificationReceiver(cb);
+		this._sockjs.addNotificationReceiver(new CallbackInfo(this.processServerNotification, this));
 		this._sockjs.start(this.atmosSessionId());
 	}
 
@@ -855,20 +684,14 @@ var atmos = null;
 
 	function allUserIds(ids) {
 		if (can(ids)) {
-			this._allUserIds = [];
-			for (var i=0; i<ids.length; i++) {
-				this._allUserIds.push(ids[i]);
-			}
+			this._allUserIds = $.extend(true, [], ids);
 		}
 		return this._allUserIds;
 	}
 
 	function allGroupIds(ids) {
 		if (can(ids)) {
-			this._allGroupIds = [];
-			for (var i=0; i<ids.length; i++) {
-				this._allGroupIds.push(ids[i]);
-			}
+			this._allGroupIds = $.extend(true, [], ids);
 		}
 		return this._allGroupIds;
 	}
@@ -923,6 +746,25 @@ var atmos = null;
 				}}
 		};
 		$target.textcomplete(this._autoCompleteConfig);
+	}
+
+	function createDefaultFailureCallback(caller, callback, hoverMessage) {
+		return (function() {
+			return new CallbackInfo(
+				function(xhr, textStatus, errorThrown) {
+					if (can(callback)) {
+						var callbackResult = {};
+						callbackResult['status'] = 'error';
+						callback.fire(callbackResult);
+					}
+					console.log(errorThrown);
+					if (canl(hoverMessage)) {
+						$.jGrowl(hoverMessage);
+					}
+				},
+				caller
+			);
+		})();
 	}
 
 	atmos = new Atmos();

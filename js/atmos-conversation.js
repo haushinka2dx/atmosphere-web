@@ -29,21 +29,21 @@ var createAtmosConversation = undefined;
 	}
 
 	function id(convId) {
-		if (can(convId) && convId.length > 0) {
+		if (canl(convId)) {
 			this._id = convId;
 		}
 		return this._id;
 	}
 
 	function rootId(convRootId) {
-		if (can(convRootId) && convRootId.length > 0) {
+		if (canl(convRootId)) {
 			this._rootId = convRootId;
 		}
 		return this._rootId;
 	}
 
 	function mainMessageId(convMessageId) {
-		if (can(convMessageId) && convMessageId.length > 0) {
+		if (canl(convMessageId)) {
 			this._mainMessageId = convMessageId;
 		}
 		return this._mainMessageId;
@@ -74,7 +74,7 @@ var createAtmosConversation = undefined;
 
 					// past messages
 					var mainReplyToMessageId = tlItem['reply_to'];
-					if (can(mainReplyToMessageId) && mainReplyToMessageId.length > 0) {
+					if (canl(mainReplyToMessageId)) {
 						this.createPastMessageProcessor(tlItem['reply_to'])();
 					}
 
@@ -122,7 +122,7 @@ var createAtmosConversation = undefined;
 
 						//next message
 						var replyToMessageId = tlItem['reply_to'];
-						if (can(replyToMessageId) && replyToMessageId.length > 0) {
+						if (canl(replyToMessageId)) {
 							this.createPastMessageProcessor(replyToMessageId)();
 						}
 					}

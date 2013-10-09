@@ -24,28 +24,28 @@ var createAtmosDialog = undefined;
 	}
 
 	function id(dlgId) {
-		if (can(dlgId) && dlgId.length > 0) {
+		if (canl(dlgId)) {
 			this._id = dlgId;
 		}
 		return this._id;
 	}
 
 	function title(dlgTitle) {
-		if (can(dlgTitle) && dlgTitle.length > 0) {
+		if (canl(dlgTitle)) {
 			this._title = dlgTitle;
 		}
 		return this._title;
 	}
 
 	function messages(dlgMessages) {
-		if (can(dlgMessages) && dlgMessages.length > 0) {
+		if (canl(dlgMessages)) {
 			this._messages = dlgMessages;
 		}
 		return this._messages;
 	}
 
 	function inputFields(dlgInputFields) {
-		if (can(dlgInputFields) && dlgInputFields.length > 0) {
+		if (canl(dlgInputFields)) {
 			this._inputFields = dlgInputFields;
 		}
 		return this._inputFields;
@@ -94,7 +94,7 @@ var createAtmosDialog = undefined;
 				field['input-name'] = fields[i]['input-name'];
 				field['input-id'] = fields[i]['input-id'];
 				field['input-value'] = fields[i]['input-value'];
-				field['has-label'] = can(fields[i]['input-label-text']) && fields[i]['input-label-text'].length > 0;
+				field['has-label'] = canl(fields[i]['input-label-text']);
 				field['input-label-text'] = fields[i]['input-label-text'];
 				inputs.push(field);
 			}
