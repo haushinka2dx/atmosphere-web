@@ -163,6 +163,13 @@
 	background-color: #3498db;
 }
 
+.timeline-row1 .timeline-read-more,
+.timeline-row3 .timeline-read-more,
+.timeline-row5 .timeline-read-more {
+	/* PETER-RIVER */
+	background-color: #3498db;
+}
+
 .timeline-row2 > .timeline-items-wrapper,
 .timeline-row4 > .timeline-items-wrapper,
 .timeline-row6 > .timeline-items-wrapper {
@@ -183,13 +190,22 @@
 	background-color: #1abc9c;
 }
 
+.timeline-row2 > .timeline-read-more,
+.timeline-row4 > .timeline-read-more,
+.timeline-row6 > .timeline-read-more {
+	/* TURQUOISE */
+	background-color: #1abc9c;
+}
+
 .timeline-item-message a,
-.conversation-item-message a {
+.conversation-item-message a,
+.timeline-read-more a {
 	color: #ffffff;
 }
 
 .timeline-item-message a:hover,
-.conversation-item-message a:hover {
+.conversation-item-message a:hover,
+.timeline-read-more a:hover {
 	color: #d5d5d5;
 }
 

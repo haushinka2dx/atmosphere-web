@@ -627,22 +627,27 @@ var atmos = null;
 
 		// defines timelines
 		var scGlobal = createAtmosSearchCondition();
+		scGlobal.count(10);
 		var tlGlobal = createAtmosTimeline('tl_global_timeline', 'Global', 'all messages', this.createUrl('/messages/global_timeline'), scGlobal);
 		this.addTimeline(tlGlobal);
 
 		var scMy = createAtmosSearchCondition();
+		scMy.count(20);
 		var tlMy = createAtmosTimeline('tl_my_timeline', 'My', 'The messages that my speakers says.', this.createUrl('/messages/focused_timeline'), scMy);
 		this.addTimeline(tlMy);
 
 		var scTalk = createAtmosSearchCondition();
+		scTalk.count(30);
 		var tlTalk = createAtmosTimeline('tl_talk_timeline', 'Talk', '', this.createUrl('/messages/talk_timeline'), scTalk);
 		this.addTimeline(tlTalk);
 
 		var scAnnounce = createAtmosSearchCondition();
+		scAnnounce.count(40);
 		var tlAnnounce = createAtmosTimeline('tl_announce_timeline', 'Announce', '', this.createUrl('/messages/announce_timeline'), scAnnounce);
 		this.addTimeline(tlAnnounce);
 
 		var scMonolog = createAtmosSearchCondition();
+		scMonolog.count(50);
 		var tlMonolog = createAtmosTimeline('tl_monolog_timeline', 'Monolog', '', this.createUrl('/messages/monolog_timeline'), scMonolog);
 		this.addTimeline(tlMonolog);
 

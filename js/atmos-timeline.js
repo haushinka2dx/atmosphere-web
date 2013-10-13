@@ -21,6 +21,7 @@ var createAtmosTimeline = undefined;
 		latestMessageDateTime : latestMessageDateTime,
 		oldestMessageDateTime : oldestMessageDateTime,
 		createParameters : createParameters,
+		createParametersReadMore : createParametersReadMore,
 		init : init,
 		show : show,
 		hide : hide,
@@ -84,7 +85,7 @@ var createAtmosTimeline = undefined;
 			if (!can(this._oldestMessageDateTime)) {
 				this._oldestMessageDateTime = tlOldestMessageDateTime;
 			}
-			else if (tlOldestMessageDateTime > this._oldestMessageDateTime) {
+			else if (tlOldestMessageDateTime < this._oldestMessageDateTime) {
 				this._oldestMessageDateTime = tlOldestMessageDateTime;
 			}
 		}
@@ -114,6 +115,15 @@ var createAtmosTimeline = undefined;
 		return condJSON;
 	}
 
+	function createParametersReadMore() {
+		var cond = this.searchCondition();
+		if (can(this.oldestMessageDateTime())) {
+			cond.pastThan(this.oldestMessageDateTime());
+		}
+		var condJSON = cond.toJSON();
+		return condJSON;
+	}
+
 	function init() {
 		var method = 'GET';
 		var data = this.createParameters();
@@ -127,14 +137,14 @@ var createAtmosTimeline = undefined;
 							$("#" + this.id()).prepend(this.createTimelineItem(tlResult['results'][itemIndex]));
 
 							(function(id) {
-								var $message = $("#" + id + ' > div:first .timeline-item-message');
+								var $message = $("#" + id + ' > div.timeline-item-wrapper:first .timeline-item-message');
 								$message.html(autolink($message.html()));
 								$message.find('a').on('click', function(e) {
 									e.stopPropagation();
 								});
 							})(this.id())
 
-							$("#" + this.id() + ' > div:first').on('click', function(e) {
+							$("#" + this.id() + ' > div.timeline-item-wrapper:first').on('click', function(e) {
 								e.stopPropagation();
 								var selfMessageId = $(this).find('input[name=message-id]').val();
 								var conversationId = that.id() + '_conversation';
@@ -150,7 +160,7 @@ var createAtmosTimeline = undefined;
 								that.hide("normal");
 								conversation.show("normal");
 							});
-							$("#" + this.id() + ' > div:first a.reaction').on('click', function(e) {
+							$("#" + this.id() + ' > div.timeline-item-wrapper:first a.reaction').on('click', function(e) {
 								e.stopPropagation();
 								var targetLink = e.currentTarget;
 								var $base = $(targetLink).parent().parent();
@@ -159,7 +169,7 @@ var createAtmosTimeline = undefined;
 								var reactionType = $(targetLink).attr('reaction-type');
 								atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody);
 							});
-							$("#" + this.id() + ' > div:first a.reply').on('click', function(e) {
+							$("#" + this.id() + ' > div.timeline-item-wrapper:first a.reply').on('click', function(e) {
 								e.stopPropagation();
 								var targetLink = e.currentTarget;
 								var $base = $(targetLink).parent().parent();
@@ -180,7 +190,7 @@ var createAtmosTimeline = undefined;
 								}
 								atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses);
 							});
-							$("#" + this.id() + ' > div:first a.remove').on('click', function(e) {
+							$("#" + this.id() + ' > div.timeline-item-wrapper:first a.remove').on('click', function(e) {
 								e.stopPropagation();
 								var targetLink = e.currentTarget;
 								var $base = $(targetLink).parent().parent();
@@ -224,6 +234,18 @@ var createAtmosTimeline = undefined;
 							delay += delayDelta;
 						}
 
+						if (tlResult['count'] === this.searchCondition().count()) {
+							$("#" + this.id()).append(Hogan.compile($("#tmpl-timeline-read-more").text()).render({}));
+							var $readMore = $("#" + that.id() + " .timeline-read-more");
+							$readMore.find("a").on('click', function(e) { that.readMore(); });
+							setTimeout(
+								function() {
+									$readMore.show("normal");
+								},
+								delay
+							);
+						}
+
 						this.setScrollbar();
 					}
 				}
@@ -238,15 +260,144 @@ var createAtmosTimeline = undefined;
 		);
 	}
 
+	function readMore() {
+		var $readMore = $("#" + this.id() + " .timeline-read-more").hide();
+		var data = this.createParametersReadMore();
+		var successCallback = new CallbackInfo(
+			function(res, textStatus, xhr) {
+				var that = this;
+				var tlResult = JSON.parse(res);
+				if (tlResult['status'] === 'ok') {
+					if (tlResult['count'] > 0) {
+						for (var itemIndex = 0; itemIndex < tlResult['count']; itemIndex++) {
+							$readMore.before(that.createTimelineItem(tlResult['results'][itemIndex]));
+
+							(function(id) {
+								var $message = $("#" + id + ' > div.timeline-item-wrapper:last .timeline-item-message');
+								$message.html(autolink($message.html()));
+								$message.find('a').on('click', function(e) {
+									e.stopPropagation();
+								});
+							})(this.id())
+
+							$("#" + this.id() + ' > div.timeline-item-wrapper:last').on('click', function(e) {
+								e.stopPropagation();
+								var selfMessageId = $(this).find('input[name=message-id]').val();
+								var conversationId = that.id() + '_conversation';
+								var conversation = createAtmosConversation(conversationId, selfMessageId);
+								that._conversation = conversation;
+
+								var closeHandler = function(conversationPanel) {
+									var t = conversationPanel;
+									t.hide("normal", function() { t.close(); that._conversation = undefined; });
+									that.show("normal");
+								}
+								conversation.init($("#" + that.rootId()), closeHandler);
+								that.hide("normal");
+								conversation.show("normal");
+							});
+							$("#" + this.id() + ' > div.timeline-item-wrapper:last a.reaction').on('click', function(e) {
+								e.stopPropagation();
+								var targetLink = e.currentTarget;
+								var $base = $(targetLink).parent().parent();
+								var targetMessageId = $base.find('input[name=message-id]').val();
+								var targetMessageBody = $base.find('input[name=message-body]').val();
+								var reactionType = $(targetLink).attr('reaction-type');
+								atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody);
+							});
+							$("#" + this.id() + ' > div.timeline-item-wrapper:last a.reply').on('click', function(e) {
+								e.stopPropagation();
+								var targetLink = e.currentTarget;
+								var $base = $(targetLink).parent().parent();
+								var targetMessageId = $base.find('input[name=message-id]').val();
+								var targetMessageBody = $base.find('input[name=message-body]').val();
+								var addressUsers = $base.find('input[name=message-address-users]').val();
+								var addressGroups = $base.find('input[name=message-address-groups]').val();
+								var originalMsgCreatedBy = $base.find('input[name=message-created-by]').val();
+
+								var addresses = [];
+								addresses = addresses.concat(addressUsers.split(' '), addressGroups.split(' '));
+								addresses.push('@' + originalMsgCreatedBy);
+
+								var replyType = $(targetLink).attr('reply-type');
+								var defaultMessage = '';
+								if (replyType === 'quote') {
+									defaultMessage = targetMessageBody;
+								}
+								atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses);
+							});
+							$("#" + this.id() + ' > div.timeline-item-wrapper:last a.remove').on('click', function(e) {
+								e.stopPropagation();
+								var targetLink = e.currentTarget;
+								var $base = $(targetLink).parent().parent();
+								var targetMessageId = $base.find('input[name=message-id]').val();
+								var targetMessageBody = $base.find('input[name=message-body]').val();
+								atmos.showMessageRemoveDialog(targetMessageId, targetMessageBody);
+							});
+						}
+						this.latestMessageDateTime(tlResult['latest_created_at']);
+						this.oldestMessageDateTime(tlResult['oldest_created_at']);
+
+						var newItems = $("#" + this.id() + ' > div.new-item');
+						var delay = 0;
+						var delayDelta = 60;
+						var animationClasses = 'magictime swashIn';
+						var newItemsLength = newItems.length;
+						for (var i = 0; i < newItemsLength; i++) {
+							var $targetNewItem = $(newItems[i]);
+							$targetNewItem.removeClass('new-item');
+							(function(){
+								var delayms = delay;
+								var $item = $targetNewItem;
+								setTimeout(
+									function() {
+										$item.addClass(animationClasses);
+										$item.show();
+									},
+									delayms
+								);
+							})();
+							(function(){
+								var delayms = delay + 1500;
+								var $item = $targetNewItem;
+								setTimeout(
+									function() {
+										$item.removeClass(animationClasses);
+									},
+									delayms
+								);
+							})();
+							delay += delayDelta;
+						}
+
+						if (tlResult['count'] === this.searchCondition().count()) {
+							setTimeout(
+								function() {
+									$readMore.show("normal");
+								},
+								delay
+							)
+						}
+						this.setScrollbar();
+					}
+				}
+			},
+			this
+		);
+		atmos.sendRequest(
+			this.url(),
+			'GET',
+			data,
+			successCallback
+		);
+	}
+
 	function show(speed, callback) {
 		$("#" + this.rootId()).show(speed, callback);
 	}
 
 	function hide(speed, callback) {
 		$("#" + this.rootId()).hide(speed, callback);
-	}
-
-	function readMore() {
 	}
 
 	function createTimelineItem(msg) {
