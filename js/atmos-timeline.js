@@ -3,6 +3,7 @@ var createAtmosTimeline = undefined;
 (function() {
 	function AtmosTimeline(id, name, description, url, searchCondition) {
 		this.id(id);
+		this._thisSelector = '#' + this.id();
 		this.rootId(id + '-root');
 		this.name(name);
 		this.description(description);
@@ -25,11 +26,12 @@ var createAtmosTimeline = undefined;
 		show : show,
 		hide : hide,
 		readMore : readMore,
-		createTimelineItem : createTimelineItem,
 		updateTimelineItemReaction : updateTimelineItemReaction,
 		refreshMessage : refreshMessage,
 		removeMessage : removeMessage,
 		setScrollbar : setScrollbar,
+		selector : selector,
+		applyItemEvents : applyItemEvents,
 	}
 
 	function id(tlId) {
@@ -115,114 +117,23 @@ var createAtmosTimeline = undefined;
 	}
 
 	function init() {
-		var method = 'GET';
-		var data = this.createParameters();
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var that = this;
 				var tlResult = JSON.parse(res);
 				if (tlResult['status'] === 'ok') {
 					if (tlResult['count'] > 0) {
-						for (var itemIndex = tlResult['count'] - 1; itemIndex >= 0; itemIndex--) {
-							$("#" + this.id()).prepend(this.createTimelineItem(tlResult['results'][itemIndex]));
+						tlResult['results'].reverse().forEach(function(msg, i, a) {
+							$(that.selector()).prepend(createTimelineItem(msg));
 
-							(function(id) {
-								var $message = $("#" + id + ' > div:first .timeline-item-message');
-								$message.html(autolink($message.html()));
-								$message.find('a').on('click', function(e) {
-									e.stopPropagation();
-								});
-							})(this.id())
+							createHyperLink($(that.selector(' > div:first .timeline-item-message')));
 
-							$("#" + this.id() + ' > div:first').on('click', function(e) {
-								e.stopPropagation();
-								var selfMessageId = $(this).find('input[name=message-id]').val();
-								var conversationId = that.id() + '_conversation';
-								var conversation = createAtmosConversation(conversationId, selfMessageId);
-								that._conversation = conversation;
-
-								var closeHandler = function(conversationPanel) {
-									var t = conversationPanel;
-									t.hide("normal", function() { t.close(); that._conversation = undefined; });
-									that.show("normal");
-								}
-								conversation.init($("#" + that.rootId()), closeHandler);
-								that.hide("normal");
-								conversation.show("normal");
-							});
-							$("#" + this.id() + ' > div:first a.reaction').on('click', function(e) {
-								e.stopPropagation();
-								var targetLink = e.currentTarget;
-								var $base = $(targetLink).parent().parent();
-								var targetMessageId = $base.find('input[name=message-id]').val();
-								var targetMessageBody = $base.find('input[name=message-body]').val();
-								var reactionType = $(targetLink).attr('reaction-type');
-								atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody);
-							});
-							$("#" + this.id() + ' > div:first a.reply').on('click', function(e) {
-								e.stopPropagation();
-								var targetLink = e.currentTarget;
-								var $base = $(targetLink).parent().parent();
-								var targetMessageId = $base.find('input[name=message-id]').val();
-								var targetMessageBody = $base.find('input[name=message-body]').val();
-								var addressUsers = $base.find('input[name=message-address-users]').val();
-								var addressGroups = $base.find('input[name=message-address-groups]').val();
-								var originalMsgCreatedBy = $base.find('input[name=message-created-by]').val();
-
-								var addresses = [];
-								addresses = addresses.concat(addressUsers.split(' '), addressGroups.split(' '));
-								addresses.push('@' + originalMsgCreatedBy);
-
-								var replyType = $(targetLink).attr('reply-type');
-								var defaultMessage = '';
-								if (replyType === 'quote') {
-									defaultMessage = targetMessageBody;
-								}
-								atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses);
-							});
-							$("#" + this.id() + ' > div:first a.remove').on('click', function(e) {
-								e.stopPropagation();
-								var targetLink = e.currentTarget;
-								var $base = $(targetLink).parent().parent();
-								var targetMessageId = $base.find('input[name=message-id]').val();
-								var targetMessageBody = $base.find('input[name=message-body]').val();
-								atmos.showMessageRemoveDialog(targetMessageId, targetMessageBody);
-							});
-						}
+							that.applyItemEvents($(that.selector('> div:first')));
+						});
 						this.latestMessageDateTime(tlResult['latest_created_at']);
 						this.oldestMessageDateTime(tlResult['oldest_created_at']);
 
-						var newItems = $("#" + this.id() + ' > div.new-item');
-						var delay = 0;
-						var delayDelta = 60;
-						var animationClasses = 'magictime swashIn';
-						var newItemsLength = newItems.length;
-						for (var i = 0; i < newItemsLength; i++) {
-							var $targetNewItem = $(newItems[i]);
-							$targetNewItem.removeClass('new-item');
-							(function(){
-								var delayms = delay;
-								var $item = $targetNewItem;
-								setTimeout(
-									function() {
-										$item.addClass(animationClasses);
-										$item.show();
-									},
-									delayms
-								);
-							})();
-							(function(){
-								var delayms = delay + 1500;
-								var $item = $targetNewItem;
-								setTimeout(
-									function() {
-										$item.removeClass(animationClasses);
-									},
-									delayms
-								);
-							})();
-							delay += delayDelta;
-						}
+						showNewItems($(this.selector('> div.new-item')));
 
 						this.setScrollbar();
 					}
@@ -232,8 +143,8 @@ var createAtmosTimeline = undefined;
 		);
 		atmos.sendRequest(
 			this.url(),
-			method,
-			data,
+			'GET',
+			this.createParameters(),
 			successCallback
 		);
 	}
@@ -283,47 +194,42 @@ var createAtmosTimeline = undefined;
 	}
 
 	function updateTimelineItemReaction(msg) {
+		var that = this;
 		var msgId = msg['_id'];
-		var reactionPanels = $("#" + this.id() + " article.msg_" + msgId + " div.reaction-panel");
 		var responses = msg['responses'];
 		Object.keys(responses).forEach(function(resType, i, a) {
 			var responderUserIds = responses[resType];
-			reactionPanels.find("a.reaction-count[reaction-type=" + resType + "]").text(responderUserIds.length);
+			$(that.selector("article.msg_" + msgId + " div.reaction-panel a.reaction-count[reaction-type=" + resType + "]")).text(responderUserIds.length);
 		});
-		var reactionTargetArticles = $("#" + this.id() + " article.msg_" + msgId);
+		var $reactionTargetArticles = $(this.selector("article.msg_" + msgId));
 		var delay = 0;
 		var delayDelta = 60;
 		var animationClasses = 'magictime tada';
-		for (var i=reactionTargetArticles.length - 1; i >= 0; i--) {
-			var $targetItem = $(reactionTargetArticles[i]).parent();
+		$($reactionTargetArticles.get().reverse()).each(function(index) {
+			var $targetItem = $(this).parent();
 			(function(){
-				var delayms = delay;
 				var $item = $targetItem;
 				setTimeout(
 					function() {
 						$item.addClass(animationClasses);
 					},
-					delayms
+					delay
 				);
 			})();
 			(function(){
-				var delayms = delay + 1500;
 				var $item = $targetItem;
 				setTimeout(
 					function() {
 						$item.removeClass(animationClasses);
 					},
-					delayms
+					delay + 1500
 				);
 			})();
 			delay += delayDelta;
-		}
+		});
 	}
 
 	function refreshMessage(messageId) {
-		var url = atmos.createUrl("/messages/search");
-		var method = 'GET';
-		var data = { "message_ids" : messageId };
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var tlResult = JSON.parse(res);
@@ -337,9 +243,9 @@ var createAtmosTimeline = undefined;
 			this
 		);
 		atmos.sendRequest(
-			url,
-			method,
-			data,
+			atmos.createUrl("/messages/search"),
+			'GET',
+			{ "message_ids" : messageId },
 			successCallback
 		);
 
@@ -350,34 +256,32 @@ var createAtmosTimeline = undefined;
 
 	function removeMessage(messageId) {
 		var msgId = messageId;
-		var removedMessageArticle = $("#" + this.id() + " article.msg_" + msgId);
+		var $removedMessageArticle = $(this.selector("article.msg_" + msgId));
 		var delay = 0;
 		var delayDelta = 60;
 		var animationClasses = 'magictime holeOut';
-		for (var i=removedMessageArticle.length - 1; i >= 0; i--) {
-			var $targetItem = $(removedMessageArticle[i]).parent();
+		$($removedMessageArticle.get().reverse()).each(function(index) {
+			var $targetItem = $(this).parent();
 			(function(){
-				var delayms = delay;
 				var $item = $targetItem;
 				setTimeout(
 					function() {
 						$item.addClass(animationClasses);
 					},
-					delayms
+					delay
 				);
 			})();
 			(function(){
-				var delayms = delay + 1050;
 				var $item = $targetItem;
 				setTimeout(
 					function() {
 						$item.remove();
 					},
-					delayms
+					delay + 1500
 				);
 			})();
 			delay += delayDelta;
-		}
+		});
 		if (can(this._conversation)) {
 			this._conversation.removeMessage(messageId);
 		}
@@ -385,9 +289,112 @@ var createAtmosTimeline = undefined;
 
 	function setScrollbar() {
 		if (this.scrollbarWasSet === false) {
-			$('#' + this.id()).parent().perfectScrollbar(atmos.perfectScrollbarSetting);
+			$(this.selector()).parent().perfectScrollbar(atmos.perfectScrollbarSetting);
 			this.scrollbarWasSet = true;
 		}
+	}
+
+	function selector(descendants) {
+		if (can(descendants) && descendants.length) {
+			return this._thisSelector + ' ' + descendants;
+		}
+		else {
+			return this._thisSelector;
+		}
+	}
+
+	function createHyperLink($message) {
+		$message.html(autolink($message.html()));
+		$message.find('a').on('click', function(e) {
+			e.stopPropagation();
+		});
+	}
+
+	function applyItemEvents($target) {
+		var that = this;
+		$target.on('click', function(e) {
+			e.stopPropagation();
+			var selfMessageId = $(this).find('input[name=message-id]').val();
+			that._conversation = createAtmosConversation(that.id() + '_conversation', selfMessageId);
+
+			var closeHandler = function(conversationPanel) {
+				var t = conversationPanel;
+				t.hide("normal", function() { t.close(); that._conversation = undefined; });
+				that.show("normal");
+			}
+			that._conversation.init($("#" + that.rootId()), closeHandler);
+			that.hide("normal");
+			that._conversation.show("normal");
+		});
+		$target.find('a.reaction').on('click', function(e) {
+			e.stopPropagation();
+			var targetLink = e.currentTarget;
+			var $base = $(targetLink).parent().parent();
+			var targetMessageId = $base.find('input[name=message-id]').val();
+			var targetMessageBody = $base.find('input[name=message-body]').val();
+			var reactionType = $(targetLink).attr('reaction-type');
+			atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody);
+		});
+		$target.find('a.reply').on('click', function(e) {
+			e.stopPropagation();
+			var targetLink = e.currentTarget;
+			var $base = $(targetLink).parent().parent();
+			var targetMessageId = $base.find('input[name=message-id]').val();
+			var targetMessageBody = $base.find('input[name=message-body]').val();
+			var addressUsers = $base.find('input[name=message-address-users]').val();
+			var addressGroups = $base.find('input[name=message-address-groups]').val();
+			var originalMsgCreatedBy = $base.find('input[name=message-created-by]').val();
+
+			var addresses = [];
+			addresses = addresses.concat(addressUsers.split(' '), addressGroups.split(' '));
+			addresses.push('@' + originalMsgCreatedBy);
+
+			var replyType = $(targetLink).attr('reply-type');
+			var defaultMessage = '';
+			if (replyType === 'quote') {
+				defaultMessage = targetMessageBody;
+			}
+			atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses);
+		});
+		$target.find('a.remove').on('click', function(e) {
+			e.stopPropagation();
+			var targetLink = e.currentTarget;
+			var $base = $(targetLink).parent().parent();
+			var targetMessageId = $base.find('input[name=message-id]').val();
+			var targetMessageBody = $base.find('input[name=message-body]').val();
+			atmos.showMessageRemoveDialog(targetMessageId, targetMessageBody);
+		});
+	}
+
+	function showNewItems($newItems) {
+		var delay = 0;
+		var delayDelta = 60;
+		var animationClasses = 'magictime swashIn';
+		var newItemsLength = $newItems.length;
+		$newItems.each(function(index) {
+			var $targetNewItem = $(this);
+			$targetNewItem.removeClass('new-item');
+			(function(){
+				var $item = $targetNewItem;
+				setTimeout(
+					function() {
+						$item.addClass(animationClasses);
+						$item.show();
+					},
+					delay
+				);
+			})();
+			(function(){
+				var $item = $targetNewItem;
+				setTimeout(
+					function() {
+						$item.removeClass(animationClasses);
+					},
+					delay + 1500
+				);
+			})();
+			delay += delayDelta;
+		});
 	}
 
 	createAtmosTimeline = function(id, name, description, url, searchCondition) {
