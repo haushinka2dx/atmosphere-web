@@ -3,7 +3,6 @@ var createAtmosTimeline = undefined;
 (function() {
 	function AtmosTimeline(id, name, description, url, searchCondition) {
 		this.id(id);
-		this._thisSelector = '#' + this.id();
 		this.rootId(id + '-root');
 		this.name(name);
 		this.description(description);
@@ -37,6 +36,7 @@ var createAtmosTimeline = undefined;
 	function id(tlId) {
 		if (canl(tlId)) {
 			this._id = tlId;
+			this._thisSelector = '#' + this._id;
 		}
 		return this._id;
 	}
@@ -295,7 +295,7 @@ var createAtmosTimeline = undefined;
 	}
 
 	function selector(descendants) {
-		if (can(descendants) && descendants.length) {
+		if (canl(descendants)) {
 			return this._thisSelector + ' ' + descendants;
 		}
 		else {

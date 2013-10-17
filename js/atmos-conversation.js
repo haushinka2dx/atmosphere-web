@@ -3,7 +3,6 @@ var createAtmosConversation = undefined;
 (function() {
 	function AtmosConversation(id, messageId) {
 		this.id(id);
-		this._thisSelector = '#' + this.id();
 		this.rootId(id + '-root');
 		this.mainMessageId(messageId);
 		this.scrollbarWasSet = false;
@@ -29,6 +28,7 @@ var createAtmosConversation = undefined;
 	function id(convId) {
 		if (canl(convId)) {
 			this._id = convId;
+			this._thisSelector = '#' + this._id;
 		}
 		return this._id;
 	}
@@ -372,7 +372,7 @@ var createAtmosConversation = undefined;
 	}
 
 	function selector(descendants) {
-		if (can(descendants) && descendants.length) {
+		if (canl(descendants)) {
 			return this._thisSelector + ' ' + descendants;
 		}
 		else {
