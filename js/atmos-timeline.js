@@ -109,7 +109,7 @@ var createAtmosTimeline = undefined;
 	}
 
 	function createParameters() {
-		var cond = $.extend(true, new Object(), this.searchCondition());
+		var cond = $.extend(true, {}, this.searchCondition());
 		if (can(this.latestMessageDateTime())) {
 			cond.futureThan(this.latestMessageDateTime());
 		}
@@ -118,7 +118,7 @@ var createAtmosTimeline = undefined;
 	}
 
 	function createParametersReadMore() {
-		var cond = $.extend(true, new Object(), this.searchCondition());
+		var cond = $.extend(true, {}, this.searchCondition());
 		if (can(this.oldestMessageDateTime())) {
 			cond.pastThan(this.oldestMessageDateTime());
 		}
