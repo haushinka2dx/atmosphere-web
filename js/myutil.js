@@ -51,3 +51,23 @@ function autolink(src) {
 	var pattern = /(\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 	return src.replace(pattern, "<a target=\"_blank\" href='$1'>$1</a>");
 }
+
+function applyMagicEffect($target, effectClass, delay, afterAction) {
+	var $t = $target;
+	setTimeout(
+		function() {
+			$t.addClass(effectClass);
+			$t.show();
+		},
+		delay
+	);
+	setTimeout(
+		function() {
+			$t.removeClass(effectClass);
+			if (can(afterAction)) {
+				afterAction($t);
+			}
+		},
+		delay + 1500
+	);
+}

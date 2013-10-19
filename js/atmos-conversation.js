@@ -251,31 +251,11 @@ var createAtmosConversation = undefined;
 
 	function showNewItems($newItems) {
 		var delay = 0;
-		var delayDelta = 60;
-		var animationClasses = 'magictime swashIn';
 		$newItems.each(function(index) {
 			var $targetNewItem = $(this);
 			$targetNewItem.removeClass('new-item');
-			(function(){
-				var $item = $targetNewItem;
-				setTimeout(
-					function() {
-						$item.addClass(animationClasses);
-						$item.show();
-					},
-					delay
-				);
-			})();
-			(function(){
-				var $item = $targetNewItem;
-				setTimeout(
-					function() {
-						$item.removeClass(animationClasses);
-					},
-					delay + 1500
-				);
-			})();
-			delay += delayDelta;
+			applyMagicEffect($targetNewItem, 'magictime swashIn', delay);
+			delay += 60;
 		});
 	}
 
@@ -289,29 +269,9 @@ var createAtmosConversation = undefined;
 		});
 		var $reactionTargetArticles = $(this.selector("article.msg_" + msgId));
 		var delay = 0;
-		var delayDelta = 60;
-		var animationClasses = 'magictime tada';
 		$($reactionTargetArticles.get().reverse()).each(function(index) {
-			var $targetItem = $(this).parent();
-			(function(){
-				var $item = $targetItem;
-				setTimeout(
-					function() {
-						$item.addClass(animationClasses);
-					},
-					delay
-				);
-			})();
-			(function(){
-				var $item = $targetItem;
-				setTimeout(
-					function() {
-						$item.removeClass(animationClasses);
-					},
-					delay + 1500
-				);
-			})();
-			delay += delayDelta;
+			applyMagicEffect($(this).parent(), 'magictime tada', delay);
+			delay += 60;
 		});
 	}
 
@@ -338,29 +298,9 @@ var createAtmosConversation = undefined;
 	function removeMessage(messageId) {
 		var $removedMessageArticle = $(this.selector("article.msg_" + messageId));
 		var delay = 0;
-		var delayDelta = 60;
-		var animationClasses = 'magictime holeOut';
 		$($removedMessageArticle.get().reverse()).each(function(index) {
-			var $targetItem = $(this).parent();
-			(function(){
-				var $item = $targetItem;
-				setTimeout(
-					function() {
-						$item.addClass(animationClasses);
-					},
-					delay
-				);
-			})();
-			(function(){
-				var $item = $targetItem;
-				setTimeout(
-					function() {
-						$item.remove();
-					},
-					delay + 1500
-				);
-			})();
-			delay += delayDelta;
+			applyMagicEffect($(this).parent(), 'magictime holeOut', delay, function($target) { $target.remove(); });
+			delay += 60;
 		});
 	}
 

@@ -304,6 +304,12 @@ html, body {
 	padding-left: 0.3em;
 }
 
+.timeline-read-more {
+	padding-top: 0.75em;
+	padding-bottom: 0.75em;
+	text-align: center;
+}
+
 .conversation-main.conversation-item-wrapper {
 	padding-left: 0;
 }
