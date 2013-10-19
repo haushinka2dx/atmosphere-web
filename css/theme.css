@@ -190,9 +190,9 @@
 	background-color: #1abc9c;
 }
 
-.timeline-row2 > .timeline-read-more,
-.timeline-row4 > .timeline-read-more,
-.timeline-row6 > .timeline-read-more {
+.timeline-row2 .timeline-read-more,
+.timeline-row4 .timeline-read-more,
+.timeline-row6 .timeline-read-more {
 	/* TURQUOISE */
 	background-color: #1abc9c;
 }
