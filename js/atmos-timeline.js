@@ -21,6 +21,7 @@ var createAtmosTimeline = undefined;
 		latestMessageDateTime : latestMessageDateTime,
 		oldestMessageDateTime : oldestMessageDateTime,
 		createParameters : createParameters,
+		createParametersReadMore : createParametersReadMore,
 		init : init,
 		show : show,
 		hide : hide,
@@ -86,7 +87,7 @@ var createAtmosTimeline = undefined;
 			if (!can(this._oldestMessageDateTime)) {
 				this._oldestMessageDateTime = tlOldestMessageDateTime;
 			}
-			else if (tlOldestMessageDateTime > this._oldestMessageDateTime) {
+			else if (tlOldestMessageDateTime < this._oldestMessageDateTime) {
 				this._oldestMessageDateTime = tlOldestMessageDateTime;
 			}
 		}
@@ -108,9 +109,18 @@ var createAtmosTimeline = undefined;
 	}
 
 	function createParameters() {
-		var cond = this.searchCondition();
+		var cond = $.extend(true, {}, this.searchCondition());
 		if (can(this.latestMessageDateTime())) {
 			cond.futureThan(this.latestMessageDateTime());
+		}
+		var condJSON = cond.toJSON();
+		return condJSON;
+	}
+
+	function createParametersReadMore() {
+		var cond = $.extend(true, {}, this.searchCondition());
+		if (can(this.oldestMessageDateTime())) {
+			cond.pastThan(this.oldestMessageDateTime());
 		}
 		var condJSON = cond.toJSON();
 		return condJSON;
@@ -130,10 +140,21 @@ var createAtmosTimeline = undefined;
 
 							that.applyItemEvents($(that.selector('> div:first')));
 						});
+
 						this.latestMessageDateTime(tlResult['latest_created_at']);
 						this.oldestMessageDateTime(tlResult['oldest_created_at']);
 
-						showNewItems($(this.selector('> div.new-item')));
+						var totalDelay = showNewItems($(this.selector('> div.new-item')));
+
+						if (tlResult['count'] === this.searchCondition().count()) {
+							var $readMore = $(this.selector(".timeline-read-more"));
+							if ($readMore.length === 0) {
+								$(this.selector()).append(Hogan.compile($("#tmpl-timeline-read-more").text()).render({}));
+								$readMore = $(this.selector(".timeline-read-more"));
+								$readMore.find("a").on('click', function(e) { that.readMore(); });
+								applyMagicEffect($readMore, 'magictime swashIn', totalDelay);
+							}
+						}
 
 						this.setScrollbar();
 					}
@@ -149,15 +170,51 @@ var createAtmosTimeline = undefined;
 		);
 	}
 
+	function readMore() {
+		var successCallback = new CallbackInfo(
+			function(res, textStatus, xhr) {
+				var that = this;
+				var tlResult = JSON.parse(res);
+				if (tlResult['status'] === 'ok') {
+					if (tlResult['count'] > 0) {
+						var $readMore = $(that.selector(".timeline-read-more")).hide();
+						tlResult['results'].forEach(function(msg, i, a) {
+							$readMore.before(createTimelineItem(msg));
+
+							createHyperLink($(that.selector('> div.timeline-item-wrapper:last .timeline-item-message')));
+
+							that.applyItemEvents($(that.selector('> div.timeline-item-wrapper:last')));
+						});
+
+						this.latestMessageDateTime(tlResult['latest_created_at']);
+						this.oldestMessageDateTime(tlResult['oldest_created_at']);
+
+						var totalDelay = showNewItems($(this.selector('> div.new-item')));
+
+						if (tlResult['count'] === this.searchCondition().count()) {
+							applyMagicEffect($readMore, 'magictime swashIn', totalDelay);
+						}
+
+						this.setScrollbar();
+					}
+				}
+			},
+			this
+		);
+		atmos.sendRequest(
+			this.url(),
+			'GET',
+			this.createParametersReadMore(),
+			successCallback
+		);
+	}
+
 	function show(speed, callback) {
 		$("#" + this.rootId()).show(speed, callback);
 	}
 
 	function hide(speed, callback) {
 		$("#" + this.rootId()).hide(speed, callback);
-	}
-
-	function readMore() {
 	}
 
 	function createTimelineItem(msg) {
@@ -203,29 +260,10 @@ var createAtmosTimeline = undefined;
 		});
 		var $reactionTargetArticles = $(this.selector("article.msg_" + msgId));
 		var delay = 0;
-		var delayDelta = 60;
-		var animationClasses = 'magictime tada';
 		$($reactionTargetArticles.get().reverse()).each(function(index) {
 			var $targetItem = $(this).parent();
-			(function(){
-				var $item = $targetItem;
-				setTimeout(
-					function() {
-						$item.addClass(animationClasses);
-					},
-					delay
-				);
-			})();
-			(function(){
-				var $item = $targetItem;
-				setTimeout(
-					function() {
-						$item.removeClass(animationClasses);
-					},
-					delay + 1500
-				);
-			})();
-			delay += delayDelta;
+			applyMagicEffect($(this).parent(), 'magictime tada', delay);
+			delay += 60;
 		});
 	}
 
@@ -255,32 +293,11 @@ var createAtmosTimeline = undefined;
 	}
 
 	function removeMessage(messageId) {
-		var msgId = messageId;
-		var $removedMessageArticle = $(this.selector("article.msg_" + msgId));
+		var $removedMessageArticle = $(this.selector("article.msg_" + messageId));
 		var delay = 0;
-		var delayDelta = 60;
-		var animationClasses = 'magictime holeOut';
 		$($removedMessageArticle.get().reverse()).each(function(index) {
-			var $targetItem = $(this).parent();
-			(function(){
-				var $item = $targetItem;
-				setTimeout(
-					function() {
-						$item.addClass(animationClasses);
-					},
-					delay
-				);
-			})();
-			(function(){
-				var $item = $targetItem;
-				setTimeout(
-					function() {
-						$item.remove();
-					},
-					delay + 1500
-				);
-			})();
-			delay += delayDelta;
+			applyMagicEffect($(this).parent(), 'magictime holeOut', delay, function($target) { $target.remove(); });
+			delay += 60;
 		});
 		if (can(this._conversation)) {
 			this._conversation.removeMessage(messageId);
@@ -368,33 +385,14 @@ var createAtmosTimeline = undefined;
 
 	function showNewItems($newItems) {
 		var delay = 0;
-		var delayDelta = 60;
-		var animationClasses = 'magictime swashIn';
-		var newItemsLength = $newItems.length;
 		$newItems.each(function(index) {
 			var $targetNewItem = $(this);
 			$targetNewItem.removeClass('new-item');
-			(function(){
-				var $item = $targetNewItem;
-				setTimeout(
-					function() {
-						$item.addClass(animationClasses);
-						$item.show();
-					},
-					delay
-				);
-			})();
-			(function(){
-				var $item = $targetNewItem;
-				setTimeout(
-					function() {
-						$item.removeClass(animationClasses);
-					},
-					delay + 1500
-				);
-			})();
-			delay += delayDelta;
+			applyMagicEffect($targetNewItem, 'magictime swashIn', delay);
+			delay += 60;
 		});
+
+		return delay;
 	}
 
 	createAtmosTimeline = function(id, name, description, url, searchCondition) {

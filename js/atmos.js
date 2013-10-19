@@ -7,6 +7,7 @@ var atmos = null;
 		this._allUserIds = [];
 		this._allGroupIds = [];
 		this._sockjs = createAtmosSockJS();
+		this._timelineCount = 50;
 	};
 	Atmos.prototype = {
 		atmosSessionId : atmosSessionId,
@@ -626,10 +627,12 @@ var atmos = null;
 
 		// defines timelines
 		var scGlobal = createAtmosSearchCondition();
+		scGlobal.count(this._timelineCount);
 		var tlGlobal = createAtmosTimeline('tl_global_timeline', 'Global', 'all messages', this.createUrl('/messages/global_timeline'), scGlobal);
 		this.addTimeline(tlGlobal);
 
 		var scTalk = createAtmosSearchCondition();
+		scTalk.count(this._timelineCount);
 		var tlTalk = createAtmosTimeline('tl_talk_timeline', 'Talk', '', this.createUrl('/messages/talk_timeline'), scTalk);
 		this.addTimeline(tlTalk);
 
