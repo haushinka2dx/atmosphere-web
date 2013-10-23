@@ -365,6 +365,7 @@ var createAtmosTimeline = undefined;
 			var addresses = [];
 			addresses = addresses.concat(addressUsers.split(' '), addressGroups.split(' '));
 			addresses.push('@' + originalMsgCreatedBy);
+			addresses = addresses.filter(function(v) { return v !== '@' + atmos.currentUserId(); });
 
 			var replyType = $(targetLink).attr('reply-type');
 			var defaultMessage = '';
