@@ -18,6 +18,7 @@ html, body {
 	position: fixed;
 	left: 0px;
 	top: 0px;
+	z-index: 9999;
 }
 
 .atmos-menu {
@@ -36,7 +37,6 @@ html, body {
 
 .atmos-vmenu {
     position: fixed;
-    overflow: hidden;
     top: 0;
     left: 0;
     height: 100%;
@@ -46,6 +46,10 @@ html, body {
     background: #555555;
 }
  
+.atmos-vmenu li {
+	position: relative;
+}
+
 .atmos-vmenu li a {
     display: block;
     text-indent: -500em;
@@ -59,6 +63,27 @@ html, body {
     -webkit-transition: background 0.1s ease-in-out;
     -moz-transition: background 0.1s ease-in-out;
     transition: background 0.1s ease-in-out;
+}
+ 
+.atmos-vmenu li .atmos-vmenu-text {
+	position: absolute;
+	top: 0;
+	left: 100%;
+	color: #E6E6E6;
+	height: 100%;
+	line-height: 3.5em;
+	background: #47a3da;
+	padding-right: 10px;
+	white-space: nowrap;
+	display: none;
+}
+ 
+.atmos-vmenu li .atmos-vmenu-text div {
+	font-size: 0.9em;
+}
+ 
+.atmos-vmenu li a:hover + .atmos-vmenu-text {
+	display: block;
 }
  
 .atmos-vmenu li a:hover,
@@ -617,3 +642,4 @@ div.textcomplete-wrapper > ul.dropdown-menu > li {
 div.textcomplete-wrapper > ul.dropdown-menu > li.active {
 	background-color: rgba(0,0,0,0.2);
 }
+
