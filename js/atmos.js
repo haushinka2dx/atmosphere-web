@@ -350,7 +350,7 @@ var atmos = null;
 	}
 
 	function showLoginDialog(message, defaultUserId) {
-		createAtmosDialog(
+		(new AtmosDialog(
 			'Atmosphere',
 			[ can(message) ? message : ''],
 			[ {"input-type":"text", "input-place-holder":"user id", "input-name":"user_id", "input-value":defaultUserId },
@@ -374,11 +374,11 @@ var atmos = null;
 					atmos.login(userId, password, postLogin);
 				}
 			}
-		).show();
+		)).show();
 	}
 
 	function showLogoutDialog(message, defaultUserId) {
-		createAtmosDialog(
+		(new AtmosDialog(
 			'Logout?',
 			[ ],
 			[ ],
@@ -388,11 +388,11 @@ var atmos = null;
 					atmos.logout();
 				}
 			}
-		).show();
+		)).show();
 	}
 
 	function showPasswordChangeDialog(message) {
-		createAtmosDialog(
+		(new AtmosDialog(
 			'Change password',
 			[ can(message) ? message : '' ],
 			[ {"input-type":"password", "input-place-holder":"current password", "input-name":"current-password", "input-value":"" },
@@ -415,12 +415,12 @@ var atmos = null;
 					atmos.changePassword(currentPassword, newPassword, postChange);
 				}
 			}
-		).show();
+		)).show();
 	}
 
 	function showAvatorChangeDialog() {
 		var that = this;
-		var dialog = createAtmosDialog(
+		var dialog = new AtmosDialog(
 			'Change avator',
 			[  ],
 			[ {"input-type":"file", "input-place-holder":"", "input-name":"profileImage", "input-value":null } ],
@@ -460,7 +460,7 @@ var atmos = null;
 				}
 			}
 		}
-		createAtmosDialog(
+		(new AtmosDialog(
 			'Send Message',
 			msgs,
 			[ {"is-textarea":false, "input-type":"checkbox", "input-place-holder":"", "input-name":"message-type", "input-id":"inputted-message-type", "input-value":"monolog", "input-label-text":'send for myself only(others can not see)' },
@@ -473,7 +473,7 @@ var atmos = null;
 					atmos.sendMessage(message, messageType, replyToMessageId);
 				}
 			}
-		).show();
+		)).show();
 	}
 
 	function showMessageRemoveDialog(targetMessageId, targetMessageBody, isPrivate) {
@@ -487,7 +487,7 @@ var atmos = null;
 		msgs.push('Are you sure to remove message?');
 		msgs.push('');
 		msgs.push(targetMessageBody);
-		createAtmosDialog(
+		(new AtmosDialog(
 			title,
 			msgs,
 			[ ],
@@ -497,7 +497,7 @@ var atmos = null;
 					atmos.removeMessage(targetMessageId, isPrivate);
 				}
 			}
-		).show();
+		)).show(isPrivate);
 	}
 
 	function showPrivateMessageSenderDialog(addressUserId, defaultMessage, replyToMessageId, originalMessageBody) {
@@ -507,7 +507,7 @@ var atmos = null;
 			msgs.push('');
 			msgs.push(originalMessageBody);
 		}
-		createAtmosDialog(
+		(new AtmosDialog(
 			'Send Private',
 			msgs,
 			[ {"is-textarea":false, "input-type":"text", "input-place-holder":"user id of destination", "input-name":"address-user-id", "input-id":"inputted-address-user-id", "input-value":addressUserId },
@@ -520,11 +520,11 @@ var atmos = null;
 					atmos.sendPrivate(dstUserId, message);
 				}
 			}
-		).show();
+		)).show(true);
 	}
 
 	function showResponseDialog(targetMessageId, reactionType, messageBody, isPrivate) {
-		createAtmosDialog(
+		(new AtmosDialog(
 			'Response',
 			[ 'Are you sure to response "' + reactionType + '" ?',
 			  '',
@@ -536,7 +536,7 @@ var atmos = null;
 					atmos.responseToMessage(targetMessageId, reactionType, isPrivate);
 				}
 			}
-		).show();
+		)).show(isPrivate);
 	}
 
 	function showMessageSenderPanel(defaultMessage, replyToMsgId, replyToMessage, addresses, isPrivate) {

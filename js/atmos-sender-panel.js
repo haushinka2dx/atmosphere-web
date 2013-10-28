@@ -9,6 +9,7 @@ var createAtmosSenderPanel = undefined;
 		this._visible = false;
 		this._closedHandler = closedHandler;
 		this._isPrivate = false;
+		this._privateMessageClass = 'private-message';
 		this.init();
 	};
 	AtmosSenderPanel.prototype = {
@@ -99,6 +100,7 @@ var createAtmosSenderPanel = undefined;
 
 	function setVariablesForNormalMessage(message, replyToMsgId, replyToMessage, addresses) {
 		this._isPrivate = false;
+		$(this.selector()).removeClass(this._privateMessageClass);
 		if (can(addresses)) {
 			addresses.forEach(function(address) {
 				if (message.indexOf(address) === -1) {
@@ -124,6 +126,7 @@ var createAtmosSenderPanel = undefined;
 
 	function setVariablesForPrivateMessage(message, replyToMsgId, replyToMessage, toAddresses) {
 		this._isPrivate = true;
+		$(this.selector()).addClass(this._privateMessageClass);
 
 		var to = toAddresses.filter(function(address) { return canl(address); } ).join(' ');
 		$(this.selector(":input[name=sender-panel-to]")).val('').val(to);
