@@ -197,6 +197,24 @@
 	background-color: #1abc9c;
 }
 
+.timeline-row-private > .timeline-items-wrapper {
+	/* GREEN-SEA */
+	background-color: #444444;
+}
+
+.timeline-row-private > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper {
+	background-color: #e2620c;
+}
+
+.timeline-row-private > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover {
+	background-color: #e67e22;
+}
+
+.timeline-row-private .timeline-read-more {
+	background-color: #e67e22;
+}
+
+
 .timeline-item-message a,
 .conversation-item-message a,
 .timeline-read-more a {
