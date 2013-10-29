@@ -1,12 +1,11 @@
-var createAtmosConversation = undefined;
-
-(function() {
+var AtmosConversation = (function() {
 	function AtmosConversation(id, messageId) {
 		this.id(id);
 		this.rootId(id + '-root');
 		this.mainMessageId(messageId);
 		this.scrollbarWasSet = false;
 		this._conversation = undefined;
+		this._searchUrl = atmos.createUrl('/messages/search');
 	};
 	AtmosConversation.prototype = {
 		id : id,
@@ -18,6 +17,8 @@ var createAtmosConversation = undefined;
 		close : close,
 		createPastMessageProcessor : createPastMessageProcessor,
 		createFutureMessageProcessor : createFutureMessageProcessor,
+		createConversationItem : createConversationItem,
+		applyItemEvents : applyItemEvents,
 		updateConversationItemReaction : updateConversationItemReaction,
 		refreshMessage : refreshMessage,
 		removeMessage : removeMessage,
@@ -60,11 +61,11 @@ var createAtmosConversation = undefined;
 				var tlResult = JSON.parse(res);
 				if (tlResult['status'] === 'ok' && tlResult['count'] === 1) {
 					var tlItem = tlResult['results'][0];
-					$(this.selector()).prepend(createConversationItem(tlItem, true));
+					$(this.selector()).prepend(this.createConversationItem(tlItem, true));
 
 					createHyperLink($(this.selector('> div:first .conversation-item-message')));
 
-					applyItemEvents($(this.selector('> div:first')));
+					this.applyItemEvents($(this.selector('> div:first')));
 
 					showNewItems($(this.selector("> div.new-item")));
 
@@ -83,7 +84,7 @@ var createAtmosConversation = undefined;
 			this
 		);
 		atmos.sendRequest(
-			atmos.createUrl('/messages/search'),
+			this._searchUrl,
 			'GET',
 			{ "message_ids":this.mainMessageId() },
 			successCallback);
@@ -109,11 +110,11 @@ var createAtmosConversation = undefined;
 					var tlResult = JSON.parse(res);
 					if (tlResult['status'] === 'ok' && tlResult['count'] === 1) {
 						var tlItem = tlResult['results'][0];
-						$(this.selector()).prepend(createConversationItem(tlItem, false));
+						$(this.selector()).prepend(this.createConversationItem(tlItem, false));
 
 						createHyperLink($(this.selector('> div:first .conversation-item-message')));
 
-						applyItemEvents($(this.selector("> div:first")));
+						this.applyItemEvents($(this.selector("> div:first")));
 
 						// show
 						showNewItems($(this.selector("> div.new-item:first")));
@@ -128,7 +129,7 @@ var createAtmosConversation = undefined;
 				that
 			);
 			atmos.sendRequest(
-				atmos.createUrl('/messages/search'),
+				that._searchUrl,
 				'GET',
 				{ "message_ids":targetMessageId },
 				pastSuccessCallback
@@ -144,11 +145,11 @@ var createAtmosConversation = undefined;
 					var tlResult = JSON.parse(res);
 					if (tlResult['status'] === 'ok' && tlResult['count'] > 0) {
 						var tlItem = tlResult['results'][0];
-						$(this.selector()).append(createConversationItem(tlItem, false));
+						$(this.selector()).append(this.createConversationItem(tlItem, false));
 
 						createHyperLink($(this.selector('> div:last .conversation-item-message')));
 
-						applyItemEvents($(this.selector("> div:last")));
+						this.applyItemEvents($(this.selector("> div:last")));
 
 						// show
 						showNewItems($(this.selector("> div.new-item:last")));
@@ -160,7 +161,7 @@ var createAtmosConversation = undefined;
 				that
 			);
 			atmos.sendRequest(
-				atmos.createUrl('/messages/search'),
+				that._searchUrl,
 				'GET',
 				{ "reply_to_message_id":targetMessageId },
 				futureSuccessCallback
@@ -218,7 +219,7 @@ var createAtmosConversation = undefined;
 			var targetMessageId = $base.find('input[name=message-id]').val();
 			var targetMessageBody = $base.find('input[name=message-body]').val();
 			var reactionType = $(targetLink).attr('reaction-type');
-			atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody);
+			atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody, false);
 		});
 		$target.find('a.reply').on('click', function(e) {
 			var targetLink = e.currentTarget;
@@ -239,14 +240,14 @@ var createAtmosConversation = undefined;
 			if (replyType === 'quote') {
 				defaultMessage = targetMessageBody;
 			}
-			atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses);
+			atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses, false);
 		});
 		$target.find('a.remove').on('click', function(e) {
 			var targetLink = e.currentTarget;
 			var $base = $(targetLink).parent().parent();
 			var targetMessageId = $base.find('input[name=message-id]').val();
 			var targetMessageBody = $base.find('input[name=message-body]').val();
-			atmos.showMessageRemoveDialog(targetMessageId, targetMessageBody);
+			atmos.showMessageRemoveDialog(targetMessageId, targetMessageBody, false);
 		});
 	}
 
@@ -289,7 +290,7 @@ var createAtmosConversation = undefined;
 			this
 		);
 		atmos.sendRequest(
-			atmos.createUrl("/messages/search"),
+			this._searchUrl,
 			'GET',
 			{ "message_ids" : messageId },
 			successCallback
@@ -321,8 +322,5 @@ var createAtmosConversation = undefined;
 		}
 	}
 
-	createAtmosConversation = function(id, messageId) {
-		return new AtmosConversation(id, messageId);
-	}
-
+	return AtmosConversation;
 })();
