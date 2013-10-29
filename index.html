@@ -8,6 +8,9 @@
 		<!-- General foundation icon font -->
 		<link href="css/general_foundicons.css" rel="stylesheet">
 
+		<!-- drip icon font -->
+		<link href="css/dripicons.css" rel="stylesheet">
+
 		<!-- jGrowl -->
 		<link href="css/jquery.jgrowl.min.css" rel="stylesheet">
 
@@ -36,7 +39,8 @@
 <!--
 						<li><a href="#" class="icon-login"><span>Login<span></a></li>
 -->
-						<li><a href="#" class="icon-send" id="menuItemSendMessage"><span>Send Request</span></a><div class="atmos-vmenu-text"><div>Send Request</div></div></li>
+						<li><a href="#" class="icon-send" id="menuItemSendMessage"><span>Send Message</span></a><div class="atmos-vmenu-text"><div>Send Message</div></div></li>
+						<li><a href="#" class="icon-private" id="menuItemSendPrivate"><span>Send Private Message</span></a><div class="atmos-vmenu-text"><div>Send Private Message</div></div></li>
 						<li><a href="#" class="icon-avator" id="menuItemChangeAvator"><span>Change Avator</span></a><div class="atmos-vmenu-text"><div>Change Avator</div></div></li>
 						<li><a href="#" class="icon-password" id="menuItemChangePassword"><span>Change Password</span></a><div class="atmos-vmenu-text"><div>Change Password</div></div></li>
 						<li><a href="#" class="icon-logout" id="menuItemLogout"><span>Logout</span></a><div class="atmos-vmenu-text"><div>Logout</div></div></li>
@@ -60,6 +64,15 @@
 						</header>
 						<div class="timeline-items-wrapper">
 							<div class="timeline-items" id="tl_talk_timeline">
+							</div> <!-- timeline-items -->
+						</div> <!-- timeline-itmes-wrapper -->
+					</div> <!-- timeline -->
+					<div class="timeline timeline-row-private" id="tl_private_timeline-root">
+						<header class="timeline-header">
+							<span class="timeline-title">private message</span>
+						</header>
+						<div class="timeline-items-wrapper">
+							<div class="timeline-items" id="tl_private_timeline">
 							</div> <!-- timeline-items -->
 						</div> <!-- timeline-itmes-wrapper -->
 					</div> <!-- timeline -->
@@ -103,6 +116,10 @@
 							<div class="timeline-item-avator"><img src="{{timeline-item-avator-img-url}}" /></div>
 							<div class="timeline-item-username">{{timeline-item-username}}</div>
 						</div>
+						{{#is-private-message}}
+						<div class="timeline-item-address">
+							<i class="dripicon-mail"></i>{{#private-message-addresses}}<span>{{private-message-to-user-id}}</span>{{/private-message-addresses}}
+						{{/is-private-message}}
 						<div style="float: clear;" ></div>
 					</header>
 					<div class="timeline-item-message">{{timeline-item-message}}</div>
@@ -110,6 +127,7 @@
 						<input type="hidden" name="message-id" value="{{timeline-item-message-id}}" />
 						<input type="hidden" name="message-created-by" value="{{timeline-item-username}}" />
 						<input type="hidden" name="message-body" value="{{timeline-item-message}}" />
+						<input type="hidden" name="message-to-user-ids" value="{{timeline-item-to-user-ids}}" />
 						<input type="hidden" name="message-address-users" value="{{timeline-item-address-users}}" />
 						<input type="hidden" name="message-address-groups" value="{{timeline-item-address-groups}}" />
 						<div class="reaction-panel">
@@ -155,6 +173,10 @@
 							<div class="conversation-item-avator"><img src="{{conversation-item-avator-img-url}}" /></div>
 							<div class="conversation-item-username">{{conversation-item-username}}</div>
 						</div>
+						{{#is-private-message}}
+						<div class="conversation-item-address">
+							<i class="dripicon-mail"></i>{{#private-message-addresses}}<span>{{private-message-to-user-id}}</span>{{/private-message-addresses}}
+						{{/is-private-message}}
 						<div style="float: clear;" ></div>
 					</header>
 					<div class="conversation-item-message">{{conversation-item-message}}</div>
@@ -190,6 +212,10 @@
 							<div class="conversation-item-avator"><img src="{{conversation-item-avator-img-url}}" /></div>
 						</div>
 						<div class="conversation-item-username">{{conversation-item-username}}</div>
+						{{#is-private-message}}
+						<div class="conversation-item-address">
+							<i class="dripicon-mail"></i>{{#private-message-addresses}}<span>{{private-message-to-user-id}}</span>{{/private-message-addresses}}
+						{{/is-private-message}}
 					</header>
 					<div class="conversation-item-message">{{conversation-item-message}}</div>
 					<footer class="conversation-item-footer">
@@ -266,7 +292,8 @@
 					<p class="sender-panel-original-message"></p>
 				</header>
 				<div class="sender-panel-contents">
-					<textarea placeholder="Please input message." name="sender-panel-message"></textarea>
+					<textarea class="addresses" placeholder="Please input address(es)." name="sender-panel-to" rows="2"></textarea>
+					<textarea class="message" placeholder="Please input message." name="sender-panel-message"></textarea>
 					<input type="hidden" name="sender-panel-reply-to-msg-id" value="" />
 				</div>
 				<footer class="sender-panel-footer">
@@ -282,6 +309,8 @@
 		<script src="js/atmos-search-condition.js"></script>
 		<script src="js/atmos-timeline.js"></script>
 		<script src="js/atmos-conversation.js"></script>
+		<script src="js/atmos-private-timeline.js"></script>
+		<script src="js/atmos-private-conversation.js"></script>
 		<script src="js/atmos-sender-panel.js"></script>
 		<script src="js/atmos-dialog.js"></script>
 		<script src="js/atmos-sockjs.js"></script>
@@ -289,8 +318,8 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 
-				$('#menuItemSendMessage').on('click', function(e) { atmos.showMessageSenderPanel(); });
-				$('#menuItemSendPrivate').on('click', function(e) { atmos.showPrivateMessageSenderDialog(); });
+				$('#menuItemSendMessage').on('click', function(e) { atmos.showMessageSenderPanel('', '', '', [], false); });
+				$('#menuItemSendPrivate').on('click', function(e) { atmos.showMessageSenderPanel('', '', '', [], true); });
 				$('#menuItemChangeAvator').on('click', function(e) { atmos.showAvatorChangeDialog(); });
 				$('#menuItemChangePassword').on('click', function(e) { atmos.showPasswordChangeDialog(); });
 				$('#menuItemLogout').on('click', function(e) { atmos.showLogoutDialog(); });

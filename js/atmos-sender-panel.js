@@ -3,12 +3,13 @@ var createAtmosSenderPanel = undefined;
 (function() {
 	function AtmosSenderPanel(id, afterSenderPanel, closedHandler) {
 		this.id(id);
-		this._panelSelector = "#" + id;
 		this.afterSenderPanel(afterSenderPanel);
 		// TODO: 本来はDOMから取るべきだが…。
 		this.width(300);
 		this._visible = false;
 		this._closedHandler = closedHandler;
+		this._isPrivate = false;
+		this._privateMessageClass = 'private-message';
 		this.init();
 	};
 	AtmosSenderPanel.prototype = {
@@ -16,7 +17,8 @@ var createAtmosSenderPanel = undefined;
 		afterSenderPanel : afterSenderPanel,
 		width : width,
 		init : init,
-		setVariables : setVariables,
+		setVariablesForNormalMessage : setVariablesForNormalMessage,
+		setVariablesForPrivateMessage : setVariablesForPrivateMessage,
 		show : show,
 		hide : hide,
 		close : close,
@@ -24,7 +26,7 @@ var createAtmosSenderPanel = undefined;
 	}
 
 	function selector(descendants) {
-		if (can(descendants) && descendants.length) {
+		if (canl(descendants)) {
 			return this._panelSelector + ' ' + descendants;
 		}
 		else {
@@ -35,6 +37,7 @@ var createAtmosSenderPanel = undefined;
 	function id(panelId) {
 		if (canl(panelId)) {
 			this._id = panelId;
+			this._panelSelector = '#' + this._id;
 		}
 		return this._id;
 	}
@@ -63,13 +66,21 @@ var createAtmosSenderPanel = undefined;
 		atmos.applyAutoComplete($(this.selector("textarea")));
 
 		$(this.selector(".sender-panel-footer .ok-button")).on('click', function(e) {
+			if (that._isPrivate) {
+				var to = $(that.selector(":input[name=sender-panel-to]")).val();
+			}
 			var message = $(that.selector(":input[name=sender-panel-message]")).val();
 			var replyToMsgId = $(that.selector(":input[name=sender-panel-reply-to-msg-id]")).val();
 			var sendMessageCallback = new CallbackInfo(
 				function(res) {
 					if (res.status === 'ok') {
 						if ($(that.selector(":input[name=sender-panel-stay-open]")).prop('checked')) {
-							that.setVariables('', '', '');
+							if (this._isPrivate) {
+								that.setVariablesForPrivateMessage('', '', '', []);
+							}
+							else {
+								that.setVariablesForNormalMessage('', '', '', []);
+							}
 						}
 						else {
 							that.hide("normal", function() { that.close(); });
@@ -78,11 +89,18 @@ var createAtmosSenderPanel = undefined;
 				},
 				that
 			);
-			atmos.sendMessage(message, '', can(replyToMsgId) ? replyToMsgId : null, sendMessageCallback);
+			if (that._isPrivate) {
+				atmos.sendPrivate(to, message, can(replyToMsgId) ? replyToMsgId : null, sendMessageCallback);
+			}
+			else {
+				atmos.sendMessage(message, '', can(replyToMsgId) ? replyToMsgId : null, sendMessageCallback);
+			}
 		});
 	}
 
-	function setVariables(message, replyToMsgId, replyToMessage, addresses) {
+	function setVariablesForNormalMessage(message, replyToMsgId, replyToMessage, addresses) {
+		this._isPrivate = false;
+		$(this.selector()).removeClass(this._privateMessageClass);
 		if (can(addresses)) {
 			addresses.forEach(function(address) {
 				if (message.indexOf(address) === -1) {
@@ -101,7 +119,36 @@ var createAtmosSenderPanel = undefined;
 			$(this.selector(".sender-panel-header .sender-panel-title")).text('New Message');
 		}
 
+		$(this.selector(":input[name=sender-panel-to]")).parent().hide();
+
 		$(this.selector(":input:first")).focus();
+	}
+
+	function setVariablesForPrivateMessage(message, replyToMsgId, replyToMessage, toAddresses) {
+		this._isPrivate = true;
+		$(this.selector()).addClass(this._privateMessageClass);
+
+		var to = toAddresses.filter(function(address) { return canl(address); } ).join(' ');
+		$(this.selector(":input[name=sender-panel-to]")).val('').val(to);
+		$(this.selector(":input[name=sender-panel-message]")).val('').val(message);
+		$(this.selector(":input[name=sender-panel-reply-to-msg-id]")).val('').val(replyToMsgId);
+		$(this.selector(".sender-panel-header .sender-panel-original-message")).text('').text(replyToMessage);
+
+		if (canl(replyToMsgId)) {
+			$(this.selector(".sender-panel-header .sender-panel-title")).text('Reply Private Message');
+		}
+		else {
+			$(this.selector(".sender-panel-header .sender-panel-title")).text('New Private Message');
+		}
+
+		$(this.selector(":input[name=sender-panel-to]")).parent().show();
+
+		if (canl(to)) {
+			$(this.selector(":input[name=sender-panel-message]")).focus();
+		}
+		else {
+			$(this.selector(":input[name=sender-panel-to]")).focus();
+		}
 	}
 
 	function show(speed, callback) {
@@ -109,7 +156,9 @@ var createAtmosSenderPanel = undefined;
 			this._visible = true;
 			$(this.selector()).show(speed, callback);
 			//TODO 本来は決め打ちだめだけど
-			$(this.afterSenderPanel()).animate({left: "356px" }, 500);
+			var width = this._width + 56;
+			$(this.afterSenderPanel()).animate({left: width + "px" }, 500);
+			$(this.afterSenderPanel()).find(".contents:first").css("padding-right", width);
 		}
 	}
 
@@ -119,6 +168,7 @@ var createAtmosSenderPanel = undefined;
 			$(this.selector()).hide(speed, callback);
 			//TODO 本来は決め打ちだめだけど
 			$(this.afterSenderPanel()).animate({left: "56px" }, 500);
+			$(this.afterSenderPanel()).find(".contents:first").css("padding-right", 56);
 		}
 	}
 

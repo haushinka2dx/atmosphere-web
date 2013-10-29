@@ -4,6 +4,7 @@ var atmos = null;
 	function Atmos() {
 		this.baseUrl = '/atmos';
 		this._timelines = {};
+		this._privateTimelines = {};
 		this._allUserIds = [];
 		this._allGroupIds = [];
 		this._sockjs = createAtmosSockJS();
@@ -25,7 +26,9 @@ var atmos = null;
 		sendPrivate : sendPrivate,
 		responseToMessage : responseToMessage,
 		getTimelines : getTimelines,
+		getPrivateTimelines : getPrivateTimelines,
 		addTimeline : addTimeline,
+		addPrivateTimeline : addPrivateTimeline,
 		showLoginDialog : showLoginDialog,
 		showLogoutDialog : showLogoutDialog,
 		showPasswordChangeDialog : showPasswordChangeDialog,
@@ -41,6 +44,7 @@ var atmos = null;
 		initScrollbars : initScrollbars,
 		processServerNotification : processServerNotification,
 		refreshTimelines : refreshTimelines,
+		refreshPrivateTimelines : refreshPrivateTimelines,
 		allUserIds : allUserIds,
 		allGroupIds : allGroupIds,
 		clearCurrentInfo : clearCurrentInfo,
@@ -239,7 +243,7 @@ var atmos = null;
 	// remove  message
 	// callback(when successed): { "status":"ok" }
 	// callback(when failed): { "status":"error" }
-	function removeMessage(targetMessageId, callback) {
+	function removeMessage(targetMessageId, isPrivate, callback) {
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var sendResult = JSON.parse(res);
@@ -260,13 +264,18 @@ var atmos = null;
 			this
 		);
 		var failureCallback = createDefaultFailureCallback(this, callback, 'Message was not removed.');
-		this.sendRequest(this.createUrl('/messages/destroy'), 'POST', { _id: targetMessageId }, successCallback, failureCallback);
+		if (isPrivate) {
+			this.sendRequest(this.createUrl('/private/destroy'), 'POST', { _id: targetMessageId }, successCallback, failureCallback);
+		}
+		else {
+			this.sendRequest(this.createUrl('/messages/destroy'), 'POST', { _id: targetMessageId }, successCallback, failureCallback);
+		}
 	}
 
 	// send message
 	// callback(when successed): { "status":"ok" }
 	// callback(when failed): { "status":"error" }
-	function sendPrivate(addressUserId, message, callback) {
+	function sendPrivate(addressUserIds, message, replyToMessageId, callback) {
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var sendResult = JSON.parse(res);
@@ -287,13 +296,13 @@ var atmos = null;
 			this
 		);
 		var failureCallback = createDefaultFailureCallback(this, callback, 'Private Message was not sent.');
-		this.sendRequest(this.createUrl('/private/send'), 'POST', { to_user_id : addressUserId, message : message }, successCallback, failureCallback);
+		this.sendRequest(this.createUrl('/private/send'), 'POST', { to_user_id : addressUserIds, message : message, reply_to : replyToMessageId }, successCallback, failureCallback);
 	}
 
 	// response to message
 	// callback(when successed): { "status":"ok" }
 	// callback(when failed): { "status":"error" }
-	function responseToMessage(targetMessageId, reactionType, callback) {
+	function responseToMessage(targetMessageId, reactionType, isPrivate, callback) {
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var sendResult = JSON.parse(res);
@@ -314,7 +323,12 @@ var atmos = null;
 			this
 		);
 		var failureCallback = createDefaultFailureCallback(this, callback, 'Responding to Message was failed.');
-		this.sendRequest(this.createUrl('/messages/response'), 'POST', { target_id : targetMessageId, action : reactionType }, successCallback, failureCallback);
+		if (isPrivate) {
+			this.sendRequest(this.createUrl('/private/response'), 'POST', { target_id : targetMessageId, action : reactionType }, successCallback, failureCallback);
+		}
+		else {
+			this.sendRequest(this.createUrl('/messages/response'), 'POST', { target_id : targetMessageId, action : reactionType }, successCallback, failureCallback);
+		}
 	}
 
 	function getTimelines() {
@@ -326,8 +340,17 @@ var atmos = null;
 		return tls;
 	}
 
+	function getPrivateTimelines() {
+		var that = this;
+		var tls = [];
+		Object.keys(that._privateTimelines).forEach(function(key) {
+			tls.push(that._privateTimelines[key]);
+		});
+		return tls;
+	}
+
 	function showLoginDialog(message, defaultUserId) {
-		createAtmosDialog(
+		(new AtmosDialog(
 			'Atmosphere',
 			[ can(message) ? message : ''],
 			[ {"input-type":"text", "input-place-holder":"user id", "input-name":"user_id", "input-value":defaultUserId },
@@ -351,11 +374,11 @@ var atmos = null;
 					atmos.login(userId, password, postLogin);
 				}
 			}
-		).show();
+		)).show();
 	}
 
 	function showLogoutDialog(message, defaultUserId) {
-		createAtmosDialog(
+		(new AtmosDialog(
 			'Logout?',
 			[ ],
 			[ ],
@@ -365,11 +388,11 @@ var atmos = null;
 					atmos.logout();
 				}
 			}
-		).show();
+		)).show();
 	}
 
 	function showPasswordChangeDialog(message) {
-		createAtmosDialog(
+		(new AtmosDialog(
 			'Change password',
 			[ can(message) ? message : '' ],
 			[ {"input-type":"password", "input-place-holder":"current password", "input-name":"current-password", "input-value":"" },
@@ -392,12 +415,12 @@ var atmos = null;
 					atmos.changePassword(currentPassword, newPassword, postChange);
 				}
 			}
-		).show();
+		)).show();
 	}
 
 	function showAvatorChangeDialog() {
 		var that = this;
-		var dialog = createAtmosDialog(
+		var dialog = new AtmosDialog(
 			'Change avator',
 			[  ],
 			[ {"input-type":"file", "input-place-holder":"", "input-name":"profileImage", "input-value":null } ],
@@ -437,7 +460,7 @@ var atmos = null;
 				}
 			}
 		}
-		createAtmosDialog(
+		(new AtmosDialog(
 			'Send Message',
 			msgs,
 			[ {"is-textarea":true, "input-place-holder":"message", "input-name":"message", "input-id":"inputted-message", "input-value":defaultMessage } ],
@@ -449,25 +472,31 @@ var atmos = null;
 					atmos.sendMessage(message, messageType, replyToMessageId);
 				}
 			}
-		).show();
+		)).show();
 	}
 
-	function showMessageRemoveDialog(targetMessageId, targetMessageBody) {
+	function showMessageRemoveDialog(targetMessageId, targetMessageBody, isPrivate) {
+		if (isPrivate) {
+			var title = 'Remove Private Message';
+		}
+		else {
+			var title = 'Remove Message';
+		}
 		var msgs = [];
 		msgs.push('Are you sure to remove message?');
 		msgs.push('');
 		msgs.push(targetMessageBody);
-		createAtmosDialog(
-			'Remove Message',
+		(new AtmosDialog(
+			title,
 			msgs,
 			[ ],
 			true,
 			function(result) {
 				if (result['action'] === 'ok') {
-					atmos.removeMessage(targetMessageId);
+					atmos.removeMessage(targetMessageId, isPrivate);
 				}
 			}
-		).show();
+		)).show(isPrivate);
 	}
 
 	function showPrivateMessageSenderDialog(addressUserId, defaultMessage, replyToMessageId, originalMessageBody) {
@@ -477,7 +506,7 @@ var atmos = null;
 			msgs.push('');
 			msgs.push(originalMessageBody);
 		}
-		createAtmosDialog(
+		(new AtmosDialog(
 			'Send Private',
 			msgs,
 			[ {"is-textarea":false, "input-type":"text", "input-place-holder":"user id of destination", "input-name":"address-user-id", "input-id":"inputted-address-user-id", "input-value":addressUserId },
@@ -490,11 +519,11 @@ var atmos = null;
 					atmos.sendPrivate(dstUserId, message);
 				}
 			}
-		).show();
+		)).show(true);
 	}
 
-	function showResponseDialog(targetMessageId, reactionType, messageBody) {
-		createAtmosDialog(
+	function showResponseDialog(targetMessageId, reactionType, messageBody, isPrivate) {
+		(new AtmosDialog(
 			'Response',
 			[ 'Are you sure to response "' + reactionType + '" ?',
 			  '',
@@ -503,20 +532,26 @@ var atmos = null;
 			true,
 			function(result) {
 				if (result['action'] === 'ok') {
-					atmos.responseToMessage(targetMessageId, reactionType);
+					atmos.responseToMessage(targetMessageId, reactionType, isPrivate);
 				}
 			}
-		).show();
+		)).show(isPrivate);
 	}
 
-	function showMessageSenderPanel(defaultMessage, replyToMsgId, replyToMessage, addresses) {
+	function showMessageSenderPanel(defaultMessage, replyToMsgId, replyToMessage, addresses, isPrivate) {
 		var that = this;
 		if (!can(this._senderPanel)) {
 			var id = 'sender-panel-' + uuid()
 			this._senderPanel = createAtmosSenderPanel(id, $("div.contents-wrapper:first"), function() { that._senderPanel = undefined; });
 		}
-		this._senderPanel.setVariables(defaultMessage, replyToMsgId, replyToMessage, addresses);
+		if (isPrivate) {
+			this._senderPanel.setVariablesForPrivateMessage(defaultMessage, replyToMsgId, replyToMessage, addresses);
+		}
+		else {
+			this._senderPanel.setVariablesForNormalMessage(defaultMessage, replyToMsgId, replyToMessage, addresses);
+		}
 		this._senderPanel.show("normal");
+		this.initScrollbars();
 	}
 
 	function sendRequest(url, method, dataJSON, successCallback, failureCallback) {
@@ -610,6 +645,7 @@ var atmos = null;
 							this.loadAllUserIds();
 							this.loadAllGroupIds();
 							this.refreshTimelines();
+							this.refreshPrivateTimelines();
 							this.initSockJS();
 						}
 						else {
@@ -628,13 +664,18 @@ var atmos = null;
 		// defines timelines
 		var scGlobal = createAtmosSearchCondition();
 		scGlobal.count(this._timelineCount);
-		var tlGlobal = createAtmosTimeline('tl_global_timeline', 'Global', 'all messages', this.createUrl('/messages/global_timeline'), scGlobal);
+		var tlGlobal = new AtmosTimeline('tl_global_timeline', 'Global', 'all messages', this.createUrl('/messages/global_timeline'), scGlobal);
 		this.addTimeline(tlGlobal);
 
 		var scTalk = createAtmosSearchCondition();
 		scTalk.count(this._timelineCount);
-		var tlTalk = createAtmosTimeline('tl_talk_timeline', 'Talk', '', this.createUrl('/messages/talk_timeline'), scTalk);
+		var tlTalk = new AtmosTimeline('tl_talk_timeline', 'Talk', '', this.createUrl('/messages/talk_timeline'), scTalk);
 		this.addTimeline(tlTalk);
+
+		var scPrivate = createAtmosSearchCondition();
+		scPrivate.count(this._timelineCount);
+		var tlPrivate = new AtmosPrivateTimeline('tl_private_timeline', 'Private', '', this.createUrl('/private/timeline'), scPrivate);
+		this.addPrivateTimeline(tlPrivate);
 
 		this.initScrollbars();
 	}
@@ -648,6 +689,7 @@ var atmos = null;
 	function initScrollbars() {
 		$('.contents').perfectScrollbar(atmos.perfectScrollbarSetting);
 		this.getTimelines().forEach(function(tl) { tl.setScrollbar(); });
+		this.getPrivateTimelines().forEach(function(tl) { tl.setScrollbar(); });
 	}
 
 	function processServerNotification(msgJSON) {
@@ -661,6 +703,17 @@ var atmos = null;
 		else if (msgJSON['action'] === 'removedMessage') {
 			var removedMsgId = msgJSON['info']['_id'];
 			this.getTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
+		}
+		else if (msgJSON['action'] === 'sendResponsePrivate') {
+			var targetMsgId = msgJSON['info']['target_msg_id'];
+			this.getPrivateTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
+		}
+		else if (msgJSON['action'] === 'sendPrivate') {
+			this.refreshPrivateTimelines();
+		}
+		else if (msgJSON['action'] === 'removedPrivate') {
+			var removedMsgId = msgJSON['info']['_id'];
+			this.getPrivateTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
 		}
 	}
 
@@ -681,8 +734,29 @@ var atmos = null;
 		}
 	}
 
+	function addPrivateTimeline(timeline) {
+		if (can(timeline)) {
+			var addedKey = timeline.id();
+			var alreadyExists = false;
+			Object.keys(this._privateTimelines).forEach(function(key, i, a) {
+				if (key === addedKey) {
+					alreadyExists = true;
+					return;
+				}
+			});
+
+			if (!alreadyExists) {
+				this._privateTimelines[addedKey] = timeline;
+			}
+		}
+	}
+
 	function refreshTimelines() {
 		this.getTimelines().forEach(function(tl) { tl.init(); });
+	}
+
+	function refreshPrivateTimelines() {
+		this.getPrivateTimelines().forEach(function(tl) { tl.init(); });
 	}
 
 	function allUserIds(ids) {
@@ -704,6 +778,7 @@ var atmos = null;
 		this._atmosAuthSessionId = null;
 		this._atmosCurrentUserId = null;
 		this._timelines = [];
+		this._privateTimelines = [];
 		this._allUserIds = [];
 		this._allGroupIds = [];
 	}

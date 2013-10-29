@@ -292,6 +292,21 @@ html, body {
 	padding-top: 2px;
 }
 
+.timeline-item-address,
+.conversation-item-address {
+	text-align: right;
+}
+
+.timeline-item-address > i,
+.conversation-item-address > i {
+	margin-right: 2px;
+}
+
+.timeline-item-address > span,
+.conversation-item-address > span {
+	margin-right: 0.4em;
+}
+
 .timeline-item-message,
 .conversation-item-message {
 	white-space: pre-wrap;
@@ -360,6 +375,11 @@ html, body {
 	display: inline-block;
 	padding-top: 1em;
 	vertical-align: top;
+}
+
+.conversation-main .conversation-item-address {
+	float: right;
+	margin-top: 2em;
 }
 
 .conversation-main .conversation-item-message {
@@ -448,6 +468,11 @@ html, body {
 	margin: 3px 0 3px 0;
 	line-height: 1.4em;
 	width: 97%;
+}
+
+.atmos-modal-body textarea.addresses,
+.sender-panel textarea.addresses {
+	height: 2.5em;
 }
 
 .atmos-modal-body input[type=checkbox] {

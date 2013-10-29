@@ -12,13 +12,28 @@
 	background-color: #47a3da;
 }
 
+.private-message .atmos-modal,
+.private-message.sender-panel {
+	/* CARROT */
+	background-color: #e67e22;
+}
+
 .atmos-modal-header {
 	background-color: #3692c9;
+}
+
+.private-message .atmos-modal-header {
+	background-color: #e2620c;
 }
 
 .atmos-modal-header a,
 .sender-panel-header a {
 	color: #58b4eb;
+}
+
+.private-message .atmos-modal-header a,
+.private-message .sender-panel-header a {
+	color: #f39c12;
 }
 
 .atmos-modal-body ul,
@@ -32,6 +47,14 @@
 .sender-panel textarea {
 	background-color: #69c5fc;
 	color: #fff;
+}
+
+.private-message .atmos-modal-body input,
+.private-message .atmos-modal-body textarea,
+.private-message.sender-panel input,
+.private-message.sender-panel textarea {
+	background-color: #f39c12;
+	outline-color: #ea770f;
 }
 
 .atmos-modal-body input::-webkit-input-placeholder,
@@ -48,10 +71,29 @@
 	color: #3692c9;
 }
 
+.private-message .atmos-modal-body input::-webkit-input-placeholder,
+.private-message .atmos-modal-body textarea::-webkit-input-placeholder,
+.private-message.sender-panel input::-webkit-input-placeholder,
+.private-message.sender-panel textarea::-webkit-input-placeholder {
+	color: #e2620c;
+}
+
+.private-message .atmos-modal-body input::-moz-placeholder,
+.private-message .atmos-modal-body textarea::-moz-placeholder,
+.private-message.sender-panel input::-moz-placeholder,
+.private-message.sender-panel textarea::-moz-placeholder {
+	color: #e2620c;
+}
+
 .atmos-modal-footer button,
 .sender-panel button {
 	color: #fff;
 	background-color: #3692c9;
+}
+
+.private-message .atmos-modal-footer button,
+.private-message.sender-panel button {
+	background-color: #e2620c;
 }
 
 .atmos-modal-footer button:active,
@@ -60,6 +102,13 @@
 .sender-panel button:focus {
 	color: #fff;
 	background-color: #69c5fc;
+}
+
+.private-message .atmos-modal-footer button:active,
+.private-message .atmos-modal-footer button:focus,
+.private-message.sender-panel button:active,
+.private-message.sender-panel button:focus {
+	background-color: #e67e22;
 }
 
 .atmos-modal-footer button:active:before,
@@ -196,6 +245,23 @@
 	/* TURQUOISE */
 	background-color: #1abc9c;
 }
+
+.timeline-row-private > .timeline-items-wrapper {
+	background-color: #444444;
+}
+
+.timeline-row-private > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper {
+	background-color: #e2620c;
+}
+
+.timeline-row-private > .timeline-items-wrapper > .timeline-items > .timeline-item-wrapper:hover {
+	background-color: #e67e22;
+}
+
+.timeline-row-private .timeline-read-more {
+	background-color: #e67e22;
+}
+
 
 .timeline-item-message a,
 .conversation-item-message a,

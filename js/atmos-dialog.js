@@ -1,6 +1,4 @@
-var createAtmosDialog = undefined;
-
-(function() {
+var AtmosDialog = (function() {
 	function AtmosDialog(title, messages, inputFields, okButtonEnabled, closedHandler) {
 		this.id(uuid());
 		this.title(title);
@@ -105,7 +103,7 @@ var createAtmosDialog = undefined;
 		return this.generatedDialog;
 	}
 
-	function show() {
+	function show(isPrivate) {
 		var dialogDom = this.createDialog();
 		$("body").append(dialogDom);
 
@@ -119,6 +117,10 @@ var createAtmosDialog = undefined;
 		});
 
 		atmos.applyAutoComplete($("#" + this.id() + " textarea"));
+
+		if (isPrivate) {
+			$("#" + this.id()).addClass('private-message');
+		}
 
 		$("#" + this.id()).show();
 		$("input[type='text'],input[type='password'],textarea", "#" + this.id() + " .atmos-modal-wrapper .atmos-modal-body").first().focus();
@@ -159,8 +161,5 @@ var createAtmosDialog = undefined;
 		return inputs;
 	}
 
-	createAtmosDialog = function(title, messages, inputFields, okButtonEnabled, closedHandler) {
-		return new AtmosDialog(title, messages, inputFields, okButtonEnabled, closedHandler);
-	}
-
+	return AtmosDialog;
 })();
