@@ -42,6 +42,7 @@ var createAtmosSockJS = undefined;
 			that.stop_reconnect();
 			that._sock.close();
 			that._sock = undefined;
+			that._receivers = [];
 		}
 	}
 
