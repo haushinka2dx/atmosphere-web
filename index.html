@@ -11,6 +11,9 @@
 		<!-- drip icon font -->
 		<link href="css/dripicons.css" rel="stylesheet">
 
+		<!-- simptip -->
+		<link href="css/simptip.css" rel="stylesheet">
+
 		<!-- jGrowl -->
 		<link href="css/jquery.jgrowl.min.css" rel="stylesheet">
 
@@ -159,16 +162,16 @@
 						<input type="hidden" name="message-address-groups" value="{{timeline-item-address-groups}}" />
 						<div class="reaction-panel">
 							{{#reactions}}
-							<a href="#" class="reaction" reaction-type="{{reaction-type}}"><i class="{{reaction-icon-class}}"></i></a>
+							<a href="#" class="reaction simptip-position-bottom simptip-position-bottomright simptip-movable" data-tooltip="{{reaction-type}}" reaction-type="{{reaction-type}}"><i class="{{reaction-icon-class}}"></i></a>
 							<a href="#" class="reaction-count" reaction-type="{{reaction-type}}">{{reaction-count}}</a>
 							{{/reactions}}
 						</div>
 						<div class="reply-panel">
-							<a href="#" class="reply" reply-type="quote"><i class="foundicon-quote"></i></a>
-							<a href="#" class="reply" reply-type="no-quote"><i class="foundicon-left-arrow"></i></a>
-							<a href="#"><i class="foundicon-people"></i></a>
+							<a href="#" class="reply simptip-position-bottom simptip-movable" data-tooltip="quote reply" reply-type="quote"><i class="foundicon-quote"></i></a>
+							<a href="#" class="reply simptip-position-bottom simptip-movable" data-tooltip="reply" reply-type="no-quote"><i class="foundicon-left-arrow"></i></a>
+							<a href="#" class="simptip-position-bottom simptip-movable" data-tooltip="conversation"><i class="foundicon-people"></i></a>
 							{{#is-own-message}}
-							<a href="#" class="remove"><i class="foundicon-trash"></i></a>
+							<a href="#" class="remove simptip-position-bottom simptip-movable" data-tooltip="remove"><i class="foundicon-trash"></i></a>
 							{{/is-own-message}}
 						</div>
 					</footer>
@@ -216,16 +219,16 @@
 						<input type="hidden" name="message-address-groups" value="{{conversation-item-address-groups}}" />
 						<div class="reaction-panel">
 							{{#reactions}}
-							<a href="#" class="reaction" reaction-type="{{reaction-type}}"><i class="{{reaction-icon-class}}"></i></a>
+							<a href="#" class="reaction simptip-position-bottom simptip-position-bottomright simptip-movable" data-tooltip="{{reaction-type}}" reaction-type="{{reaction-type}}"><i class="{{reaction-icon-class}}"></i></a>
 							<a href="#" class="reaction-count" reaction-type="{{reaction-type}}">{{reaction-count}}</a>
 							{{/reactions}}
 						</div>
 						<div class="reply-panel">
-							<a href="#" class="reply" reply-type="quote"><i class="foundicon-quote"></i></a>
-							<a href="#" class="reply" reply-type="no-quote"><i class="foundicon-left-arrow"></i></a>
-							<a href="#"><i class="foundicon-people"></i></a>
+							<a href="#" class="reply simptip-position-bottom simptip-movable" data-tooltip="quote reply" reply-type="quote"><i class="foundicon-quote"></i></a>
+							<a href="#" class="reply simptip-position-bottom simptip-movable" data-tooltip="reply" reply-type="no-quote"><i class="foundicon-left-arrow"></i></a>
+							<a href="#" class="simptip-position-bottom simptip-movable" data-tooltip="conversation"><i class="foundicon-people"></i></a>
 							{{#is-own-message}}
-							<a href="#" class="remove"><i class="foundicon-trash"></i></a>
+							<a href="#" class="remove simptip-position-bottom simptip-movable" data-tooltip="remove"><i class="foundicon-trash"></i></a>
 							{{/is-own-message}}
 						</div>
 					</footer>
@@ -257,16 +260,16 @@
 						<input type="hidden" name="message-address-groups" value="{{conversation-item-address-groups}}" />
 						<div class="reaction-panel">
 							{{#reactions}}
-							<a href="#" class="reaction" reaction-type="{{reaction-type}}"><i class="{{reaction-icon-class}}"></i></a>
+							<a href="#" class="reaction simptip-position-bottom simptip-position-bottomright simptip-movable" data-tooltip="{{reaction-type}}" reaction-type="{{reaction-type}}"><i class="{{reaction-icon-class}}"></i></a>
 							<a href="#" class="reaction-count" reaction-type="{{reaction-type}}">{{reaction-count}}</a>
 							{{/reactions}}
 						</div>
 						<div class="reply-panel">
-							<a href="#" class="reply" reply-type="quote"><i class="foundicon-quote"></i></a>
-							<a href="#" class="reply" reply-type="no-quote"><i class="foundicon-left-arrow"></i></a>
-							<a href="#"><i class="foundicon-people"></i></a>
+							<a href="#" class="reply simptip-position-bottom simptip-movable" data-tooltip="quote reply" reply-type="quote"><i class="foundicon-quote"></i></a>
+							<a href="#" class="reply simptip-position-bottom simptip-movable" data-tooltip="reply" reply-type="no-quote"><i class="foundicon-left-arrow"></i></a>
+							<a href="#" class="simptip-position-bottom simptip-movable" data-tooltip="conversation"><i class="foundicon-people"></i></a>
 							{{#is-own-message}}
-							<a href="#" class="remove"><i class="foundicon-trash"></i></a>
+							<a href="#" class="remove simptip-position-bottom  simptip-movable" data-tooltip="remove"><i class="foundicon-trash"></i></a>
 							{{/is-own-message}}
 						</div>
 					</footer>
