@@ -651,6 +651,133 @@ html, body {
 	margin-right: 3px;
 }
 
+.profile-wrapper {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 10000;
+}
+
+.profile-wrapper .profile {
+	width: 500px;
+	height: 500px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	transform: translateX(-50%) translateY(-50%);
+}
+
+.profile-wrapper .profile a.close-button {
+	float: right;
+}
+
+.profile-wrapper .profile > header {
+	width: 100%;
+	height: 50%;
+	text-align: center;
+}
+
+.profile-wrapper .profile > header div.avator {
+	position: relative;
+	left: 50%;
+	top: 50%;
+	width: 100%;
+	height: 80%;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	transform: translateX(-50%) translateY(-50%);
+}
+
+.profile-wrapper .profile > header div.name {
+	font-size: 1.5em;
+	position: fixed;
+	top: 15%;
+	left: 50%;
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	transform: translateX(-50%) translateY(-50%);
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 3px;
+}
+
+.profile-wrapper .profile > header div.introduction {
+	position: fixed;
+	top: 30%;
+	left: 50%;
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	transform: translateX(-50%) translateY(-50%);
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 3px;
+}
+
+.profile-wrapper .profile > header div.action-panel {
+	position: fixed;
+	top: 41%;
+	left: 50%;
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	transform: translateX(-50%) translateY(-50%);
+	font-size: 2em;
+}
+
+.profile-wrapper .profile > header div.action-panel div.action {
+	display: inline-block;
+	padding-left: 0.25em;
+	padding-right: 0.25em;
+	border-radius: 3px;
+}
+
+.profile-wrapper .profile .profile-main {
+	position: relative;
+	width: 100%;
+	height: 50%;
+	overflow-y: hidden;
+}
+
+.profile-wrapper .profile .profile-main header {
+	position: relative;
+	width: 100%;
+	height: 10%;
+	text-align: center;
+}
+
+.profile-wrapper .profile .profile-main div.timeline {
+	position: relative;
+	width: 100%;
+	height: 90%;
+	border: none;
+	overflow-y: hidden;
+}
+
+.profile-wrapper .profile .profile-main div.timeline article.timeline-item {
+	position: relative;
+	width: 96%;
+	padding: 2%;
+}
+
+.profile-wrapper .profile .profile-main div.timeline article.timeline-item header {
+	color: rgba(205,205,205,1.0);
+	font-size: 0.6em;
+	text-align: right;
+}
+
+.profile-wrapper .profile .profile-main div.timeline article.timeline-item div.message {
+	font-size: 0.9em;
+}
+
+.profile-wrapper .profile .profile-main div.timeline div.timeline-item-separator {
+	position: relative;
+	width: 80%;
+	height: 2px;
+	margin-left: 10%;
+	margin-right: 10%;
+}
+
 div.textcomplete-wrapper {
 	width: 100%;
 }
