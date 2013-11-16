@@ -70,7 +70,9 @@ var AtmosProfile = (function() {
 		);
 		var failureCallback = new CallbackInfo(
 			function(xhr, textStatus, errorThrown) {
-				//TODO: diaplay error dialog or error notification
+				if (can(callback)) {
+					callback.fire({status:'ng'});
+				}
 			},
 			this
 		);
