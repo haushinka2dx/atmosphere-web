@@ -557,6 +557,10 @@ var atmos = null;
 	}
 
 	function showProfileDialog(userId) {
+		if (can(this._currentProfileDialog)) {
+			this._currentProfileDialog.close();
+			this._currentProfileDialog = undefined;
+		}
 		var profile = new AtmosProfile(userId);
 		var show = new CallbackInfo(
 			function(res) {
@@ -570,6 +574,7 @@ var atmos = null;
 			this
 		);
 		profile.init(show);
+		this._currentProfileDialog = profile;
 	}
 
 	function sendRequest(url, method, dataJSON, successCallback, failureCallback) {
