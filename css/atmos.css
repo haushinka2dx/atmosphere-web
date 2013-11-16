@@ -326,10 +326,15 @@ html, body {
 .reply-panel > a {
 }
 
+.conversation-main .reply-panel {
+	margin-left: 10px;
+}
+
 .reaction-panel {
 	float: right;
 	opacity: 0;
 	transition: opacity 0.5s ease-out 0;
+	margin-right: 2px;
 }
 
 .timeline-item:hover > .timeline-item-footer > .reaction-panel,
