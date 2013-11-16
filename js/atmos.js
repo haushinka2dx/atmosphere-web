@@ -734,6 +734,9 @@ var atmos = null;
 		if (msgJSON['action'] === 'sendResponse') {
 			var targetMsgId = msgJSON['info']['target_msg_id'];
 			this.getTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
+			if (can(this._currentProfileDialog)) {
+				this._currentProfileDialog.refreshMessage(targetMsgId);
+			}
 		}
 		else if (msgJSON['action'] === 'sendMessage') {
 			this.refreshTimelines();
@@ -741,6 +744,9 @@ var atmos = null;
 		else if (msgJSON['action'] === 'removedMessage') {
 			var removedMsgId = msgJSON['info']['_id'];
 			this.getTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
+			if (can(this._currentProfileDialog)) {
+				this._currentProfileDialog.removeMessage(removedMsgId);
+			}
 		}
 		else if (msgJSON['action'] === 'sendResponsePrivate') {
 			var targetMsgId = msgJSON['info']['target_msg_id'];

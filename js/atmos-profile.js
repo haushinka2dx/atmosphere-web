@@ -176,11 +176,51 @@ var AtmosProfile = (function() {
 		return Hogan.compile($("#tmpl-profile-dialog-timeline-item").text()).render(context);
 	}
 
-	function setScrollbar() {
-		if (this.scrollbarWasSet === false) {
-			$(this.selector()).parent().perfectScrollbar(atmos.perfectScrollbarSetting);
-			this.scrollbarWasSet = true;
-		}
+	AtmosProfile.prototype.updateTimelineItemReaction = function(msg) {
+		var that = this;
+		var msgId = msg['_id'];
+		var responses = msg['responses'];
+		Object.keys(responses).forEach(function(resType, i, a) {
+			var responderUserIds = responses[resType];
+			$(that.selector("article.msg_" + msgId + " div.reaction-panel a.reaction-count[reaction-type=" + resType + "]")).text(responderUserIds.length);
+		});
+		var $reactionTargetArticles = $(this.selector("article.msg_" + msgId));
+		var delay = 0;
+		$($reactionTargetArticles.get().reverse()).each(function(index) {
+			applyMagicEffect($(this), 'magictime tada', delay);
+			delay += 60;
+		});
+	};
+
+	AtmosProfile.prototype.refreshMessage = function(messageId) {
+		var successCallback = new CallbackInfo(
+			function(res, textStatus, xhr) {
+				var tlResult = JSON.parse(res);
+				if (tlResult['status'] === 'ok') {
+					if (tlResult['count'] === 1) {
+						var tlItem = tlResult['results'][0];
+						this.updateTimelineItemReaction(tlItem);
+					}
+				}
+			},
+			this
+		);
+		atmos.sendRequest(
+			this._searchUrl,
+			'GET',
+			{ "message_ids" : messageId },
+			successCallback
+		);
+	};
+
+	AtmosProfile.prototype.removeMessage = function(messageId) {
+		var $removedMessageArticle = $(this.selector("article.msg_" + messageId));
+		var delay = 0;
+		$($removedMessageArticle.get().reverse()).each(function(index) {
+			applyMagicEffect($(this), 'magictime holeOut', delay, function($target) { $target.remove(); });
+			applyMagicEffect($(this).next('div.timeline-item-separator'), 'magictime holeOut', delay, function($target) { $target.remove(); });
+			delay += 60;
+		});
 	}
 
 	AtmosProfile.prototype.selector = function(descendants) {
