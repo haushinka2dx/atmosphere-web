@@ -326,6 +326,13 @@ html, body {
 .reply-panel > a {
 }
 
+.timeline-item-avator:hover,
+.timeline-item-username:hover,
+.conversation-item-avator:hover,
+.conversation-item-username:hover {
+	cursor: pointer;
+}
+
 .conversation-main .reply-panel {
 	margin-left: 10px;
 }
