@@ -5,8 +5,6 @@ var AtmosProfile = (function() {
 		this._searchUrl = atmos.createUrl('/messages/search');
 		this._recentlyMessagesCount = 20;
 	};
-	AtmosProfile.prototype = Object.create(AtmosProfile.prototype);
-	AtmosProfile.prototype.constructor = AtmosProfile;
 
 	AtmosProfile.prototype.id = function(profId) {
 		if (canl(profId)) {
