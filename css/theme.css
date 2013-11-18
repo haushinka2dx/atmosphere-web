@@ -275,6 +275,59 @@
 	color: #d5d5d5;
 }
 
+.profile-wrapper {
+	background-color: rgba(0,0,0,0.6);
+}
+
+.profile-wrapper .profile {
+	color: rgba(255,255,255,1.0);
+	background-color: rgba(0,0,0,0.7);
+}
+
+.profile-wrapper .profile a.close-button {
+	color: rgba(100,100,100,1.0);
+	text-decoration: none;
+}
+
+.profile-wrapper .profile > header {
+}
+
+.profile-wrapper .profile > header div.name {
+	background-color: rgba(0,0,0,0.3);
+}
+
+.profile-wrapper .profile > header div.introduction {
+	background-color: rgba(0,0,0,0.3);
+}
+
+.profile-wrapper .profile > header div.action-panel a {
+	color: rgba(255,255,255,1.0);
+	text-decoration: none;
+}
+
+.profile-wrapper .profile > header div.action-panel div.action {
+	background-color: rgba(0,0,0,0.3);
+}
+
+.profile-wrapper .profile .profile-main {
+}
+
+.profile-wrapper .profile .profile-main div.timeline article.timeline-item {
+}
+
+.profile-wrapper .profile .profile-main div.timeline article.timeline-item header {
+	color: rgba(205,205,205,1.0);
+}
+
+.profile-wrapper .profile .profile-main div.timeline article.timeline-item div.message a {
+	color: rgba(255,255,255,1.0);
+	text-decoration: none;
+}
+
+.profile-wrapper .profile .profile-main div.timeline div.timeline-item-separator {
+	background-color: rgba(100,100,100,0.3);
+}
+
 .palette-global-timeline-base-color {
 	/* BELIZE HOLE */
 	background-color: #2980b9;

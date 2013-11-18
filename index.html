@@ -307,6 +307,60 @@
 				</footer>
 			</div>
 		</script>
+		<script type="text/template" id="tmpl-profile-dialog">
+			<div class="profile-wrapper" id="{{profile-dialog-id}}" style="display: none;">
+				<div class="profile">
+					<a href="#" class="close-button"><i class="foundicon-remove"></i></a>
+					<header>
+						<div class="avator" style="background-image: url('{{profile-avator-image-url}}');" ></div>
+						<div class="name">{{profile-username}}</div>
+						<div class="introduction">{{profile-introduction}}</div>
+						<div class="action-panel">
+							<div class="action send-message"><a href="#" class="simptip-position-left simptip-movable" data-tooltip="send message to {{profile-username}}"><i class="dripicon-message"></i></a></div>
+							<div class="action send-private"><a href="#" class="simptip-position-right simptip-movable" data-tooltip="send private message to {{profile-username}}"><i class="dripicon-mail"></i></a></div>
+						</div>
+					</header>
+					<div class="profile-main">
+						<header>Recent Messages</header>
+						<div class="timeline">
+						</div>
+					</div>
+				</div>
+			</div>
+		</script>
+		<script type="text/template" id="tmpl-profile-dialog-timeline-item">
+			<article class="timeline-item msg_{{timeline-item-message-id}} new-item" style="display: none;">
+				<header>
+					<div class="timestamp">{{timeline-item-timestamp}}</div>
+				</header>
+				<div class="message">{{timeline-item-message}}</div>
+				<footer class="timeline-item-footer">
+					<input type="hidden" name="message-id" value="{{timeline-item-message-id}}" />
+					<input type="hidden" name="message-created-by" value="{{timeline-item-username}}" />
+					<input type="hidden" name="message-body" value="{{timeline-item-message}}" />
+					<input type="hidden" name="message-to-user-ids" value="{{timeline-item-to-user-ids}}" />
+					<input type="hidden" name="message-address-users" value="{{timeline-item-address-users}}" />
+					<input type="hidden" name="message-address-groups" value="{{timeline-item-address-groups}}" />
+					<div class="reaction-panel">
+						{{#reactions}}
+						<a href="#" class="reaction simptip-position-bottom simptip-position-bottomright simptip-movable" data-tooltip="{{reaction-type}}" reaction-type="{{reaction-type}}"><i class="{{reaction-icon-class}}"></i></a>
+						<a href="#" class="reaction-count" reaction-type="{{reaction-type}}">{{reaction-count}}</a>
+						{{/reactions}}
+					</div>
+					<div class="reply-panel">
+						<a href="#" class="reply simptip-position-bottom simptip-movable" data-tooltip="quote reply" reply-type="quote"><i class="foundicon-quote"></i></a>
+						<a href="#" class="reply simptip-position-bottom simptip-movable" data-tooltip="reply" reply-type="no-quote"><i class="foundicon-left-arrow"></i></a>
+						<a href="#" class="simptip-position-bottom simptip-movable" data-tooltip="conversation"><i class="foundicon-people"></i></a>
+						{{#is-own-message}}
+						<a href="#" class="remove simptip-position-bottom simptip-movable" data-tooltip="remove"><i class="foundicon-trash"></i></a>
+						{{/is-own-message}}
+					</div>
+				</footer>
+			</article>
+			{{#has-next-message}}
+			<div class="timeline-item-separator"></div>
+			{{/has-next-message}}
+		</script>
 
 		<!-- atmospheres -->
 		<script src="js/callback.js"></script>
@@ -318,6 +372,7 @@
 		<script src="js/atmos-private-conversation.js"></script>
 		<script src="js/atmos-sender-panel.js"></script>
 		<script src="js/atmos-dialog.js"></script>
+		<script src="js/atmos-profile.js"></script>
 		<script src="js/atmos-sockjs.js"></script>
 		<script src="js/atmos.js"></script>
 		<script type="text/javascript">

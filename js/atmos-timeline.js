@@ -343,6 +343,10 @@ var AtmosTimeline = (function() {
 			that.hide("normal");
 			that._conversation.show("normal");
 		});
+		$target.find('div.timeline-item-user').on('click', function(e) {
+			e.stopPropagation();
+			atmos.showProfileDialog($target.find('div.timeline-item-username').text());
+		});
 		$target.find('a.reaction').on('click', function(e) {
 			e.stopPropagation();
 			var targetLink = e.currentTarget;

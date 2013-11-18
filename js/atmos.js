@@ -38,6 +38,7 @@ var atmos = null;
 		showPrivateMessageSenderDialog : showPrivateMessageSenderDialog,
 		showResponseDialog : showResponseDialog,
 		showMessageSenderPanel : showMessageSenderPanel,
+		showProfileDialog : showProfileDialog,
 		createTimelineItem : createTimelineItem,
 		init : init,
 		initSockJS : initSockJS,
@@ -554,6 +555,27 @@ var atmos = null;
 		this.initScrollbars();
 	}
 
+	function showProfileDialog(userId) {
+		if (can(this._currentProfileDialog)) {
+			this._currentProfileDialog.close();
+			this._currentProfileDialog = undefined;
+		}
+		var profile = new AtmosProfile(userId);
+		var show = new CallbackInfo(
+			function(res) {
+				if(res.status === 'ok') {
+					profile.show('fast');
+				}
+				else {
+					$.jGrowl('Failed to show profile.');
+				}
+			},
+			this
+		);
+		profile.init(show);
+		this._currentProfileDialog = profile;
+	}
+
 	function sendRequest(url, method, dataJSON, successCallback, failureCallback) {
 		var that = this;
 
@@ -696,6 +718,9 @@ var atmos = null;
 		if (msgJSON['action'] === 'sendResponse') {
 			var targetMsgId = msgJSON['info']['target_msg_id'];
 			this.getTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
+			if (can(this._currentProfileDialog)) {
+				this._currentProfileDialog.refreshMessage(targetMsgId);
+			}
 		}
 		else if (msgJSON['action'] === 'sendMessage') {
 			this.refreshTimelines();
@@ -703,6 +728,9 @@ var atmos = null;
 		else if (msgJSON['action'] === 'removedMessage') {
 			var removedMsgId = msgJSON['info']['_id'];
 			this.getTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
+			if (can(this._currentProfileDialog)) {
+				this._currentProfileDialog.removeMessage(removedMsgId);
+			}
 		}
 		else if (msgJSON['action'] === 'sendResponsePrivate') {
 			var targetMsgId = msgJSON['info']['target_msg_id'];
