@@ -64,6 +64,14 @@ var AtmosPrivateConversation = (function() {
 			e.stopPropagation();
 			atmos.showProfileDialog($target.find('div.conversation-item-username').text());
 		});
+		$target.find('header.conversation-item-header > div.conversation-item-username').on('click', function(e) {
+			e.stopPropagation();
+			atmos.showProfileDialog($(e.target).text());
+		});
+		$target.find('div.conversation-item-address span').on('click', function(e) {
+			e.stopPropagation();
+			atmos.showProfileDialog($(e.target).text());
+		});
 		$target.find('a.reply').on('click', function(e) {
 			var targetLink = e.currentTarget;
 			var $base = $(targetLink).parent().parent();
