@@ -32,7 +32,7 @@ var AtmosProfile = (function() {
 
 	AtmosProfile.prototype.createParameters = function() {
 		var cond = createAtmosSearchCondition();
-		cond.createdBy(this._userId);
+		cond.createdBy(this.userId());
 		cond.count(this._recentlyMessagesCount);
 		return cond.toJSON();
 	}
@@ -45,7 +45,7 @@ var AtmosProfile = (function() {
 				var resultStatus;
 				if (result['status'] === 'ok') {
 					resultStatus = 'ok';
-					if (result['results'].some(function(u) { return u['user_id'] === that._userId; })) {
+					if (result['results'].some(function(u) { return u['user_id'] === that.userId(); })) {
 						$('body').append(that.createDialog());
 
 						that.applyDialogEvents();
@@ -75,7 +75,7 @@ var AtmosProfile = (function() {
 			this
 		);
 		atmos.sendRequest(
-			this._urlGetProfile,
+			this.urlGetProfile(),
 			'GET',
 			{},
 			successCallback,
@@ -134,8 +134,8 @@ var AtmosProfile = (function() {
 	AtmosProfile.prototype.createDialog = function(profileInfo) {
 		var context = {};
 		context["profile-dialog-id"] = this.id();
-		context["profile-avator-image-url"] = atmos.createUrl('/user/avator?user_id=' + this._userId);
-		context["profile-username"] = this._userId;
+		context["profile-avator-image-url"] = atmos.createUrl('/user/avator?user_id=' + this.userId());
+		context["profile-username"] = this.userId();
 		context["profile-introduction"] = '';
 		return Hogan.compile($("#tmpl-profile-dialog").text()).render(context);
 	};
