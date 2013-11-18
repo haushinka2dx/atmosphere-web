@@ -48,8 +48,10 @@ function utc2jstRelative(utcString) {
 }
 
 function autolink(src) {
-	var pattern = /(\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-	return src.replace(pattern, "<a target=\"_blank\" href='$1'>$1</a>");
+	var patternUrl = /(\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	var patternAddressUser = /(@([a-zA-Z0-9\-_]+))/g;
+	return src.replace(patternUrl, "<a target=\"_blank\" href='$1'>$1</a>")
+			  .replace(patternAddressUser, "<a href=\"javascript: void(0);\" onclick=\"atmos.showProfileDialog('$2');\">$1</a>");
 }
 
 function applyMagicEffect($target, effectClass, delay, afterAction) {
