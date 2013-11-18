@@ -55,6 +55,10 @@ var AtmosPrivateTimeline = (function() {
 			e.stopPropagation();
 			atmos.showProfileDialog($target.find('div.timeline-item-username').text());
 		});
+		$target.find('div.timeline-item-address span').on('click', function(e) {
+			e.stopPropagation();
+			atmos.showProfileDialog($(e.target).text());
+		});
 		$target.find('a.reaction').on('click', function(e) {
 			e.stopPropagation();
 			var targetLink = e.currentTarget;
