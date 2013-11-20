@@ -48,7 +48,7 @@ var AtmosProfile = (function() {
 					result['results'].filter(function(u) { return u['user_id'] === that._userId; }).forEach(function (u) {
 						$('body').append(that.createDialog(u));
 
-						that.applyDialogEvents();
+						that.applyDialogEvents(u);
 
 						that.loadRecentMessages();
 
@@ -136,6 +136,7 @@ var AtmosProfile = (function() {
 		context["profile-avator-image-url"] = atmos.createUrl('/user/avator?user_id=' + profileInfo.user_id);
 		context["profile-username"] = profileInfo.user_id;
 		context["profile-introduction"] = profileInfo.introduction;
+		context["is-myself"] = profileInfo.user_id === atmos.currentUserId();
 		return Hogan.compile($("#tmpl-profile-dialog").text()).render(context);
 	};
 
@@ -236,7 +237,7 @@ var AtmosProfile = (function() {
 		});
 	}
 
-	AtmosProfile.prototype.applyDialogEvents = function() {
+	AtmosProfile.prototype.applyDialogEvents = function(profileInfo) {
 		var that = this;
 		$(that.selector()).on('click', function(e) {
 			e.stopPropagation();
@@ -260,6 +261,18 @@ var AtmosProfile = (function() {
 			e.stopPropagation();
 			atmos.showMessageSenderPanel('', '', '', ['@' + that.userId()], true);
 			that.hideAndClose('fast');
+		});
+		$(that.selector('.profile a.change-avator')).on('click', function(e) {
+			e.stopPropagation();
+			atmos.showAvatorChangeDialog();
+		});
+		$(that.selector('.profile a.change-password')).on('click', function(e) {
+			e.stopPropagation();
+			atmos.showPasswordChangeDialog();
+		});
+		$(that.selector('.profile a.change-profile')).on('click', function(e) {
+			e.stopPropagation();
+			atmos.showProfileChangeDialog(profileInfo);
 		});
 	};
 

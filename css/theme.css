@@ -292,6 +292,11 @@
 .profile-wrapper .profile > header {
 }
 
+.profile-wrapper .profile > header div.side-panel a {
+	color: rgba(100,100,100,1.0);
+	text-decoration: none;
+}
+
 .profile-wrapper .profile > header div.name {
 	background-color: rgba(0,0,0,0.3);
 }
