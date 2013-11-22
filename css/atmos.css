@@ -144,6 +144,11 @@ html, body {
     font-family: "GeneralFoundicons";
 }
 
+.atmos-vmenu li a.icon-settings:before {
+    content: "\f000";
+    font-family: "GeneralFoundicons";
+}
+
 .atmos-vmenu li a.icon-logout:before {
   	content: "\f013";
     font-family: "GeneralFoundicons";
@@ -682,27 +687,41 @@ html, body {
 	transform: translateX(-50%) translateY(-50%);
 }
 
-.profile-wrapper .profile a.close-button {
-	float: right;
-}
-
 .profile-wrapper .profile > header {
 	width: 100%;
 	height: 50%;
 	text-align: center;
 }
 
+.profile-wrapper .profile > header div.header {
+	text-align: right;
+	width: 100%;
+	height: 1.5em;
+	padding: 0;
+}
+
+.profile-wrapper .profile > header div.side-panel {
+	width: 8%;
+	height: 80%;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.profile-wrapper .profile > header div.side-panel.right {
+	font-size: 2em;
+	text-align: right;
+	padding-top: 1em;
+}
+
 .profile-wrapper .profile > header div.avator {
 	position: relative;
-	left: 50%;
-	top: 50%;
-	width: 100%;
+	width: 80%;
 	height: 80%;
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
-	-webkit-transform: translateX(-50%) translateY(-50%);
-	transform: translateX(-50%) translateY(-50%);
+	display: inline-block;
+	white-space: nowrap;
 }
 
 .profile-wrapper .profile > header div.name {
