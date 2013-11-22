@@ -19,6 +19,7 @@ var atmos = null;
 		whoami : whoami,
 		logout : logout,
 		changePassword : changePassword,
+		changeProfile : changeProfile,
 		loadAllUserIds : loadAllUserIds,
 		loadAllGroupIds : loadAllGroupIds,
 		sendMessage : sendMessage,
@@ -33,12 +34,14 @@ var atmos = null;
 		showLogoutDialog : showLogoutDialog,
 		showPasswordChangeDialog : showPasswordChangeDialog,
 		showAvatorChangeDialog : showAvatorChangeDialog,
+		showProfileChangeDialog : showProfileChangeDialog,
 		showMessageSenderDialog : showMessageSenderDialog,
 		showMessageRemoveDialog : showMessageRemoveDialog,
 		showPrivateMessageSenderDialog : showPrivateMessageSenderDialog,
 		showResponseDialog : showResponseDialog,
 		showMessageSenderPanel : showMessageSenderPanel,
 		showProfileDialog : showProfileDialog,
+		showSettingDialog : showSettingDialog,
 		createTimelineItem : createTimelineItem,
 		init : init,
 		initSockJS : initSockJS,
@@ -168,6 +171,30 @@ var atmos = null;
 		);
 		var failureCallback = createDefaultFailureCallback(this, callback, 'Changing password was failed.');
 		this.sendRequest(this.createUrl('/user/change_password'), 'POST', { current_user_password : currentPassword, new_user_password : newPassword }, successCallback, failureCallback);
+	}
+
+	function changeProfile(newProfileInfo, callback) {
+		var successCallback = new CallbackInfo(
+			function(res, textStatus, xhr) {
+				var changedResult = JSON.parse(res);
+				var resultStatus = 'ng';
+				if (changedResult['status'] === 'ok') {
+					resultStatus = 'ok';
+					$.jGrowl('Changing profile was done successfully.');
+				}
+				else {
+					$.jGrowl('Changing profile was failed.');
+				}
+				if (can(callback)) {
+					var callbackResult = {};
+					callbackResult['status'] = resultStatus;
+					callback.fire(callbackResult);
+				}
+			},
+			this
+		);
+		var failureCallback = createDefaultFailureCallback(this, callback, 'Changing profile was failed.');
+		this.sendRequest(this.createUrl('/user/change_profile'), 'POST', newProfileInfo, successCallback, failureCallback);
 	}
 
 	// obtain all user id(s)
@@ -444,6 +471,32 @@ var atmos = null;
 		dialog.show();
 	}
 
+	function showProfileChangeDialog(profileInfo, message) {
+		(new AtmosDialog(
+			'Change Profile',
+			[ can(message) ? message : '' ],
+			[ {"is-textarea":true, "input-place-holder":"introduction", "input-name":"new_introduction", "input-id":"inputted-new-introduction", "input-value":profileInfo.introduction } ],
+			true,
+			function(result) {
+				if (result['action'] === 'ok') {
+					var newProfileInfo = {};
+					Object.keys(result['inputs']).forEach(function (key, i, a) { newProfileInfo[key] = result['inputs'][key]; });
+					var postChange = new CallbackInfo(
+						function(res) {
+							if (can(res) && res['status'] === 'ok') {
+							}
+							else {
+								this.showPasswordChangeDialog('Changing profile was failed. ' + res['message']);
+							}
+						},
+						atmos
+					);
+					atmos.changeProfile(newProfileInfo, postChange);
+				}
+			}
+		)).show();
+	}
+
 	function showMessageSenderDialog(defaultMessage, replyToMessageId, originalMessageBody, addresses) {
 		var msgs = [];
 		if (can(replyToMessageId)) {
@@ -575,6 +628,10 @@ var atmos = null;
 		);
 		profile.init(show);
 		this._currentProfileDialog = profile;
+	}
+
+	function showSettingDialog() {
+		this.showProfileDialog(this.currentUserId());
 	}
 
 	function sendRequest(url, method, dataJSON, successCallback, failureCallback) {

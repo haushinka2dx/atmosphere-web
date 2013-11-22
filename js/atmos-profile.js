@@ -44,17 +44,16 @@ var AtmosProfile = (function() {
 				var result = JSON.parse(res);
 				var resultStatus;
 				if (result['status'] === 'ok') {
-					resultStatus = 'ok';
-					if (result['results'].some(function(u) { return u['user_id'] === that.userId(); })) {
-						$('body').append(that.createDialog());
+					resultStatus = 'ng';
+					result['results'].filter(function(u) { return u['user_id'] === that._userId; }).forEach(function (u) {
+						$('body').append(that.createDialog(u));
 
-						that.applyDialogEvents();
+						that.applyDialogEvents(u);
 
 						that.loadRecentMessages();
-					}
-					else {
-						resultStatus = 'ng';
-					}
+
+						resultStatus = 'ok';
+					});
 				}
 				else {
 					resultStatus = 'ng';
@@ -134,9 +133,10 @@ var AtmosProfile = (function() {
 	AtmosProfile.prototype.createDialog = function(profileInfo) {
 		var context = {};
 		context["profile-dialog-id"] = this.id();
-		context["profile-avator-image-url"] = atmos.createUrl('/user/avator?user_id=' + this.userId());
-		context["profile-username"] = this.userId();
-		context["profile-introduction"] = '';
+		context["profile-avator-image-url"] = atmos.createUrl('/user/avator?user_id=' + profileInfo.user_id);
+		context["profile-username"] = profileInfo.user_id;
+		context["profile-introduction"] = profileInfo.introduction;
+		context["is-myself"] = profileInfo.user_id === atmos.currentUserId();
 		return Hogan.compile($("#tmpl-profile-dialog").text()).render(context);
 	};
 
@@ -237,7 +237,7 @@ var AtmosProfile = (function() {
 		});
 	}
 
-	AtmosProfile.prototype.applyDialogEvents = function() {
+	AtmosProfile.prototype.applyDialogEvents = function(profileInfo) {
 		var that = this;
 		$(that.selector()).on('click', function(e) {
 			e.stopPropagation();
@@ -261,6 +261,18 @@ var AtmosProfile = (function() {
 			e.stopPropagation();
 			atmos.showMessageSenderPanel('', '', '', ['@' + that.userId()], true);
 			that.hideAndClose('fast');
+		});
+		$(that.selector('.profile a.change-avator')).on('click', function(e) {
+			e.stopPropagation();
+			atmos.showAvatorChangeDialog();
+		});
+		$(that.selector('.profile a.change-password')).on('click', function(e) {
+			e.stopPropagation();
+			atmos.showPasswordChangeDialog();
+		});
+		$(that.selector('.profile a.change-profile')).on('click', function(e) {
+			e.stopPropagation();
+			atmos.showProfileChangeDialog(profileInfo);
 		});
 	};
 

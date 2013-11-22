@@ -44,8 +44,7 @@
 -->
 						<li><a href="#" class="icon-send" id="menuItemSendMessage"><span>Send Message</span></a><div class="atmos-vmenu-text"><div>Send Message</div></div></li>
 						<li><a href="#" class="icon-private" id="menuItemSendPrivate"><span>Send Private Message</span></a><div class="atmos-vmenu-text"><div>Send Private Message</div></div></li>
-						<li><a href="#" class="icon-avator" id="menuItemChangeAvator"><span>Change Avator</span></a><div class="atmos-vmenu-text"><div>Change Avator</div></div></li>
-						<li><a href="#" class="icon-password" id="menuItemChangePassword"><span>Change Password</span></a><div class="atmos-vmenu-text"><div>Change Password</div></div></li>
+						<li><a href="#" class="icon-settings" id="menuItemSettings"><span>Settings</span></a><div class="atmos-vmenu-text"><div>Settings</div></div></li>
 						<li><a href="#" class="icon-logout" id="menuItemLogout"><span>Logout</span></a><div class="atmos-vmenu-text"><div>Logout</div></div></li>
 					</ul>
 				</nav>
@@ -337,9 +336,18 @@
 		<script type="text/template" id="tmpl-profile-dialog">
 			<div class="profile-wrapper" id="{{profile-dialog-id}}" style="display: none;">
 				<div class="profile">
-					<a href="#" class="close-button"><i class="foundicon-remove"></i></a>
 					<header>
+						<div class="header"><a href="#" class="close-button"><i class="foundicon-remove"></i></a></div>
+						<div class="side-panel left">
+						</div>
 						<div class="avator" style="background-image: url('{{profile-avator-image-url}}');" ></div>
+						<div class="side-panel right">
+							{{#is-myself}}
+							<a class="change-avator simptip-position-left simptip-movable" data-tooltip="Change Avator" href="javascript:void(0);"><i class="dripicon-user"></i></a>
+							<a class="change-profile simptip-position-left simptip-movable" data-tooltip="Change Introduction" href="javascript:void(0);"><i class="dripicon-document"></i></a>
+							<a class="change-password simptip-position-left simptip-movable" data-tooltip="Change Password" href="javascript:void(0);"><i class="dripicon-lock"></i></a>
+							{{/is-myself}}
+						</div>
 						<div class="name">{{profile-username}}</div>
 						<div class="introduction">{{profile-introduction}}</div>
 						<div class="action-panel">
@@ -407,8 +415,7 @@
 
 				$('#menuItemSendMessage').on('click', function(e) { atmos.showMessageSenderPanel('', '', '', [], false); });
 				$('#menuItemSendPrivate').on('click', function(e) { atmos.showMessageSenderPanel('', '', '', [], true); });
-				$('#menuItemChangeAvator').on('click', function(e) { atmos.showAvatorChangeDialog(); });
-				$('#menuItemChangePassword').on('click', function(e) { atmos.showPasswordChangeDialog(); });
+				$('#menuItemSettings').on('click', function(e) { atmos.showSettingDialog(); });
 				$('#menuItemLogout').on('click', function(e) { atmos.showLogoutDialog(); });
 			});
 		</script>
