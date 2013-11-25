@@ -105,7 +105,7 @@ var AtmosDialog = (function() {
 
 	function show(isPrivate) {
 		var dialogDom = this.createDialog();
-		$("body").append(dialogDom);
+		$("body").prepend(dialogDom);
 
 		//bind event
 		var that = this;
