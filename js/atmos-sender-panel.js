@@ -101,12 +101,18 @@ var createAtmosSenderPanel = undefined;
 	function setVariablesForNormalMessage(message, replyToMsgId, replyToMessage, addresses) {
 		this._isPrivate = false;
 		$(this.selector()).removeClass(this._privateMessageClass);
+		if (canl(message)) {
+			var messageExists = true;
+		}
 		if (can(addresses)) {
 			addresses.forEach(function(address) {
 				if (message.indexOf(address) === -1) {
 					message = address + ' ' + message;
 				}
 			});
+		}
+		if (messageExists) {
+			message = ' QT: ' + message;
 		}
 		$(this.selector(":input[name=sender-panel-message]")).val('').val(message);
 		$(this.selector(":input[name=sender-panel-reply-to-msg-id]")).val('').val(replyToMsgId);
@@ -130,6 +136,9 @@ var createAtmosSenderPanel = undefined;
 
 		var to = toAddresses.filter(function(address) { return canl(address); } ).join(' ');
 		$(this.selector(":input[name=sender-panel-to]")).val('').val(to);
+		if (canl(message)) {
+			message = ' QT: ' + message;
+		}
 		$(this.selector(":input[name=sender-panel-message]")).val('').val(message);
 		$(this.selector(":input[name=sender-panel-reply-to-msg-id]")).val('').val(replyToMsgId);
 		$(this.selector(".sender-panel-header .sender-panel-original-message")).text('').text(replyToMessage);
