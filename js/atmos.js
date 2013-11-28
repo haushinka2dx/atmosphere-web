@@ -156,10 +156,10 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (changedResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					$.jGrowl('Changing password was done successfully.');
+					showSuccessNotification('Changing password was done successfully.');
 				}
 				else {
-					$.jGrowl('Changing password was failed.');
+					showErrorNotification('Changing password was failed.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -180,10 +180,10 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (changedResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					$.jGrowl('Changing profile was done successfully.');
+					showSuccessNotification('Changing profile was done successfully.');
 				}
 				else {
-					$.jGrowl('Changing profile was failed.');
+					showErrorNotification('Changing profile was failed.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -251,10 +251,17 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (sendResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					$.jGrowl('Message was sent successfully.');
+					showSuccessNotification('Message was sent successfully.', {
+						cancel: {
+							label: 'Cancel!!',
+							action: function() {
+								atmos.removeMessage(sendResult["_id"], false);
+							}
+						}
+					});
 				}
 				else {
-					$.jGrowl('Message was not sent.');
+					showErrorNotification('Message was not sent.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -278,10 +285,10 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (sendResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					$.jGrowl('Message was removed successfully.');
+					showSuccessNotification('Message was removed successfully.');
 				}
 				else {
-					$.jGrowl('Message was not removed. ' + sendResult['message']);
+					showErrorNotification('Message was not removed. ' + sendResult['message']);
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -310,10 +317,17 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (sendResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					$.jGrowl('Private Message was sent successfully.');
+					showSuccessNotification('Private Message was sent successfully.', {
+						cancel: {
+							label: 'Cancel!!',
+							action: function() {
+								atmos.removeMessage(sendResult["_id"], true);
+							}
+						}
+					});
 				}
 				else {
-					$.jGrowl('Private Message was not sent.');
+					showErrorNotification('Private Message was not sent.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -337,10 +351,10 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (sendResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					$.jGrowl('Responding to Message was succeeded.');
+					showSuccessNotification('Responding to Message was succeeded.');
 				}
 				else {
-					$.jGrowl('Responding to Message was failed.');
+					showErrorNotification('Responding to Message was failed.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -460,7 +474,7 @@ var atmos = null;
 						$("#" + dialog.id()).upload(
 							that.createUrl('/user/change_avator'),
 							function(res) {
-								$.jGrowl(res);
+								showInfoNotification(res);
 							},
 							'json'
 						);
@@ -621,7 +635,7 @@ var atmos = null;
 					profile.show('fast');
 				}
 				else {
-					$.jGrowl('Failed to show profile.');
+					showErrorNotification('Failed to show profile.');
 				}
 			},
 			this
@@ -938,7 +952,7 @@ var atmos = null;
 					}
 					console.log(errorThrown);
 					if (canl(hoverMessage)) {
-						$.jGrowl(hoverMessage);
+						showErrorNotification(hoverMessage);
 					}
 				},
 				caller
