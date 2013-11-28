@@ -156,10 +156,10 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (changedResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					showNotification('Changing password was done successfully.', 'success');
+					showSuccessNotification('Changing password was done successfully.');
 				}
 				else {
-					showNotification('Changing password was failed.', 'error');
+					showErrorNotification('Changing password was failed.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -180,10 +180,10 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (changedResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					showNotification('Changing profile was done successfully.', 'success');
+					showSuccessNotification('Changing profile was done successfully.');
 				}
 				else {
-					showNotification('Changing profile was failed.', 'error');
+					showErrorNotification('Changing profile was failed.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -251,7 +251,7 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (sendResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					showNotification('Message was sent successfully.', 'success', {
+					showSuccessNotification('Message was sent successfully.', {
 						cancel: {
 							label: 'Cancel!!',
 							action: function() {
@@ -261,7 +261,7 @@ var atmos = null;
 					});
 				}
 				else {
-					showNotification('Message was not sent.', 'error');
+					showErrorNotification('Message was not sent.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -285,10 +285,10 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (sendResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					showNotification('Message was removed successfully.', 'success');
+					showSuccessNotification('Message was removed successfully.');
 				}
 				else {
-					showNotification('Message was not removed. ' + sendResult['message'], 'error');
+					showErrorNotification('Message was not removed. ' + sendResult['message']);
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -317,7 +317,7 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (sendResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					showNotification('Private Message was sent successfully.', 'success', {
+					showSuccessNotification('Private Message was sent successfully.', {
 						cancel: {
 							label: 'Cancel!!',
 							action: function() {
@@ -327,7 +327,7 @@ var atmos = null;
 					});
 				}
 				else {
-					showNotification('Private Message was not sent.', 'error');
+					showErrorNotification('Private Message was not sent.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -351,10 +351,10 @@ var atmos = null;
 				var resultStatus = 'ng';
 				if (sendResult['status'] === 'ok') {
 					resultStatus = 'ok';
-					showNotification('Responding to Message was succeeded.', 'success');
+					showSuccessNotification('Responding to Message was succeeded.');
 				}
 				else {
-					showNotification('Responding to Message was failed.', 'error');
+					showErrorNotification('Responding to Message was failed.');
 				}
 				if (can(callback)) {
 					var callbackResult = {};
@@ -474,7 +474,7 @@ var atmos = null;
 						$("#" + dialog.id()).upload(
 							that.createUrl('/user/change_avator'),
 							function(res) {
-								showNotification(res, 'info');
+								showInfoNotification(res);
 							},
 							'json'
 						);
@@ -635,7 +635,7 @@ var atmos = null;
 					profile.show('fast');
 				}
 				else {
-					showNotification('Failed to show profile.', 'error');
+					showErrorNotification('Failed to show profile.');
 				}
 			},
 			this
@@ -952,7 +952,7 @@ var atmos = null;
 					}
 					console.log(errorThrown);
 					if (canl(hoverMessage)) {
-						showNotification(hoverMessage, 'error');
+						showErrorNotification(hoverMessage);
 					}
 				},
 				caller
@@ -960,23 +960,9 @@ var atmos = null;
 		})();
 	}
 
-	function showNotification(message, type, actions) {
-		Messenger().post({
-			message: message,
-			type: type,
-			hideAfter: 6,
-			showCloseButton: true,
-			actions: actions
-		});
-	}
-
 	atmos = new Atmos();
 	$(document).ready(function() {
 		atmos.init();
-		Messenger.options = {
-    		extraClasses: 'messenger-fixed messenger-on-top messenger-on-right',
-    		theme: 'flat'
-		};
 	});
 })();
 
