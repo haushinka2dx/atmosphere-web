@@ -18,7 +18,7 @@ html, body {
 	position: fixed;
 	left: 0px;
 	top: 0px;
-	z-index: 9999;
+	z-index: 7999;
 }
 
 .atmos-menu {
@@ -431,7 +431,7 @@ html, body {
 	top: 0px;
 	width: 100%;
 	height: 100%;
-	z-index: 10001;
+	z-index: 9001;
 }
 
 .atmos-modal-wrapper {
@@ -674,7 +674,7 @@ html, body {
 	top: 0;
 	width: 100%;
 	height: 100%;
-	z-index: 10000;
+	z-index: 9000;
 }
 
 .profile-wrapper .profile {

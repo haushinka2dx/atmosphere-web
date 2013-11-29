@@ -73,3 +73,32 @@ function applyMagicEffect($target, effectClass, delay, afterAction) {
 		delay + 1500
 	);
 }
+
+function showSuccessNotification(message, actions) {
+	showNotification(message, 'success', actions);
+}
+
+function showInfoNotification(message, actions) {
+	showNotification(message, 'info', actions);
+}
+
+function showErrorNotification(message, actions) {
+	showNotification(message, 'error', actions);
+}
+
+function showNotification(message, type, actions) {
+	Messenger().post({
+		message: message,
+		type: type,
+		hideAfter: 6,
+		showCloseButton: true,
+		actions: actions
+	});
+}
+
+$(document).ready(function() {
+	Messenger.options = {
+   		extraClasses: 'messenger-fixed messenger-on-top messenger-on-right',
+   		theme: 'flat'
+	};
+});
