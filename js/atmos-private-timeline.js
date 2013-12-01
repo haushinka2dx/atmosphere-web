@@ -37,20 +37,6 @@ var AtmosPrivateTimeline = (function() {
 
 	AtmosPrivateTimeline.prototype.applyItemEvents = function($target) {
 		var that = this;
-		$target.on('click', function(e) {
-			e.stopPropagation();
-			var selfMessageId = $(this).find('input[name=message-id]').val();
-			that._conversation = new AtmosPrivateConversation(that.id() + '_conversation', selfMessageId);
-
-			var closeHandler = function(conversationPanel) {
-				var t = conversationPanel;
-				t.hide("normal", function() { t.close(); that._conversation = undefined; });
-				that.show("normal");
-			}
-			that._conversation.init($("#" + that.rootId()), closeHandler);
-			that.hide("normal");
-			that._conversation.show("normal");
-		});
 		$target.find('div.timeline-item-user').on('click', function(e) {
 			e.stopPropagation();
 			atmos.showProfileDialog($target.find('div.timeline-item-username').text());
@@ -87,6 +73,20 @@ var AtmosPrivateTimeline = (function() {
 				defaultMessage = targetMessageBody;
 			}
 			atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses, true);
+		});
+		$target.find('a.show-conversation').on('click', function(e) {
+			e.stopPropagation();
+			var targetMessageId = $(e.currentTarget).parent().parent().find('input[name=message-id]').val();
+			that._conversation = new AtmosPrivateConversation(that.id() + '_conversation', targetMessageId);
+
+			var closeHandler = function(conversationPanel) {
+				var t = conversationPanel;
+				t.hide("normal", function() { t.close(); that._conversation = undefined; });
+				that.show("normal");
+			}
+			that._conversation.init($("#" + that.rootId()), closeHandler);
+			that.hide("normal");
+			that._conversation.show("normal");
 		});
 		$target.find('a.remove').on('click', function(e) {
 			e.stopPropagation();
