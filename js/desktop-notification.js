@@ -50,14 +50,11 @@ var DesktopNotification = (function() {
 
 	DesktopNotification.prototype.applyPermissionResult = function(permissionStatus) {
 		this._confirmed = true;
-		console.log('permissionStatus: ' + permissionStatus);
 		switch (permissionStatus) {
 			case 'granted':
 				if(!('permission' in Notification)) {
-					console.log("Chrome");
 					Notification.permission = permissionStatus;
 				}
-				console.log("enabled was true");
 				this._enabled = true;
 				break;
 			case 'denied':
