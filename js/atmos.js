@@ -438,7 +438,7 @@ var atmos = null;
 	}
 
 	function showDesktopNotificationConfirmDialog(nextCallbackInfo) {
-		if (this.__desktopNotifier.reqiresConfirmation()) {
+		if (this.__desktopNotifier.requiresConfirmation()) {
 			(new AtmosDialog(
 				'Enable Desktop Notification?',
 				[ 'Are you sure you want to enable Desktop Notification?', 'A notification will be shown if the browser is background.' ],

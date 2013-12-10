@@ -44,7 +44,7 @@ var DesktopNotification = (function() {
 		return this._enabled;
 	};
 
-	DesktopNotification.prototype.reqiresConfirmation = function() {
+	DesktopNotification.prototype.requiresConfirmation = function() {
 		return this.hasNotifyFunction() && !this.confirmed();
 	};
 
@@ -63,7 +63,7 @@ var DesktopNotification = (function() {
 	};
 
 	DesktopNotification.prototype.confirmPermission = function() {
-		if (this.reqiresConfirmation()) {
+		if (this.requiresConfirmation()) {
 			var applyPermissionResultFunc = DesktopNotification.prototype.applyPermissionResult.bind(this);
 			Notification.requestPermission(applyPermissionResultFunc);
 		}
