@@ -9,6 +9,8 @@ var atmos = null;
 		this._allGroupIds = [];
 		this._sockjs = createAtmosSockJS();
 		this._timelineCount = 50;
+		this._desktopNotificationTimeoutSeconds = 10;
+		this.__desktopNotifier = new DesktopNotification();
 	};
 	Atmos.prototype = {
 		atmosSessionId : atmosSessionId,
@@ -32,6 +34,7 @@ var atmos = null;
 		addPrivateTimeline : addPrivateTimeline,
 		showLoginDialog : showLoginDialog,
 		showLogoutDialog : showLogoutDialog,
+		showDesktopNotificationConfirmDialog : showDesktopNotificationConfirmDialog,
 		showPasswordChangeDialog : showPasswordChangeDialog,
 		showAvatorChangeDialog : showAvatorChangeDialog,
 		showProfileChangeDialog : showProfileChangeDialog,
@@ -54,6 +57,7 @@ var atmos = null;
 		clearCurrentInfo : clearCurrentInfo,
 		perfectScrollbarSetting : { wheelSpeed: 70, minScrollbarLength: 100 },
 		applyAutoComplete : applyAutoComplete,
+		showDesktopNotification : showDesktopNotification,
 	}
 
 	function atmosSessionId(id) {
@@ -433,6 +437,31 @@ var atmos = null;
 		)).show();
 	}
 
+	function showDesktopNotificationConfirmDialog(nextCallbackInfo) {
+		if (this.__desktopNotifier.requiresConfirmation()) {
+			(new AtmosDialog(
+				'Enable Desktop Notification?',
+				[ 'Are you sure you want to enable Desktop Notification?', 'A notification will be shown if the browser is background.' ],
+				[ ],
+				true,
+				function(result) {
+					if (result['action'] === 'ok') {
+						console.log(atmos.__desktopNotifier);
+						atmos.__desktopNotifier.confirmPermission();
+					}
+					if (can(nextCallbackInfo)) {
+						nextCallbackInfo.fire();
+					}
+				}
+			)).show();
+		}
+		else {
+			if (can(nextCallbackInfo)) {
+				nextCallbackInfo.fire();
+			}
+		}
+	}
+
 	function showPasswordChangeDialog(message) {
 		(new AtmosDialog(
 			'Change password',
@@ -735,11 +764,17 @@ var atmos = null;
 				var whoamiCallback = new CallbackInfo(
 					function(res) {
 						if (res['status'] === 'ok') {
-							this.loadAllUserIds();
-							this.loadAllGroupIds();
-							this.refreshTimelines();
-							this.refreshPrivateTimelines();
-							this.initSockJS();
+							var initCallback = new CallbackInfo(
+								function() {
+									this.loadAllUserIds();
+									this.loadAllGroupIds();
+									this.refreshTimelines();
+									this.refreshPrivateTimelines();
+									this.initSockJS();
+								},
+								this
+							);
+							this.showDesktopNotificationConfirmDialog(initCallback);
 						}
 						else {
 							this.showLoginDialog();
@@ -792,9 +827,15 @@ var atmos = null;
 			if (can(this._currentProfileDialog)) {
 				this._currentProfileDialog.refreshMessage(targetMsgId);
 			}
+			if (!msgJSON['from_myself']) {
+				var notification = msgJSON['info']['action'] + ' by ' + msgJSON['from'];
+			}
 		}
 		else if (msgJSON['action'] === 'sendMessage') {
 			this.refreshTimelines();
+			if (!msgJSON['from_myself']) {
+				var notification = 'New message arrived from ' + msgJSON['from'];
+			}
 		}
 		else if (msgJSON['action'] === 'removedMessage') {
 			var removedMsgId = msgJSON['info']['_id'];
@@ -806,13 +847,22 @@ var atmos = null;
 		else if (msgJSON['action'] === 'sendResponsePrivate') {
 			var targetMsgId = msgJSON['info']['target_msg_id'];
 			this.getPrivateTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
+			if (!msgJSON['from_myself']) {
+				var notification = msgJSON['info']['action'] + ' by ' + msgJSON['from'];
+			}
 		}
 		else if (msgJSON['action'] === 'sendPrivate') {
 			this.refreshPrivateTimelines();
+			if (!msgJSON['from_myself']) {
+				var notification = 'New private message arrived from ' + msgJSON['from'];
+			}
 		}
 		else if (msgJSON['action'] === 'removedPrivate') {
 			var removedMsgId = msgJSON['info']['_id'];
 			this.getPrivateTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
+		}
+		if (notification) {
+			this.showDesktopNotification('Atmos', notification, atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"]);
 		}
 	}
 
@@ -942,6 +992,12 @@ var atmos = null;
 				caller
 			);
 		})();
+	}
+
+	function showDesktopNotification(title, body, iconUrl) {
+		if (this.__desktopNotifier) {
+			this.__desktopNotifier.show(title, { body: body, icon: iconUrl }, this._desktopNotificationTimeoutSeconds);
+		}
 	}
 
 	atmos = new Atmos();
