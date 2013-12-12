@@ -163,10 +163,10 @@ var createAtmosSenderPanel = undefined;
 	function show(speed, callback) {
 		if (this._visible === false) {
 			this._visible = true;
-			$(this.selector()).show(speed, callback);
+			$(this.selector()).show(speed);
 			//TODO 本来は決め打ちだめだけど
 			var width = this._width + 56;
-			$(this.afterSenderPanel()).animate({left: width + "px" }, 500);
+			$(this.afterSenderPanel()).animate({left: width + "px" }, 500, callback);
 			$(this.afterSenderPanel()).find(".contents:first").css("padding-right", width);
 		}
 	}
@@ -174,9 +174,9 @@ var createAtmosSenderPanel = undefined;
 	function hide(speed, callback) {
 		if (this._visible === true) {
 			this._visible = false;
-			$(this.selector()).hide(speed, callback);
+			$(this.selector()).hide(speed);
 			//TODO 本来は決め打ちだめだけど
-			$(this.afterSenderPanel()).animate({left: "56px" }, 500);
+			$(this.afterSenderPanel()).animate({left: "56px" }, 500, callback);
 			$(this.afterSenderPanel()).find(".contents:first").css("padding-right", 56);
 		}
 	}
