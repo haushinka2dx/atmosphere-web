@@ -648,8 +648,7 @@ var atmos = null;
 		else {
 			this._senderPanel.setVariablesForNormalMessage(defaultMessage, replyToMsgId, replyToMessage, addresses);
 		}
-		this._senderPanel.show("normal");
-		this.initScrollbars();
+		this._senderPanel.show("normal", this.initScrollbars.bind(this));
 	}
 
 	function showProfileDialog(userId) {
