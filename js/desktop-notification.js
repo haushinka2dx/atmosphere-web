@@ -6,25 +6,20 @@ var DesktopNotification = (function() {
 	DesktopNotification.prototype.init = function() {
 		if (("Notification" in window)) {
 			this._hasNotifyFunction = true;
-			if (typeof Notification.permission !== 'undefined') {
-				switch (Notification.permission) {
-					case 'granted':
-						this._enabled = true;
-						this._confirmed = true;
-						break;
-					case 'denied':
-						this._enabled = false;
-						this._confirmed = true;
-						break;
-					case 'default': // for not Chrome
-						this._enabled = undefined;
-						this._confirmed = false;
-						break;
-				}
-			}
-			else {
-				this._enabled = undefined;
-				this._confirmed = false; // for Chrome
+			switch (AtmosSettings.Desktop.notifyPermission()) {
+				case 'granted':
+					this._enabled = true;
+					this._confirmed = true;
+					break;
+				case 'denied':
+					this._enabled = false;
+					this._confirmed = true;
+					break;
+				case 'default':
+				default:
+					this._enabled = undefined;
+					this._confirmed = false;
+					break;
 			}
 		}
 		else {
@@ -50,15 +45,14 @@ var DesktopNotification = (function() {
 
 	DesktopNotification.prototype.applyPermissionResult = function(permissionStatus) {
 		this._confirmed = true;
+		AtmosSettings.Desktop.notifyPermission(permissionStatus);
 		switch (permissionStatus) {
 			case 'granted':
-				if(!('permission' in Notification)) {
-					Notification.permission = permissionStatus;
-				}
 				this._enabled = true;
 				break;
 			case 'denied':
 				this._enabled = false;
+				break;
 		}
 	};
 
