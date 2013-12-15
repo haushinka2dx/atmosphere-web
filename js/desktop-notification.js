@@ -45,8 +45,7 @@ var DesktopNotification = (function() {
 
 	DesktopNotification.prototype.applyPermissionResult = function(permissionStatus) {
 		this._confirmed = true;
-		AtmosSettings.Desktop.notifyPermission(permissionStatus);
-		switch (permissionStatus) {
+		switch (AtmosSettings.Desktop.notifyPermission(permissionStatus)) {
 			case 'granted':
 				this._enabled = true;
 				break;
