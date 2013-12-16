@@ -9,7 +9,6 @@ var atmos = null;
 		this._allGroupIds = [];
 		this._sockjs = createAtmosSockJS();
 		this._timelineCount = 50;
-		this._desktopNotificationTimeoutSeconds = 10;
 		this.__desktopNotifier = new DesktopNotification();
 	};
 	Atmos.prototype = {
@@ -22,6 +21,7 @@ var atmos = null;
 		logout : logout,
 		changePassword : changePassword,
 		changeProfile : changeProfile,
+		changeNotificationSettings : changeNotificationSettings,
 		loadAllUserIds : loadAllUserIds,
 		loadAllGroupIds : loadAllGroupIds,
 		sendMessage : sendMessage,
@@ -38,6 +38,7 @@ var atmos = null;
 		showPasswordChangeDialog : showPasswordChangeDialog,
 		showAvatorChangeDialog : showAvatorChangeDialog,
 		showProfileChangeDialog : showProfileChangeDialog,
+		showNotificationSettingsChangeDialog : showNotificationSettingsChangeDialog,
 		showMessageSenderDialog : showMessageSenderDialog,
 		showMessageRemoveDialog : showMessageRemoveDialog,
 		showPrivateMessageSenderDialog : showPrivateMessageSenderDialog,
@@ -199,6 +200,14 @@ var atmos = null;
 		);
 		var failureCallback = createDefaultFailureCallback(this, callback, 'Changing profile was failed.');
 		this.sendRequest(this.createUrl('/user/change_profile'), 'POST', newProfileInfo, successCallback, failureCallback);
+	}
+
+	function changeNotificationSettings(newNotificationSettings, callback) {
+		AtmosSettings.Desktop.closeTimeoutSeconds(newNotificationSettings['new-timeout-seconds']);
+		showSuccessNotification('Notification settings were changed.');
+		if (can(callback)) {
+			callback.fire({'status':'ok'});
+		}
 	}
 
 	// obtain all user id(s)
@@ -535,6 +544,36 @@ var atmos = null;
 						atmos
 					);
 					atmos.changeProfile(newProfileInfo, postChange);
+				}
+			}
+		)).show();
+	}
+
+	function showNotificationSettingsChangeDialog(notificationSetitings, message) {
+		(new AtmosDialog(
+			'Notification Settings',
+			[ can(message) ? message : '' ],
+			[
+				{"input-label-text":"timeout second(s) untill automatically closed"},
+				{"is-textarea":false, "input-type":"text", "input-place-holder":"timeout second(s) automatically closed", "input-name":"new-timeout-seconds", "input-id":"inputted-new-timeout-seconds", "input-value":notificationSetitings.timeoutSeconds },
+				{"input-label-text":"blank, negative number, or not number means NEVER CLOSED."},
+			],
+			true,
+			function(result) {
+				if (result['action'] === 'ok') {
+					var newNotificationSettings = {};
+					Object.keys(result['inputs']).forEach(function (key, i, a) { newNotificationSettings[key] = result['inputs'][key]; });
+					var postChange = new CallbackInfo(
+						function(res) {
+							if (can(res) && res['status'] === 'ok') {
+							}
+							else {
+								this.showNotificationSettingsChangeDialog(newNotificationSettings, 'Changing notification settings was failed. ' + res['message']);
+							}
+						},
+						atmos
+					);
+					atmos.changeNotificationSettings(newNotificationSettings, postChange);
 				}
 			}
 		)).show();
@@ -1011,7 +1050,7 @@ var atmos = null;
 
 	function showDesktopNotification(title, body, iconUrl) {
 		if (this.__desktopNotifier) {
-			this.__desktopNotifier.show(title, { body: body, icon: iconUrl }, this._desktopNotificationTimeoutSeconds);
+			this.__desktopNotifier.show(title, { body: body, icon: iconUrl }, AtmosSettings.Desktop.closeTimeoutSeconds());
 		}
 	}
 

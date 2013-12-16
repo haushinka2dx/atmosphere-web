@@ -14,6 +14,15 @@ var AtmosSettings = (function() {
 			return localStorage.getItem(key) || 'default';
 		};
 
+		_Desktop.closeTimeoutSeconds = function(timeout) {
+			var key = 'Notification.closeTimeoutSeconds';
+			if (can(timeout)) {
+				localStorage.setItem(key, timeout);
+			}
+			var ret = localStorage.getItem(key);
+			return typeof ret === 'undefined' || ret === null ? '10' : ret;
+		};
+
 		return _Desktop;
 	})();
 
