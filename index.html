@@ -52,60 +52,6 @@
 			</header>
 			<div class="contents-wrapper">
 				<div class="contents">
-					<div class="timeline timeline-row1" id="tl_global_timeline-root">
-						<header class="timeline-header">
-							<span class="timeline-title">global timeline</span>
-						</header>
-						<div class="timeline-items-wrapper">
-							<div class="timeline-items" id="tl_global_timeline">
-							</div> <!-- timeline-items -->
-						</div> <!-- timeline-itmes-wrapper -->
-					</div> <!-- timeline -->
-					<div class="timeline timeline-row2" id="tl_my_timeline-root">
-						<header class="timeline-header">
-							<span class="timeline-title">my timeline</span>
-						</header>
-						<div class="timeline-items-wrapper">
-							<div class="timeline-items" id="tl_my_timeline">
-							</div> <!-- timeline-items -->
-						</div> <!-- timeline-itmes-wrapper -->
-					</div> <!-- timeline -->
-					<div class="timeline timeline-row3" id="tl_talk_timeline-root">
-						<header class="timeline-header">
-							<span class="timeline-title">talk timeline</span>
-						</header>
-						<div class="timeline-items-wrapper">
-							<div class="timeline-items" id="tl_talk_timeline">
-							</div> <!-- timeline-items -->
-						</div> <!-- timeline-itmes-wrapper -->
-					</div> <!-- timeline -->
-					<div class="timeline timeline-row4" id="tl_announce_timeline-root">
-						<header class="timeline-header">
-							<span class="timeline-title">announce timeline</span>
-						</header>
-						<div class="timeline-items-wrapper">
-							<div class="timeline-items" id="tl_announce_timeline">
-							</div> <!-- timeline-items -->
-						</div> <!-- timeline-itmes-wrapper -->
-					</div> <!-- timeline -->
-					<div class="timeline timeline-row5" id="tl_monolog_timeline-root">
-						<header class="timeline-header">
-							<span class="timeline-title">monolog timeline</span>
-						</header>
-						<div class="timeline-items-wrapper">
-							<div class="timeline-items" id="tl_monolog_timeline">
-							</div> <!-- timeline-items -->
-						</div> <!-- timeline-itmes-wrapper -->
-					</div> <!-- timeline -->
-					<div class="timeline timeline-row-private" id="tl_private_timeline-root">
-						<header class="timeline-header">
-							<span class="timeline-title">private timeline</span>
-						</header>
-						<div class="timeline-items-wrapper">
-							<div class="timeline-items" id="tl_private_timeline">
-							</div> <!-- timeline-items -->
-						</div> <!-- timeline-itmes-wrapper -->
-					</div> <!-- timeline -->
 				</div> <!-- contents -->
 			</div> <!-- contents-wrapper -->
 			<footer class="atmos-footer">
@@ -138,6 +84,17 @@
 		<!--
 		<script type="text/template" src="templates/test.html" id="test_tmpl"></script>
 		-->
+		<script type="text/template" id="tmpl-timeline">
+			<div class="timeline {{timeline-row-class}}" id="{{timeline-root-id}}">
+				<header class="timeline-header">
+					<span class="timeline-title">{{timeline-title}}</span>
+				</header>
+				<div class="timeline-items-wrapper">
+					<div class="timeline-items" id="{{timeline-id}}">
+					</div> <!-- timeline-items -->
+				</div> <!-- timeline-itmes-wrapper -->
+			</div> <!-- timeline -->
+		</script>
 		<script type="text/template" id="tmpl-timeline-item-wrapper">
 			<div class="timeline-item-wrapper new-item" style="display:none;">
 				<article class="timeline-item msg_{{timeline-item-message-id}}">

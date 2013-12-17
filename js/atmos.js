@@ -46,6 +46,7 @@ var atmos = null;
 		showProfileDialog : showProfileDialog,
 		showSettingDialog : showSettingDialog,
 		createTimelineItem : createTimelineItem,
+		createTimelines : createTimelines,
 		init : init,
 		initSockJS : initSockJS,
 		initScrollbars : initScrollbars,
@@ -755,6 +756,24 @@ var atmos = null;
 		return generated;
 	}
 
+	function createTimelineOutline(timelineRootId, timelineId, timelineTitle, timelineRowClass) {
+		return Hogan.compile($("#tmpl-timeline").text()).render({
+			"timeline-row-class": timelineRowClass,
+			"timeline-root-id": timelineRootId,
+			"timeline-title": timelineTitle,
+			"timeline-id": timelineId,
+		});
+	}
+
+	function createTimelines() {
+		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_global_timeline-root', 'tl_global_timeline', 'global timeline', 'timeline-row1'));
+		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_my_timeline-root', 'tl_my_timeline', 'my timeline', 'timeline-row2'));
+		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_talk_timeline-root', 'tl_talk_timeline', 'talk timeline', 'timeline-row3'));
+		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_announce_timeline-root', 'tl_announce_timeline', 'announce timeline', 'timeline-row4'));
+		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_monolog_timeline-root', 'tl_monolog_timeline', 'monolog timeline', 'timeline-row5'));
+		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_private_timeline-root', 'tl_private_timeline', 'private timeline', 'timeline-row-private'));
+	}
+
 	function init() {
 		$('.timeline-items').empty();
 		if (!can(atmosSessionId())) {
@@ -1017,6 +1036,7 @@ var atmos = null;
 
 	atmos = new Atmos();
 	$(document).ready(function() {
+		atmos.createTimelines();
 		atmos.init();
 	});
 })();
