@@ -274,6 +274,10 @@ var AtmosProfile = (function() {
 			e.stopPropagation();
 			atmos.showProfileChangeDialog(profileInfo);
 		});
+		$(that.selector('.profile a.change-notification')).on('click', function(e) {
+			e.stopPropagation();
+			atmos.showNotificationSettingsChangeDialog({ timeoutSeconds : AtmosSettings.Desktop.closeTimeoutSeconds() });
+		});
 	};
 
 	AtmosProfile.prototype.applyItemEvents = function($target) {

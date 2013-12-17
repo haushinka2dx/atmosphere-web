@@ -710,7 +710,7 @@ html, body {
 .profile-wrapper .profile > header div.side-panel.right {
 	font-size: 2em;
 	text-align: right;
-	padding-top: 1em;
+	padding-top: 0.25em;
 }
 
 .profile-wrapper .profile > header div.avator {
