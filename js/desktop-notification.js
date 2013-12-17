@@ -71,10 +71,10 @@ var DesktopNotification = (function() {
 					var that = this;
 					setTimeout(function() { that.close(); }, timeoutSeconds * 1000);
 				};
-				n.addEventListener('click', function() {
-					window.focus();
-				});
 			}
+			n.addEventListener('click', function() {
+				window.focus();
+			});
 		}
 	};
 
