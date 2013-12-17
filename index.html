@@ -11,6 +11,9 @@
 		<!-- drip icon font -->
 		<link href="css/dripicons.css" rel="stylesheet">
 
+		<!-- LigatureSymbols icon font -->
+		<link href="css/ligature.css" rel="stylesheet">
+
 		<!-- simptip -->
 		<link href="css/simptip.css" rel="stylesheet">
 
@@ -265,15 +268,20 @@
 							<ul>
 								{{#modal-dialog-inputs}}
 									<li>
-									{{^is-textarea}}
-										<input type="{{input-type}}" placeholder="{{input-place-holder}}" name="{{input-name}}" id="{{input-id}}" value="{{input-value}}" />
-										{{#has-label}}
-										<label for="{{input-id}}">{{input-label-text}}</label>
-										{{/has-label}}
-									{{/is-textarea}}
-									{{#is-textarea}}
-										<textarea placeholder="{{input-place-holder}}" name="{{input-name}}" id="{{input-id}}">{{input-value}}</textarea>
-									{{/is-textarea}}
+									{{#has-input}}
+										{{^is-textarea}}
+											<input type="{{input-type}}" placeholder="{{input-place-holder}}" name="{{input-name}}" id="{{input-id}}" value="{{input-value}}" />
+											{{#has-label}}
+											<label for="{{input-id}}">{{input-label-text}}</label>
+											{{/has-label}}
+										{{/is-textarea}}
+										{{#is-textarea}}
+											<textarea placeholder="{{input-place-holder}}" name="{{input-name}}" id="{{input-id}}">{{input-value}}</textarea>
+										{{/is-textarea}}
+									{{/has-input}}
+									{{^has-input}}
+										<label>{{input-label-text}}</label>
+									{{/has-input}}
 									</li>
 								{{/modal-dialog-inputs}}
 							</ul>
@@ -319,6 +327,7 @@
 							<a class="change-avator simptip-position-left simptip-movable" data-tooltip="Change Avator" href="javascript:void(0);"><i class="dripicon-user"></i></a>
 							<a class="change-profile simptip-position-left simptip-movable" data-tooltip="Change Introduction" href="javascript:void(0);"><i class="dripicon-document"></i></a>
 							<a class="change-password simptip-position-left simptip-movable" data-tooltip="Change Password" href="javascript:void(0);"><i class="dripicon-lock"></i></a>
+							<a class="change-notification simptip-position-left simptip-movable" data-tooltip="Change Notification Settings" href="javascript:void(0);"><i class="ls-icon-bell" style="margin-right:0.14em;"></i></a>
 							{{/is-myself}}
 						</div>
 						<div class="name">{{profile-username}}</div>
