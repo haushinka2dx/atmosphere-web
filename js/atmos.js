@@ -556,7 +556,7 @@ var atmos = null;
 			[
 				{"input-label-text":"timeout second(s) untill automatically closed"},
 				{"is-textarea":false, "input-type":"text", "input-place-holder":"timeout second(s) automatically closed", "input-name":"new-timeout-seconds", "input-id":"inputted-new-timeout-seconds", "input-value":notificationSetitings.timeoutSeconds },
-				{"input-label-text":"blank, negative number, or not number means NEVER CLOSED."},
+				{"input-label-text":"Set blank or 0 if you want not to close automatically."},
 			],
 			true,
 			function(result) {
