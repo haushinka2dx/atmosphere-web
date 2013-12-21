@@ -9,6 +9,14 @@ var atmos = null;
 		this._allGroupIds = [];
 		this._sockjs = createAtmosSockJS();
 		this._timelineCount = 50;
+		this._timelineRootIds = [
+			'tl_global_timeline-root',
+			'tl_my_timeline-root',
+			'tl_talk_timeline-root',
+			'tl_announce_timeline-root',
+			'tl_monolog_timeline-root',
+			'tl_private_timeline-root',
+		];
 		this.__desktopNotifier = new DesktopNotification();
 	};
 	Atmos.prototype = {
@@ -46,6 +54,7 @@ var atmos = null;
 		showMessageSenderPanel : showMessageSenderPanel,
 		showProfileDialog : showProfileDialog,
 		showSettingDialog : showSettingDialog,
+		loadTimelineDefinitions : loadTimelineDefinitions,
 		createTimelineItem : createTimelineItem,
 		createTimelines : createTimelines,
 		init : init,
@@ -804,13 +813,46 @@ var atmos = null;
 		});
 	}
 
+	function loadTimelineDefinitions() {
+		// load from settings
+		var allTimelineDefs = AtmosSettings.Timeline.timelineDefinitions();
+
+		// extract timeline definitions that can be handled
+		var targetTimelineRootIds = this._timelineRootIds;
+		var timelineRootIds = Object.keys(allTimelineDefs).filter(function(timelineRootId) {
+			return targetTimelineRootIds.indexOf(timelineRootId) > -1;
+		});
+		var timelineDefs = [];
+		timelineRootIds.forEach(function(timelineRootId) { timelineDefs.push(allTimelineDefs[timelineRootId]); });
+		
+		// sort timeline definition
+		var timelineOrder = AtmosSettings.Timeline.timelineOrder();
+		timelineDefs.sort(function(left, right) {
+			var leftOrder = timelineOrder[left['root-id']];
+			var rightOrder = timelineOrder[right['root-id']];
+			if (leftOrder < rightOrder) {
+				return -1;
+			}
+			else if (leftOrder > rightOrder) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		});
+
+		return timelineDefs;
+	}
+
 	function createTimelines() {
-		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_global_timeline-root', 'tl_global_timeline', 'global timeline', 'timeline-row1'));
-		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_my_timeline-root', 'tl_my_timeline', 'my timeline', 'timeline-row2'));
-		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_talk_timeline-root', 'tl_talk_timeline', 'talk timeline', 'timeline-row3'));
-		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_announce_timeline-root', 'tl_announce_timeline', 'announce timeline', 'timeline-row4'));
-		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_monolog_timeline-root', 'tl_monolog_timeline', 'monolog timeline', 'timeline-row5'));
-		$("div.contents-wrapper > div.contents").append(createTimelineOutline('tl_private_timeline-root', 'tl_private_timeline', 'private timeline', 'timeline-row-private'));
+		this.loadTimelineDefinitions().forEach(function(timelineDef) {
+			$("div.contents-wrapper > div.contents").append(createTimelineOutline(
+				timelineDef["root-id"],
+				timelineDef["id"],
+				timelineDef["name"],
+				timelineDef["theme"]
+			));
+		});
 	}
 
 	function init() {
