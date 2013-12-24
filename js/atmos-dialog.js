@@ -86,7 +86,7 @@ var AtmosDialog = (function() {
 		if(can(fields)) {
 			for (var i=0; i<fields.length; i++) {
 				var field = {};
-				field['has-input'] = canl(fields[i]['input-type']);
+				field['has-input'] = canl(fields[i]['input-type']) || fields[i]['is-textarea'];
 				field['is-textarea'] = fields[i]['is-textarea'];
 				field['input-type'] = fields[i]['input-type'];
 				field['input-place-holder'] = fields[i]['input-place-holder'];
