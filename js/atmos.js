@@ -9,6 +9,11 @@ var atmos = null;
 		this._allGroupIds = [];
 		this._sockjs = createAtmosSockJS();
 		this._timelineCount = 50;
+		this._timelineRootIds = [
+			'tl_global_timeline-root',
+			'tl_talk_timeline-root',
+			'tl_private_timeline-root',
+		];
 		this.__desktopNotifier = new DesktopNotification();
 	};
 	Atmos.prototype = {
@@ -29,7 +34,9 @@ var atmos = null;
 		sendPrivate : sendPrivate,
 		responseToMessage : responseToMessage,
 		getTimelines : getTimelines,
+		getTimeline : getTimeline,
 		getPrivateTimelines : getPrivateTimelines,
+		getPrivateTimeline : getPrivateTimeline,
 		addTimeline : addTimeline,
 		addPrivateTimeline : addPrivateTimeline,
 		showLoginDialog : showLoginDialog,
@@ -46,7 +53,9 @@ var atmos = null;
 		showMessageSenderPanel : showMessageSenderPanel,
 		showProfileDialog : showProfileDialog,
 		showSettingDialog : showSettingDialog,
+		loadTimelineDefinitions : loadTimelineDefinitions,
 		createTimelineItem : createTimelineItem,
+		createTimelines : createTimelines,
 		init : init,
 		initSockJS : initSockJS,
 		initScrollbars : initScrollbars,
@@ -395,6 +404,10 @@ var atmos = null;
 		return tls;
 	}
 
+	function getTimeline(timelineId) {
+		return this._timelines[timelineId];
+	}
+
 	function getPrivateTimelines() {
 		var that = this;
 		var tls = [];
@@ -402,6 +415,10 @@ var atmos = null;
 			tls.push(that._privateTimelines[key]);
 		});
 		return tls;
+	}
+
+	function getPrivateTimeline(timelineId) {
+		return this._privateTimelines[timelineId];
 	}
 
 	function showLoginDialog(message, defaultUserId) {
@@ -793,6 +810,118 @@ var atmos = null;
 		return generated;
 	}
 
+	function createTimelineOutline(timelineRootId, timelineId, timelineTitle, timelineRowClass) {
+		return Hogan.compile($("#tmpl-timeline").text()).render({
+			"timeline-row-class": timelineRowClass,
+			"timeline-root-id": timelineRootId,
+			"timeline-title": timelineTitle,
+			"timeline-id": timelineId,
+		});
+	}
+
+	function loadTimelineDefinitions() {
+		// load from settings
+		var allTimelineDefs = AtmosSettings.Timeline.timelineDefinitions();
+
+		// extract timeline definitions that can be handled
+		var targetTimelineRootIds = this._timelineRootIds;
+		var timelineRootIds = Object.keys(allTimelineDefs).filter(function(timelineRootId) {
+			return targetTimelineRootIds.indexOf(timelineRootId) > -1;
+		});
+		var timelineDefs = [];
+		timelineRootIds.forEach(function(timelineRootId) { timelineDefs.push(allTimelineDefs[timelineRootId]); });
+		
+		// sort timeline definition
+		var timelineOrder = AtmosSettings.Timeline.timelineOrder();
+		timelineDefs.sort(function(left, right) {
+			var leftOrder = timelineOrder[left['root-id']];
+			var rightOrder = timelineOrder[right['root-id']];
+			if (typeof leftOrder === 'undefined' && typeof rightOrder === 'undefined') {
+				return 0;
+			}
+			else if (typeof leftOrder === 'undefined') {
+				return -1;
+			}
+			else if (typeof rightOrder === 'undefined') {
+				return 1;
+			}
+			else if (leftOrder < rightOrder) {
+				return -1;
+			}
+			else if (leftOrder > rightOrder) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		});
+
+		return timelineDefs;
+	}
+
+	function createTimelines() {
+		var changePositionStatusChanger = changeTimelinePositionLinkStatus.bind(this);
+
+		this.loadTimelineDefinitions().forEach(function(timelineDef) {
+			$("div.contents-wrapper > div.contents").append(createTimelineOutline(
+				timelineDef["root-id"],
+				timelineDef["id"],
+				timelineDef["name"],
+				timelineDef["theme"]
+			));
+		});
+		$(".timeline-move-position.move-left > a").on('click', function(e) {
+			e.stopPropagation();
+			var $timelineRoot = $(e.currentTarget).parent().parent().parent().parent();
+			var $leftRoot = $timelineRoot.prev('.timeline');
+			$leftRoot.before($timelineRoot);
+			changePositionStatusChanger($(".contents > .timeline"));
+			storeTimelineOrder($(".contents > .timeline"));
+		});
+		$(".timeline-move-position.move-right > a").on('click', function(e) {
+			e.stopPropagation();
+			var $timelineRoot = $(e.currentTarget).parent().parent().parent().parent();
+			var $rightRoot = $timelineRoot.next('.timeline');
+			$rightRoot.after($timelineRoot);
+			changePositionStatusChanger($(".contents > .timeline"));
+			storeTimelineOrder($(".contents > .timeline"));
+		});
+	}
+
+	function storeTimelineOrder($timelines) {
+		var timelineOrder = {};
+		$timelines.each(function(index, timeline) { timelineOrder[$(timeline).attr('id')] = index + 1; });
+		AtmosSettings.Timeline.timelineOrder(timelineOrder);
+	}
+
+	function changeTimelinePositionLinkStatus($timelines) {
+		var that = this;
+		$timelines.each(function(index, timeline) {
+			$timeline = $(timeline);
+			var timelineId = $timeline.find(".timeline-items:first").attr("id");
+			var timeline = that.getTimeline(timelineId);
+			if (!can(timeline)) {
+				timeline = that.getPrivateTimeline(timelineId);
+			}
+			if (can(timeline)) {
+				var $prevTimeline = $timeline.prev();
+				if ($prevTimeline.hasClass("timeline") && $prevTimeline.is(':visible')) {
+					timeline.enableChangePositionLeft();
+				}
+				else {
+					timeline.disableChangePositionLeft();
+				}
+				var $nextTimeline = $timeline.next();
+				if ($nextTimeline.hasClass("timeline") && $nextTimeline.is(':visible')) {
+					timeline.enableChangePositionRight();
+				}
+				else {
+					timeline.disableChangePositionRight();
+				}
+			}
+		});
+	}
+
 	function init() {
 		$('.timeline-items').empty();
 		if (!can(atmosSessionId())) {
@@ -827,21 +956,25 @@ var atmos = null;
 			}
 		}
 
+		var timelinePositionChangeLinkStatusChanger = changeTimelinePositionLinkStatus.bind(this, $(".contents > .timeline"));
+
 		// defines timelines
 		var scGlobal = createAtmosSearchCondition();
 		scGlobal.count(this._timelineCount);
-		var tlGlobal = new AtmosTimeline('tl_global_timeline', 'Global', 'all messages', this.createUrl('/messages/global_timeline'), scGlobal);
+		var tlGlobal = new AtmosTimeline('tl_global_timeline', 'Global', 'all messages', this.createUrl('/messages/global_timeline'), scGlobal, timelinePositionChangeLinkStatusChanger);
 		this.addTimeline(tlGlobal);
 
 		var scTalk = createAtmosSearchCondition();
 		scTalk.count(this._timelineCount);
-		var tlTalk = new AtmosTimeline('tl_talk_timeline', 'Talk', '', this.createUrl('/messages/talk_timeline'), scTalk);
+		var tlTalk = new AtmosTimeline('tl_talk_timeline', 'Talk', '', this.createUrl('/messages/talk_timeline'), scTalk, timelinePositionChangeLinkStatusChanger);
 		this.addTimeline(tlTalk);
 
 		var scPrivate = createAtmosSearchCondition();
 		scPrivate.count(this._timelineCount);
-		var tlPrivate = new AtmosPrivateTimeline('tl_private_timeline', 'Private', '', this.createUrl('/private/timeline'), scPrivate);
+		var tlPrivate = new AtmosPrivateTimeline('tl_private_timeline', 'Private', '', this.createUrl('/private/timeline'), scPrivate, timelinePositionChangeLinkStatusChanger);
 		this.addPrivateTimeline(tlPrivate);
+
+		timelinePositionChangeLinkStatusChanger();
 
 		this.initScrollbars();
 	}
@@ -1040,6 +1173,7 @@ var atmos = null;
 
 	atmos = new Atmos();
 	$(document).ready(function() {
+		atmos.createTimelines();
 		atmos.init();
 	});
 })();

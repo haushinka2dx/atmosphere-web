@@ -245,6 +245,16 @@ html, body {
 	padding-bottom: 13px;
 }
 
+.timeline-header .header-control {
+	width: 16%;
+	display: inline-block;
+}
+
+.timeline-header .timeline-title {
+	width: 60%;
+	display: inline-block;
+}
+
 .timeline-items-wrapper,
 .conversation-items-wrapper {
 	position: relative;

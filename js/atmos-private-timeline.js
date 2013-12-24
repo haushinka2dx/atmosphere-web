@@ -1,6 +1,6 @@
 var AtmosPrivateTimeline = (function() {
-	function AtmosPrivateTimeline(id, name, description, url, searchCondition) {
-		AtmosTimeline.apply(this, [ id, name, description, url, searchCondition ]);
+	function AtmosPrivateTimeline(id, name, description, url, searchCondition, callbackAfterConversation) {
+		AtmosTimeline.apply(this, [ id, name, description, url, searchCondition, callbackAfterConversation ]);
 		this._searchUrl = atmos.createUrl('/private/search');
 	}
 	AtmosPrivateTimeline.prototype = Object.create(AtmosTimeline.prototype);
@@ -82,10 +82,20 @@ var AtmosPrivateTimeline = (function() {
 			var closeHandler = function(conversationPanel) {
 				var t = conversationPanel;
 				t.hide("normal", function() { t.close(); that._conversation = undefined; });
-				that.show("normal");
+				if (canl(that._callbackAfterConversation)) {
+					that.show("normal", that._callbackAfterConversation);
+				}
+				else {
+					that.show("normal");
+				}
 			}
 			that._conversation.init($("#" + that.rootId()), closeHandler);
-			that.hide("normal");
+			if (canl(that._callbackAfterConversation)) {
+				that.hide("normal", that._callbackAfterConversation);
+			}
+			else {
+				that.hide("normal");
+			}
 			that._conversation.show("normal");
 		});
 		$target.find('a.remove').on('click', function(e) {
