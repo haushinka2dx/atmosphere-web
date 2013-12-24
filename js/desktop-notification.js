@@ -74,6 +74,7 @@ var DesktopNotification = (function() {
 			}
 			n.addEventListener('click', function() {
 				window.focus();
+				this.close();
 			});
 		}
 	};
