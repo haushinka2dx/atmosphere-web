@@ -41,4 +41,48 @@ describe('AtmosSettings', function(){
 			});
 		});
 	});
+
+	describe('Timeline', function(){
+		var target;
+		beforeEach(function() {
+			localStorage.clear();
+			target = AtmosSettings.Timeline;
+		});
+
+		describe('timelineDefinitions', function(){
+			it('default value', function(){
+				expect(JSON.stringify(target.timelineDefinitions())).toEqual(JSON.stringify(target.defaultTimelineDefinitions));
+			});
+
+			cases([{tl1:{name:"1",class:"aaa"},tl2:{name:"2",class:"bbb"}}])
+			.it('set valid value', function(value){
+				target.timelineDefinitions(value);
+				expect(JSON.stringify(target.timelineDefinitions())).toEqual(JSON.stringify(value));
+			});
+
+			cases([undefined, null, ''])
+			.it('if invalid value, return default value', function(value){
+				target.timelineDefinitions(value);
+				expect(JSON.stringify(target.timelineDefinitions())).toEqual(JSON.stringify(target.defaultTimelineDefinitions));
+			});
+		});
+
+		describe('timelineOrder', function(){
+			it('default value', function(){
+				expect(JSON.stringify(target.timelineOrder())).toEqual(JSON.stringify(target.defaultTimelineOrder));
+			});
+
+			cases([{tl1:2,tl2:1}])
+			.it('set valid value', function(value){
+				target.timelineOrder(value);
+				expect(target.timelineOrder()).toEqual(value);
+			});
+
+			cases([undefined, null, ''])
+			.it('if invalid value, return default value', function(value){
+				target.timelineOrder(value);
+				expect(JSON.stringify(target.timelineOrder())).toEqual(JSON.stringify(target.defaultTimelineOrder));
+			});
+		});
+	});
 });

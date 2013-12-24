@@ -134,6 +134,10 @@
 	background-color: #555555;
 }
 
+.timeline-header div.header-control > span > a {
+	color: #999999;
+}
+
 .conversation-header > a {
 	color: #ffffff;
 }

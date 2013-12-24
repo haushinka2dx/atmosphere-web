@@ -1,11 +1,12 @@
 var AtmosTimeline = (function() {
-	function AtmosTimeline(id, name, description, url, searchCondition) {
+	function AtmosTimeline(id, name, description, url, searchCondition, callbackAfterConversation) {
 		this.id(id);
 		this.rootId(id + '-root');
 		this.name(name);
 		this.description(description);
 		this.url(url);
 		this.searchCondition(searchCondition);
+		this._callbackAfterConversation = callbackAfterConversation;
 		this._searchUrl = atmos.createUrl('/messages/search');
 		this.scrollbarWasSet = false;
 	};
@@ -24,6 +25,10 @@ var AtmosTimeline = (function() {
 		init : init,
 		show : show,
 		hide : hide,
+		enableChangePositionLeft : enableChangePositionLeft,
+		disableChangePositionLeft : disableChangePositionLeft,
+		enableChangePositionRight : enableChangePositionRight,
+		disableChangePositionRight : disableChangePositionRight,
 		createTimelineItem : createTimelineItem,
 		readMore : readMore,
 		updateTimelineItemReaction : updateTimelineItemReaction,
@@ -217,6 +222,22 @@ var AtmosTimeline = (function() {
 		$("#" + this.rootId()).hide(speed, callback);
 	}
 
+	function enableChangePositionLeft() {
+		$("#" + this.rootId() + " .header-control .move-left a").show();
+	}
+
+	function disableChangePositionLeft() {
+		$("#" + this.rootId() + " .header-control .move-left a").hide();
+	}
+
+	function enableChangePositionRight() {
+		$("#" + this.rootId() + " .header-control .move-right a").show();
+	} 
+
+	function disableChangePositionRight() {
+		$("#" + this.rootId() + " .header-control .move-right a").hide();
+	}
+
 	function createTimelineItem(msg) {
 		var context = {};
 		context["is-own-message"] = atmos.currentUserId() === msg['created_by'];
@@ -372,10 +393,20 @@ var AtmosTimeline = (function() {
 			var closeHandler = function(conversationPanel) {
 				var t = conversationPanel;
 				t.hide("normal", function() { t.close(); that._conversation = undefined; });
-				that.show("normal");
+				if (canl(that._callbackAfterConversation)) {
+					that.show("normal", that._callbackAfterConversation);
+				}
+				else {
+					that.show("normal");
+				}
 			}
 			that._conversation.init($("#" + that.rootId()), closeHandler);
-			that.hide("normal");
+			if (canl(that._callbackAfterConversation)) {
+				that.hide("normal", that._callbackAfterConversation);
+			}
+			else {
+				that.hide("normal");
+			}
 			that._conversation.show("normal");
 		});
 		$target.find('a.remove').on('click', function(e) {
