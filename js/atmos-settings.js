@@ -47,7 +47,7 @@ var AtmosSettings = (function() {
 				"root-id": 'tl_talk_timeline-root',
 				"id":      'tl_talk_timeline',
 				"name":    'talk timeline',
-				"theme":   'timeline-row3'
+				"theme":   'timeline-row2'
 			},
 			"tl_announce_timeline-root":{
 				"root-id": 'tl_announce_timeline-root',
