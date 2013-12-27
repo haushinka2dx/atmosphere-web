@@ -1018,13 +1018,35 @@ var atmos = null;
 				this._currentProfileDialog.refreshMessage(targetMsgId);
 			}
 			if (!msgJSON['from_myself']) {
-				var notification = msgJSON['info']['action'] + ' by ' + msgJSON['from'];
+				var successCallback = new CallbackInfo(
+					function(res, textStatus, xhr) {
+						var tlResult = JSON.parse(res);
+						if (tlResult['status'] === 'ok') {
+							if (tlResult['count'] === 1) {
+								var tlItem = tlResult['results'][0];
+								var notification = msgJSON['info']['action'] + ' by ' + msgJSON['from'];
+								var notificationDetail = "from " + tlItem['created_by'] + ": " + tlItem['message'];
+								var notificationId = msgJSON['action'] + '_' + targetMsgId + '_' + msgJSON['info']['action'] + '_' + msgJSON['from'];
+								atmos.showDesktopNotification('Atmos: ' + notification, notificationDetail, atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"], notificationId);
+							}
+						}
+					},
+					this
+				);
+				atmos.sendRequest(
+					atmos.createUrl('/messages/search'),
+					'GET',
+					{ "message_ids" : msgJSON['info']['target_msg_id'] },
+					successCallback
+				);
 			}
 		}
 		else if (msgJSON['action'] === 'sendMessage') {
 			this.refreshTimelines();
 			if (!msgJSON['from_myself']) {
-				var notification = 'New message arrived from ' + msgJSON['from'];
+				var notification = 'Msg from ' + msgJSON['from'];
+				var notificationDetail = msgJSON['info']['message'];
+				var notificationId = msgJSON['action'] + '_' + msgJSON['info']['target_msg_id'];
 			}
 		}
 		else if (msgJSON['action'] === 'removedMessage') {
@@ -1038,13 +1060,35 @@ var atmos = null;
 			var targetMsgId = msgJSON['info']['target_msg_id'];
 			this.getPrivateTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
 			if (!msgJSON['from_myself']) {
-				var notification = msgJSON['info']['action'] + ' by ' + msgJSON['from'];
+				var successCallback = new CallbackInfo(
+					function(res, textStatus, xhr) {
+						var tlResult = JSON.parse(res);
+						if (tlResult['status'] === 'ok') {
+							if (tlResult['count'] === 1) {
+								var tlItem = tlResult['results'][0];
+								var notification = msgJSON['info']['action'] + ' by ' + msgJSON['from'];
+								var notificationDetail = "from " + tlItem['created_by'] + ": " + tlItem['message'];
+								var notificationId = msgJSON['action'] + '_' + targetMsgId + '_' + msgJSON['info']['action'] + '_' + msgJSON['from'];
+								atmos.showDesktopNotification('Atmos: ' + notification, notificationDetail, atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"], notificationId);
+							}
+						}
+					},
+					this
+				);
+				atmos.sendRequest(
+					atmos.createUrl('/private/search'),
+					'GET',
+					{ "message_ids" : msgJSON['info']['target_msg_id'] },
+					successCallback
+				);
 			}
 		}
 		else if (msgJSON['action'] === 'sendPrivate') {
 			this.refreshPrivateTimelines();
 			if (!msgJSON['from_myself']) {
-				var notification = 'New private message arrived from ' + msgJSON['from'];
+				var notification = 'Private Msg from ' + msgJSON['from'];
+				var notificationDetail = msgJSON['info']['message'];
+				var notificationId = msgJSON['action'] + '_' + msgJSON['info']['target_msg_id'];
 			}
 		}
 		else if (msgJSON['action'] === 'removedPrivate') {
@@ -1052,7 +1096,7 @@ var atmos = null;
 			this.getPrivateTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
 		}
 		if (notification) {
-			this.showDesktopNotification('Atmos', notification, atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"]);
+			this.showDesktopNotification('Atmos: ' + notification, notificationDetail, atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"], notificationId);
 		}
 	}
 
@@ -1184,9 +1228,12 @@ var atmos = null;
 		})();
 	}
 
-	function showDesktopNotification(title, body, iconUrl) {
+	function showDesktopNotification(title, body, iconUrl, idForPreventDuplication) {
 		if (this.__desktopNotifier) {
-			this.__desktopNotifier.show(title, { body: body, icon: iconUrl }, AtmosSettings.Desktop.closeTimeoutSeconds());
+			if (body.length > 100) {
+				body = body.substr(0, 100) + '...';
+			}
+			this.__desktopNotifier.show(title, { body: body, icon: iconUrl, tag: idForPreventDuplication }, AtmosSettings.Desktop.closeTimeoutSeconds());
 		}
 	}
 
