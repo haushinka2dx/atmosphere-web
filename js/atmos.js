@@ -1017,37 +1017,9 @@ var atmos = null;
 			if (can(this._currentProfileDialog)) {
 				this._currentProfileDialog.refreshMessage(targetMsgId);
 			}
-			if (!msgJSON['from_myself']) {
-				var successCallback = new CallbackInfo(
-					function(res, textStatus, xhr) {
-						var tlResult = JSON.parse(res);
-						if (tlResult['status'] === 'ok') {
-							if (tlResult['count'] === 1) {
-								var tlItem = tlResult['results'][0];
-								var notification = msgJSON['info']['action'] + ' by ' + msgJSON['from'];
-								var notificationDetail = "from " + tlItem['created_by'] + ": " + tlItem['message'];
-								var notificationId = msgJSON['action'] + '_' + targetMsgId + '_' + msgJSON['info']['action'] + '_' + msgJSON['from'];
-								atmos.showDesktopNotification('Atmos: ' + notification, notificationDetail, atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"], notificationId);
-							}
-						}
-					},
-					this
-				);
-				atmos.sendRequest(
-					atmos.createUrl('/messages/search'),
-					'GET',
-					{ "message_ids" : msgJSON['info']['target_msg_id'] },
-					successCallback
-				);
-			}
 		}
 		else if (msgJSON['action'] === 'sendMessage') {
 			this.refreshTimelines();
-			if (!msgJSON['from_myself']) {
-				var notification = 'Msg from ' + msgJSON['from'];
-				var notificationDetail = msgJSON['info']['message'];
-				var notificationId = msgJSON['action'] + '_' + msgJSON['info']['target_msg_id'];
-			}
 		}
 		else if (msgJSON['action'] === 'removedMessage') {
 			var removedMsgId = msgJSON['info']['_id'];
@@ -1059,44 +1031,110 @@ var atmos = null;
 		else if (msgJSON['action'] === 'sendResponsePrivate') {
 			var targetMsgId = msgJSON['info']['target_msg_id'];
 			this.getPrivateTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
-			if (!msgJSON['from_myself']) {
-				var successCallback = new CallbackInfo(
-					function(res, textStatus, xhr) {
-						var tlResult = JSON.parse(res);
-						if (tlResult['status'] === 'ok') {
-							if (tlResult['count'] === 1) {
-								var tlItem = tlResult['results'][0];
-								var notification = msgJSON['info']['action'] + ' by ' + msgJSON['from'];
-								var notificationDetail = "from " + tlItem['created_by'] + ": " + tlItem['message'];
-								var notificationId = msgJSON['action'] + '_' + targetMsgId + '_' + msgJSON['info']['action'] + '_' + msgJSON['from'];
-								atmos.showDesktopNotification('Atmos: ' + notification, notificationDetail, atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"], notificationId);
-							}
-						}
-					},
-					this
-				);
-				atmos.sendRequest(
-					atmos.createUrl('/private/search'),
-					'GET',
-					{ "message_ids" : msgJSON['info']['target_msg_id'] },
-					successCallback
-				);
-			}
 		}
 		else if (msgJSON['action'] === 'sendPrivate') {
 			this.refreshPrivateTimelines();
-			if (!msgJSON['from_myself']) {
-				var notification = 'Private Msg from ' + msgJSON['from'];
-				var notificationDetail = msgJSON['info']['message'];
-				var notificationId = msgJSON['action'] + '_' + msgJSON['info']['target_msg_id'];
-			}
 		}
 		else if (msgJSON['action'] === 'removedPrivate') {
 			var removedMsgId = msgJSON['info']['_id'];
 			this.getPrivateTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
 		}
-		if (notification) {
-			this.showDesktopNotification('Atmos: ' + notification, notificationDetail, atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"], notificationId);
+
+		var notificationInfoCreateCallback = new CallbackInfo(
+			function(notificationInfo) {
+				if (can(notificationInfo)) {
+					this.showDesktopNotification(
+						'Atmos: ' + notificationInfo.title,
+						notificationInfo.body,
+						notificationInfo.icon,
+						notificationInfo.id
+					);
+				}
+			},
+			this
+		);
+		createNotificationInformation(msgJSON, notificationInfoCreateCallback);
+	}
+
+	function createNotificationInformation(msgJSON, callbackInfo) {
+		if (!can(callbackInfo)) {
+			return undefined;
+		}
+		if (!msgJSON['from_myself']) {
+			var action = msgJSON['action'];
+			switch (action) {
+				case 'sendMessage':
+					callbackInfo.fire({
+						title: 'Msg from ' + msgJSON['from'],
+						body: msgJSON['info']['message'],
+						id: msgJSON['action'] + '_' + msgJSON['info']['target_msg_id'],
+						icon: atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"]
+					});
+					break;
+				case 'sendPrivate':
+					callbackInfo.fire({
+						title: 'Private Msg from ' + msgJSON['from'],
+						body: msgJSON['info']['message'],
+						id: msgJSON['action'] + '_' + msgJSON['info']['target_msg_id'],
+						icon: atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"]
+					});
+					break;
+				case 'sendResponse':
+					var targetMsgId = msgJSON['info']['target_msg_id'];
+					var successCallback = new CallbackInfo(
+						function(res, textStatus, xhr) {
+							var tlResult = JSON.parse(res);
+							if (tlResult['status'] === 'ok') {
+								if (tlResult['count'] === 1) {
+									var tlItem = tlResult['results'][0];
+									callbackInfo.fire({
+										title: msgJSON['info']['action'] + ' by ' + msgJSON['from'],
+										body: "from " + tlItem['created_by'] + ": " + tlItem['message'],
+										id: msgJSON['action'] + '_' + targetMsgId + '_' + msgJSON['info']['action'] + '_' + msgJSON['from'],
+										icon: atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"]
+									});
+								}
+							}
+						},
+						this
+					);
+					atmos.sendRequest(
+						atmos.createUrl('/messages/search'),
+						'GET',
+						{ "message_ids" : targetMsgId },
+						successCallback
+					);
+					break;
+				case 'sendResponsePrivate':
+					var targetMsgId = msgJSON['info']['target_msg_id'];
+					var successCallback = new CallbackInfo(
+						function(res, textStatus, xhr) {
+							var tlResult = JSON.parse(res);
+							if (tlResult['status'] === 'ok') {
+								if (tlResult['count'] === 1) {
+									var tlItem = tlResult['results'][0];
+									callbackInfo.fire({
+										title: msgJSON['info']['action'] + ' by ' + msgJSON['from'],
+										body: "from " + tlItem['created_by'] + ": " + tlItem['message'],
+										id: msgJSON['action'] + '_' + targetMsgId + '_' + msgJSON['info']['action'] + '_' + msgJSON['from'],
+										icon: atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"]
+									});
+								}
+							}
+						},
+						this
+					);
+					atmos.sendRequest(
+						atmos.createUrl('/private/search'),
+						'GET',
+						{ "message_ids" : targetMsgId },
+						successCallback
+					);
+					break;
+				default:
+					callbackInfo.fire(undefined);
+					break;
+			}
 		}
 	}
 
