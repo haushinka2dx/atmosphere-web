@@ -245,9 +245,20 @@ html, body {
 	padding-bottom: 13px;
 }
 
+.timeline-header {
+	letter-spacing:-.40em;
+}
+.timeline-header .timeline-title,
 .timeline-header .header-control {
-	width: 16%;
+	letter-spacing:normal;
+}
+
+.timeline-header .header-control {
+	width: 20%;
 	display: inline-block;
+}
+.timeline-move-position {
+	vertical-align: middle;
 }
 
 .timeline-header .timeline-title {
