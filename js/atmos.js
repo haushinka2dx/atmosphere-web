@@ -1187,8 +1187,10 @@ var atmos = null;
 			this._autoCompleteConfig = {
 				// user id strategy
 				user: {
+					_term: null,
 					match: /(^|\s)@(\w*)$/,
 					search: function (term, callback) {
+						this._term = term;
 						var regexp = new RegExp('^' + term);
 						callback($.map(that.allUserIds(), function(userId) {
 							return regexp.test(userId) ? userId : null;
@@ -1198,15 +1200,18 @@ var atmos = null;
 						return '<img class="avator-mini" src="' + that.createUrl("/user/avator") + '?user_id=' + value + '" />' + value;
 					},
 					replace: function (value) {
-						return '$1@' + value + ' ';
+						var name = canl(value) ? value + ' ' : this._term;
+						return '$1@' + name;
 					},
 					cache: false
 				},
 
 				// group id strategy
 				group: {
+					_term: null,
 					match: /(^|\s)\$(\w*)$/,
 					search: function (term, callback) {
+						this._term = term;
 						var regexp = new RegExp('^' + term);
 						callback($.map(that.allGroupIds(), function(groupId) {
 							return regexp.test(groupId) ? groupId : null;
@@ -1216,7 +1221,8 @@ var atmos = null;
 						return value;
 					},
 					replace: function (value) {
-						return '$1$' + value + ' ';
+						var name = canl(value) ? value + ' ' : this._term;
+						return '$1$' + name;
 					},
 					cache: false
 				}}
