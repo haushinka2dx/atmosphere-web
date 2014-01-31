@@ -1019,7 +1019,8 @@ var atmos = null;
 			}
 		}
 		else if (msgJSON['action'] === 'sendMessage') {
-			this.refreshTimelines();
+			var targetMsgId = msgJSON['info']['_id'];
+			this.getTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
 		}
 		else if (msgJSON['action'] === 'removedMessage') {
 			var removedMsgId = msgJSON['info']['_id'];
@@ -1033,7 +1034,8 @@ var atmos = null;
 			this.getPrivateTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
 		}
 		else if (msgJSON['action'] === 'sendPrivate') {
-			this.refreshPrivateTimelines();
+			var targetMsgId = msgJSON['info']['_id'];
+			this.getPrivateTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
 		}
 		else if (msgJSON['action'] === 'removedPrivate') {
 			var removedMsgId = msgJSON['info']['_id'];

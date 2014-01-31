@@ -19,6 +19,7 @@ var AtmosPrivateTimeline = (function() {
 		context["timeline-item-timestamp"] = utc2jstRelative(msg['created_at']);
 		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"];
 		context["timeline-item-username"] = msg["created_by"];
+		context["timeline-item-created-at"] = msg["created_at"];
 		context["timeline-item-message"] = msg["message"];
 		context["timeline-item-to-user-ids"] = privateAddresses.map(function(toUserId) { return '@' + toUserId; }).join(' ');
 		var reactions = [];
