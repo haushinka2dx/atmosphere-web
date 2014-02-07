@@ -309,7 +309,7 @@ var AtmosTimeline = (function() {
 				that.latestMessageDateTime(createdAt);
 				that.oldestMessageDateTime(createdAt);
 
-				var totalDelay = showNewItems($(that.selector('> div.new-item')));
+				showNewItems($(that.selector('> div.new-item')));
 
 				return false;
 			}
