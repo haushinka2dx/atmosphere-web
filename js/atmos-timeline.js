@@ -32,6 +32,7 @@ var AtmosTimeline = (function() {
 		createTimelineItem : createTimelineItem,
 		readMore : readMore,
 		updateTimelineItemReaction : updateTimelineItemReaction,
+		addTimelineItem : addTimelineItem,
 		refreshMessage : refreshMessage,
 		removeMessage : removeMessage,
 		setScrollbar : setScrollbar,
@@ -245,6 +246,7 @@ var AtmosTimeline = (function() {
 		context["timeline-item-timestamp"] = utc2jstRelative(msg['created_at']);
 		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"];
 		context["timeline-item-username"] = msg["created_by"];
+		context["timeline-item-created-at"] = msg["created_at"];
 		context["timeline-item-message"] = msg["message"];
 		var addresses = msg["addresses"];
 		if (can(addresses)) {
@@ -288,6 +290,32 @@ var AtmosTimeline = (function() {
 		});
 	}
 
+	function addTimelineItem(msg) {
+		var that = this;
+		var msgId = msg['_id'];
+		var createdAt = msg['created_at'];
+
+		//find insert point
+		$(that.selector('> div.timeline-item-wrapper')).each(function(i) {
+			var $timelineItemWrapper = $(this);
+			if (createdAt > $timelineItemWrapper.find('input[name="message-created-at"]').val()) {
+				var $newItem = $(that.createTimelineItem(msg));
+				$timelineItemWrapper.before($newItem);
+
+				createHyperLink($newItem.find('div.timeline-item-message'));
+
+				that.applyItemEvents($newItem);
+
+				that.latestMessageDateTime(createdAt);
+				that.oldestMessageDateTime(createdAt);
+
+				showNewItems($(that.selector('> div.new-item')));
+
+				return false;
+			}
+		});
+	}
+
 	function refreshMessage(messageId) {
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
@@ -295,7 +323,12 @@ var AtmosTimeline = (function() {
 				if (tlResult['status'] === 'ok') {
 					if (tlResult['count'] === 1) {
 						var tlItem = tlResult['results'][0];
-						this.updateTimelineItemReaction(tlItem);
+						if ($(this.selector('article.msg_' + messageId)).length > 0) {
+							this.updateTimelineItemReaction(tlItem);
+						}
+						else {
+							this.addTimelineItem(tlItem);
+						}
 					}
 				}
 			},
