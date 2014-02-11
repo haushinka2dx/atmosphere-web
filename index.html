@@ -83,6 +83,9 @@
 		<script src="js/messenger.min.js"></script>
 		<script src="js/messenger-theme-flat.js"></script>
 
+		<!-- dropzone.js -->
+		<script src="js/dropzone.js"></script>
+
 		<!-- templates -->
 		<!--
 		<script type="text/template" src="templates/test.html" id="test_tmpl"></script>
@@ -292,12 +295,22 @@
 				<div class="sender-panel-contents">
 					<textarea class="addresses" placeholder="Please input address(es)." name="sender-panel-to" rows="2"></textarea>
 					<textarea class="message" placeholder="Please input message." name="sender-panel-message"></textarea>
+					<div class="attachment-file-dropzone">
+						<div class="initial-message">Drop file here to upload.</div>
+					</div>
 					<input type="hidden" name="sender-panel-reply-to-msg-id" value="" />
 				</div>
 				<footer class="sender-panel-footer">
 					<button data-hover="OK" class="ok-button foundicon-ok" name="ok"><span>OK</span></button>
 					<label>stay open<input type="checkbox" name="sender-panel-stay-open" value="true" /></label>
 				</footer>
+			</div>
+		</script>
+		<script type="text/template" id="tmpl-sender-panel-attachment-file-preview">
+			<div class="dz-preview dz-file-preview">
+				<div class="dz-details">
+					<img data-dz-thumbnail />
+				</div>
 			</div>
 		</script>
 		<script type="text/template" id="tmpl-profile-dialog">

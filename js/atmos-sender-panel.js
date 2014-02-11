@@ -56,6 +56,13 @@ var createAtmosSenderPanel = undefined;
 		return this._width;
 	}
 
+	function isStartsWithString(str, testStr) {
+		if (testStr.length > str.length) {
+			return false;
+		}
+		return str.substring(0, testStr.length) === testStr;
+	}
+
 	function init() {
 		var that = this;
 		$(this.afterSenderPanel()).before(Hogan.compile($("#tmpl-sender-panel").text()).render({ "sender-panel-id": this.id() }));
@@ -64,6 +71,31 @@ var createAtmosSenderPanel = undefined;
 		});
 
 		atmos.applyAutoComplete($(this.selector("textarea")));
+
+		this._dz = $(this.selector("div.attachment-file-dropzone")).dropzone({
+			url: atmos.createUrl('/attachments/upload'),
+			uploadMultiple: false,
+			paramName: 'attachment_file',
+			headers: {"atmos-session-id":atmos.atmosSessionId()},
+			thumbnailHeight: 100,
+			previewTemplate: Hogan.compile($("#tmpl-sender-panel-attachment-file-preview").text()).render({}),
+			maxFiles: 1,
+			//autoProcessQueue: false
+			success: function(file, response) {
+				if (!isStartsWithString(file.type, "image/")) {
+					$(that.selector("div.attachment-file-dropzone")).append("<div>No Preview</div>");
+				}
+				
+				var $messageArea = $(that.selector(":input[name=sender-panel-message]"));
+				var message = $messageArea.val();
+				message += ' ' + document.location.protocol + '//' + document.location.host + atmos.createUrl('/attachments/download?id=' + response._id);
+				$messageArea.val(message);
+			},
+		});
+
+		this._dz.on('drop', function() {
+			$(that.selector("div.attachment-file-dropzone > div.initial-message")).hide();
+		});
 
 		$(this.selector(".sender-panel-footer .ok-button")).on('click', function(e) {
 			if (that._isPrivate) {
@@ -126,6 +158,12 @@ var createAtmosSenderPanel = undefined;
 		}
 
 		$(this.selector(":input[name=sender-panel-to]")).parent().hide();
+
+		var $dzRoot = $(this.selector("div.attachment-file-dropzone"));
+		$dzRoot.children().not("div.initial-message").remove();
+		$dzRoot.find("div.initial-message").show();
+
+		this._dz.init();
 
 		$(this.selector(":input:first")).focus();
 	}

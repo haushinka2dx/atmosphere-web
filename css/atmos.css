@@ -162,7 +162,8 @@ html, body {
 	padding: 6px;
 }
 
-.sender-panel textarea {
+.sender-panel textarea,
+.sender-panel div.attachment-file-dropzone {
 	width: 280px;
 	height: 100px;
 	padding: 4px;
@@ -197,6 +198,16 @@ html, body {
 	float: none;
 	width: 1em;
 	margin-left: 3px;
+}
+
+.sender-panel .dz-preview {
+	display: inline-block;
+}
+
+.sender-panel .dz-preview .dz-details {
+	position: relative;
+	display: inline-block;
+	top: 50%;
 }
 
 .contents-wrapper {
