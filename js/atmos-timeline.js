@@ -342,7 +342,8 @@ var AtmosTimeline = (function() {
 	}
 
 	function createHyperLink($message) {
-		$message.html(autolink($message.html()));
+		$message.html(autolink($message.html(), atmos._attachmentAPIBaseForRegEx, 200, 200));
+		applyThumbnailEvent($message.find('a.atmos-image'));
 		$message.find('a').on('click', function(e) {
 			e.stopPropagation();
 		});

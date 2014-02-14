@@ -47,11 +47,121 @@ function utc2jstRelative(utcString) {
 	}
 }
 
-function autolink(src) {
+function autolink(src, attachmentsUrlPrefix, thumbWidth, thumbHeight) {
+	var patternAtmosImage = new RegExp('(\\b' + attachmentsUrlPrefix + '[-A-Za-z0-9.]+\\.(gif|jpg|png))', "g");
+	var atmosImageContext = {};
+	atmosImageContext["original-image-url"] = "$1";
+	atmosImageContext["thumbnail-image-url"] = "$1&image_width=" + thumbWidth + "&image_height=" + thumbWidth;
+	var atmosImageReplaced = Hogan.compile($("#tmpl-timeline-item-image").text()).render(atmosImageContext);
+	// a タグおよびimgタグ内のURLにこれ以降の置換が反応しないように DBLQOT という文字列にしてるので最後に再変換する
+
+	var patternAtmosAttachments = new RegExp('(\\b' + attachmentsUrlPrefix + '[-A-Za-z0-9.]+\\.([A-Za-z0-9]+))', "g");
 	var patternUrl = /(\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 	var patternAddressUser = /(@([a-zA-Z0-9\-_]+))/g;
-	return src.replace(patternUrl, "<a target=\"_blank\" href='$1'>$1</a>")
-			  .replace(patternAddressUser, "<a href=\"javascript: void(0);\" onclick=\"atmos.showProfileDialog('$2');\">$1</a>");
+
+	return src.replace(patternAtmosImage, atmosImageReplaced)
+			  .replace(patternAtmosAttachments, attachmentsReplacer)
+			  .replace(patternUrl, "<a target=\"_blank\" href='$1'>$1</a>")
+			  .replace(patternAddressUser, "<a href=\"javascript: void(0);\" onclick=\"atmos.showProfileDialog('$2');\">$1</a>")
+			  .replace(/DBLQOT/g, "\"");
+}
+
+function attachmentsReplacer(match, p1, p2, offset, string){
+	var className = getAttachmentClassName(p2);
+	return "<a href=DBLQOT" + p1 + "DBLQOT class=DBLQOTatmos-attachments-dlDBLQOT><i class=DBLQOT" + className + "DBLQOT></i></a>";
+}
+
+function getAttachmentClassName(extension) {
+	switch (extension) {
+		case 'apk':
+			var filetype = 'apk2';
+			break;
+		case 'css':
+			var filetype = 'css6';
+			break;
+		case 'csv':
+			var filetype = 'csv';
+			break;
+		case 'dat':
+			var filetype = 'dat';
+			break;
+		case 'dll':
+			var filetype = 'dll3';
+			break;
+		case 'dmg':
+			var filetype = 'dmg2';
+			break;
+		case 'doc':
+			var filetype = 'doc';
+			break;
+		case 'docx':
+			var filetype = 'docx1';
+			break;
+		case 'exe':
+			var filetype = 'exe2';
+			break;
+		case 'gz':
+			var filetype = 'gzip1';
+			break;
+		case 'html':
+			var filetype = 'html8';
+			break;
+		case 'jar':
+			var filetype = 'jar10';
+			break;
+		case 'js':
+			var filetype = 'js3';
+			break;
+		case 'log':
+			var filetype = 'log1';
+			break;
+		case 'pdf':
+			var filetype = 'pdf17';
+			break;
+		case 'psd':
+			var filetype = 'photoshop';
+			break;
+		case 'ppt':
+			var filetype = 'ppt2';
+			break;
+		case 'pptx':
+			var filetype = 'pptx';
+			break;
+		case 'sql':
+			var filetype = 'sql';
+			break;
+		case 'txt':
+			var filetype = 'txt';
+			break;
+		case 'xls':
+			var filetype = 'xls2';
+			break;
+		case 'xlsx':
+			var filetype = 'xlsx1';
+			break;
+		case 'xml':
+			var filetype = 'xml6';
+			break;
+		case 'zip':
+			var filetype = 'zip5';
+			break;
+		default:
+			var filetype = 'bin5';
+			break;
+	}
+	return 'flaticon-' + filetype;
+}
+
+function applyThumbnailEvent($target) {
+	$target.magnificPopup({
+		type:'image',
+		closeOnContentClick: true,
+		closeBtnInside: false,
+		mainClass: 'fp-img-mobile',
+		image: {
+			verticalFit: true
+		},
+	});
 }
 
 function applyMagicEffect($target, effectClass, delay, afterAction) {
@@ -94,6 +204,15 @@ function showNotification(message, type, actions) {
 		showCloseButton: true,
 		actions: actions
 	});
+}
+
+function getExtension(filename) {
+	if (filename.lastIndexOf('.') > -1) {
+		return filename.substring(filename.lastIndexOf('.') + 1, filename.length);
+	}
+	else {
+		return '';
+	}
 }
 
 $(document).ready(function() {

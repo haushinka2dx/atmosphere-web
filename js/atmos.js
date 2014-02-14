@@ -3,6 +3,7 @@ var atmos = null;
 (function() {
 	function Atmos() {
 		this.baseUrl = '/atmos';
+		this._attachmentAPIBaseForRegEx = document.location.protocol + '\\/\\/' + document.location.host + '\\' + this.baseUrl + '\\/attachments\\/download\\?id=';
 		this._timelines = {};
 		this._privateTimelines = {};
 		this._allUserIds = [];

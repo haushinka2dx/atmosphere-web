@@ -83,7 +83,8 @@ var createAtmosSenderPanel = undefined;
 			//autoProcessQueue: false
 			success: function(file, response) {
 				if (!isStartsWithString(file.type, "image/")) {
-					$(that.selector("div.attachment-file-dropzone")).append("<div>No Preview</div>");
+					var iconClassName = getAttachmentClassName(getExtension(file.name));
+					$(that.selector("div.attachment-file-dropzone")).append('<i class="' + iconClassName + '"></i>');
 				}
 				
 				var $messageArea = $(that.selector(":input[name=sender-panel-message]"));

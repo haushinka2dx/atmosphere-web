@@ -200,6 +200,10 @@ html, body {
 	margin-left: 3px;
 }
 
+.sender-panel .attachment-file-dropzone i {
+	font-size: 3em;
+}
+
 .sender-panel .dz-preview {
 	display: inline-block;
 }
@@ -355,6 +359,12 @@ html, body {
 	word-wrap: break-word;
 	margin-top: 2px;
 	margin-bottom: 2px;
+}
+
+.timeline-item-message a.atmos-attachments-dl,
+.conversation-item-message a.atmos-attachments-dl {
+	font-size: 3em;
+	vertical-align: middle;
 }
 
 .timeline-item-footer,
@@ -831,6 +841,11 @@ html, body {
 
 .profile-wrapper .profile .profile-main div.timeline article.timeline-item div.message {
 	font-size: 0.9em;
+}
+
+.profile-wrapper .profile .profile-main div.timeline article.timeline-item div.message a.atmos-attachments-dl {
+	font-size: 3em;
+	vertical-align: middle;
 }
 
 .profile-wrapper .profile .profile-main div.timeline div.timeline-item-separator {
