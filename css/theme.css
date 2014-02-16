@@ -44,7 +44,8 @@
 .atmos-modal-body input,
 .atmos-modal-body textarea,
 .sender-panel input,
-.sender-panel textarea {
+.sender-panel textarea,
+.sender-panel div.attachment-file-dropzone {
 	background-color: #69c5fc;
 	color: #fff;
 }
@@ -52,7 +53,8 @@
 .private-message .atmos-modal-body input,
 .private-message .atmos-modal-body textarea,
 .private-message.sender-panel input,
-.private-message.sender-panel textarea {
+.private-message.sender-panel textarea,
+.private-message.sender-panel div.attachment-file-dropzone {
 	background-color: #f39c12;
 	outline-color: #ea770f;
 }

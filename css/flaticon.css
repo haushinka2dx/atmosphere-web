@@ -1,0 +1,97 @@
+@font-face {
+	font-family: "Flaticon";
+	src: url("../fonts/flaticon.eot");
+	src: url("../fonts/flaticon.eot#iefix") format("embedded-opentype"),
+	url("../fonts/flaticon.woff") format("woff"),
+	url("../fonts/flaticon.ttf") format("truetype"),
+	url("../fonts/flaticon.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+	font-family: Flaticon;
+/*        font-size: 20px; */
+font-style: normal;
+/* margin-left: 20px; */
+}.flaticon-apk2:before {
+	content: "\e000";
+}
+.flaticon-bin5:before {
+	content: "\e001";
+}
+.flaticon-css6:before {
+	content: "\e002";
+}
+.flaticon-csv:before {
+	content: "\e003";
+}
+.flaticon-dat:before {
+	content: "\e004";
+}
+.flaticon-dll3:before {
+	content: "\e005";
+}
+.flaticon-dmg2:before {
+	content: "\e006";
+}
+.flaticon-doc:before {
+	content: "\e007";
+}
+.flaticon-docx1:before {
+	content: "\e008";
+}
+.flaticon-exe2:before {
+	content: "\e009";
+}
+.flaticon-gz2:before {
+	content: "\e00a";
+}
+.flaticon-gzip1:before {
+	content: "\e00b";
+}
+.flaticon-html8:before {
+	content: "\e00c";
+}
+.flaticon-jar10:before {
+	content: "\e00d";
+}
+.flaticon-js3:before {
+	content: "\e00e";
+}
+.flaticon-log1:before {
+	content: "\e00f";
+}
+.flaticon-pdf17:before {
+	content: "\e010";
+}
+.flaticon-photoshop:before {
+	content: "\e011";
+}
+.flaticon-ppt2:before {
+	content: "\e012";
+}
+.flaticon-pptx:before {
+	content: "\e013";
+}
+.flaticon-sql:before {
+	content: "\e014";
+}
+.flaticon-sql4:before {
+	content: "\e015";
+}
+.flaticon-txt:before {
+	content: "\e016";
+}
+.flaticon-xls2:before {
+	content: "\e017";
+}
+.flaticon-xlsx1:before {
+	content: "\e018";
+}
+.flaticon-xml6:before {
+	content: "\e019";
+}
+.flaticon-zip5:before {
+	content: "\e01a";
+}

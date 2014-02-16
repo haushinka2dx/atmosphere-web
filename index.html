@@ -14,6 +14,9 @@
 		<!-- LigatureSymbols icon font -->
 		<link href="css/ligature.css" rel="stylesheet">
 
+		<!-- File Format icon font -->
+		<link href="css/flaticon.css" rel="stylesheet">
+
 		<!-- simptip -->
 		<link href="css/simptip.css" rel="stylesheet">
 
@@ -26,6 +29,9 @@
 
 		<!-- magic -->
 		<link href="css/magic.min.css" rel="stylesheet">
+
+		<!-- Magnific-Popup -->
+		<link href="css/magnific-popup.css" rel="stylesheet">
 
 		<!-- Atmosphere stylesheet -->
 		<link href="css/atmos.css" rel="stylesheet">
@@ -82,6 +88,12 @@
 		<!-- messenger.js -->
 		<script src="js/messenger.min.js"></script>
 		<script src="js/messenger-theme-flat.js"></script>
+
+		<!-- dropzone.js -->
+		<script src="js/dropzone.js"></script>
+
+		<!-- Magnific-Popup.js -->
+		<script src="js/jquery.magnific-popup.min.js"></script>
 
 		<!-- templates -->
 		<!--
@@ -142,6 +154,7 @@
 				</article>
 			</div>
 		</script>
+		<script type="text/template" id="tmpl-timeline-item-image"><a href=DBLQOT{{original-image-url}}DBLQOT class="atmos-image"><img src=DBLQOT{{thumbnail-image-url}}DBLQOT /></a></script>
 		<script type="text/template" id="tmpl-timeline-read-more">
 			<div class="timeline-read-more new-item" style="display:none;">
 				<a href="#">read more</a>
@@ -299,6 +312,18 @@
 					<button data-hover="OK" class="ok-button foundicon-ok" name="ok"><span>OK</span></button>
 					<label>stay open<input type="checkbox" name="sender-panel-stay-open" value="true" /></label>
 				</footer>
+			</div>
+		</script>
+		<script type="text/template" id="tmpl-sender-panel-dropzone">
+			<div class="attachment-file-dropzone">
+				<div class="initial-message">Drop file here to upload.</div>
+			</div>
+		</script>
+		<script type="text/template" id="tmpl-sender-panel-attachment-file-preview">
+			<div class="dz-preview dz-file-preview">
+				<div class="dz-details">
+					<img data-dz-thumbnail />
+				</div>
 			</div>
 		</script>
 		<script type="text/template" id="tmpl-profile-dialog">
