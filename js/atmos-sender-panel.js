@@ -17,6 +17,7 @@ var createAtmosSenderPanel = undefined;
 		afterSenderPanel : afterSenderPanel,
 		width : width,
 		init : init,
+		initAttachmentDropzone : initAttachmentDropzone,
 		setVariablesForNormalMessage : setVariablesForNormalMessage,
 		setVariablesForPrivateMessage : setVariablesForPrivateMessage,
 		show : show,
@@ -105,6 +106,39 @@ var createAtmosSenderPanel = undefined;
 		});
 	}
 
+	function initAttachmentDropzone() {
+		var that = this;
+		$(this.selector("div.attachment-file-dropzone")).remove();
+		$(this.selector("textarea.message")).after(Hogan.compile($("#tmpl-sender-panel-dropzone").text()).render({}));
+		this._dz = $(this.selector("div.attachment-file-dropzone")).dropzone({
+			url: atmos.createUrl('/attachments/upload'),
+			uploadMultiple: false,
+			paramName: 'attachment_file',
+			headers: {"atmos-session-id":atmos.atmosSessionId()},
+			thumbnailHeight: 100,
+			previewTemplate: Hogan.compile($("#tmpl-sender-panel-attachment-file-preview").text()).render({}),
+			maxFiles: 1,
+			//autoProcessQueue: false
+			success: applyDroppedAttachment.bind(this)
+		});
+
+		this._dz.on('drop', function() {
+			$(that.selector("div.attachment-file-dropzone > div.initial-message")).hide();
+		});
+	}
+
+	function applyDroppedAttachment(file, response) {
+		if (!isStartsWithString(file.type, "image/")) {
+			var iconClassName = getAttachmentClassName(getExtension(file.name));
+			$(this.selector("div.attachment-file-dropzone")).append('<i class="' + iconClassName + '"></i>');
+		}
+		
+		var $messageArea = $(this.selector(":input[name=sender-panel-message]"));
+		var message = $messageArea.val();
+		message += ' ' + document.location.protocol + '//' + document.location.host + atmos.createUrl('/attachments/download?id=' + response._id);
+		$messageArea.val(message);
+	}
+
 	function setVariablesForNormalMessage(message, replyToMsgId, replyToMessage, addresses) {
 		var that = this;
 		this._isPrivate = false;
@@ -136,33 +170,7 @@ var createAtmosSenderPanel = undefined;
 		$(this.selector(":input[name=sender-panel-to]")).parent().hide();
 
 		//init dropzone
-		$(this.selector("div.attachment-file-dropzone")).remove();
-		$(this.selector("textarea.message")).after(Hogan.compile($("#tmpl-sender-panel-dropzone").text()).render({}));
-		this._dz = $(this.selector("div.attachment-file-dropzone")).dropzone({
-			url: atmos.createUrl('/attachments/upload'),
-			uploadMultiple: false,
-			paramName: 'attachment_file',
-			headers: {"atmos-session-id":atmos.atmosSessionId()},
-			thumbnailHeight: 100,
-			previewTemplate: Hogan.compile($("#tmpl-sender-panel-attachment-file-preview").text()).render({}),
-			maxFiles: 1,
-			//autoProcessQueue: false
-			success: function(file, response) {
-				if (!isStartsWithString(file.type, "image/")) {
-					var iconClassName = getAttachmentClassName(getExtension(file.name));
-					$(that.selector("div.attachment-file-dropzone")).append('<i class="' + iconClassName + '"></i>');
-				}
-				
-				var $messageArea = $(that.selector(":input[name=sender-panel-message]"));
-				var message = $messageArea.val();
-				message += ' ' + document.location.protocol + '//' + document.location.host + atmos.createUrl('/attachments/download?id=' + response._id);
-				$messageArea.val(message);
-			},
-		});
-
-		this._dz.on('drop', function() {
-			$(that.selector("div.attachment-file-dropzone > div.initial-message")).hide();
-		});
+		this.initAttachmentDropzone();
 
 		$(this.selector(":input:first")).focus();
 	}
@@ -188,6 +196,9 @@ var createAtmosSenderPanel = undefined;
 		}
 
 		$(this.selector(":input[name=sender-panel-to]")).parent().show();
+
+		//init dropzone
+		this.initAttachmentDropzone();
 
 		if (canl(to)) {
 			$(this.selector(":input[name=sender-panel-message]")).focus();
