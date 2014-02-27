@@ -253,11 +253,9 @@ html, body {
 .timeline-header,
 .conversation-header {
 	position: relative;
-	height: 31px;
+	height: 56px;
 	font-size: 1.1em;
 	text-align: center;
-	padding-top: 13px;
-	padding-bottom: 13px;
 }
 
 .timeline-header {
@@ -266,19 +264,45 @@ html, body {
 .timeline-header .timeline-title,
 .timeline-header .header-control {
 	letter-spacing:normal;
+	position: absolute;
 }
 
 .timeline-header .header-control {
-	width: 20%;
+	width: 10%;
 	display: inline-block;
+	top: 50%;
+	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
 }
+
+.timeline-header .header-control.left-control {
+	left: 0;
+}
+
+.timeline-header .header-control.right-control {
+	right: 0;
+}
+
 .timeline-move-position {
 	vertical-align: middle;
 }
 
 .timeline-header .timeline-title {
-	width: 60%;
+	width: 80%;
 	display: inline-block;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	-webkit-transform: translateX(-50%) translateY(-50%);
+}
+
+.conversation-header > a {
+	position: absolute;
+	width: 100%;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	-webkit-transform: translateX(-50%) translateY(-50%);
 }
 
 .timeline-items-wrapper,
