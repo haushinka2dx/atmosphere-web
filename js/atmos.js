@@ -9,21 +9,14 @@ var atmos = null;
 		this._allUserIds = [];
 		this._allGroupIds = [];
 		this._sockjs = createAtmosSockJS();
-		this._timelineCount = 50;
-		this._timelineRootIds = [
-			'tl_global_timeline-root',
-			'tl_my_timeline-root',
-			'tl_talk_timeline-root',
-			'tl_announce_timeline-root',
-			'tl_monolog_timeline-root',
-			'tl_private_timeline-root',
-		];
+		this._timelineManager = new AtmosTimelineManager('div.contents-wrapper > div.contents');
 		this.__desktopNotifier = new DesktopNotification();
 	};
 	Atmos.prototype = {
 		atmosSessionId : atmosSessionId,
 		currentUserId : currentUserId,
 		createUrl : createUrl,
+		timelineManager : timelineManager,
 		sendRequest : sendRequest,
 		login : login,
 		whoami : whoami,
@@ -37,12 +30,6 @@ var atmos = null;
 		removeMessage : removeMessage,
 		sendPrivate : sendPrivate,
 		responseToMessage : responseToMessage,
-		getTimelines : getTimelines,
-		getTimeline : getTimeline,
-		getPrivateTimelines : getPrivateTimelines,
-		getPrivateTimeline : getPrivateTimeline,
-		addTimeline : addTimeline,
-		addPrivateTimeline : addPrivateTimeline,
 		showLoginDialog : showLoginDialog,
 		showLogoutDialog : showLogoutDialog,
 		showDesktopNotificationConfirmDialog : showDesktopNotificationConfirmDialog,
@@ -57,8 +44,6 @@ var atmos = null;
 		showMessageSenderPanel : showMessageSenderPanel,
 		showProfileDialog : showProfileDialog,
 		showSettingDialog : showSettingDialog,
-		loadTimelineDefinitions : loadTimelineDefinitions,
-		createTimelineItem : createTimelineItem,
 		createTimelines : createTimelines,
 		init : init,
 		initSockJS : initSockJS,
@@ -90,6 +75,10 @@ var atmos = null;
 
 	function createUrl(path) {
 		return this.baseUrl + path;
+	}
+
+	function timelineManager() {
+		return this._timelineManager;
 	}
 
 	// try login
@@ -397,15 +386,6 @@ var atmos = null;
 		else {
 			this.sendRequest(this.createUrl('/messages/response'), 'POST', { target_id : targetMessageId, action : reactionType }, successCallback, failureCallback);
 		}
-	}
-
-	function getTimelines() {
-		var that = this;
-		var tls = [];
-		Object.keys(that._timelines).forEach(function(key) {
-			tls.push(that._timelines[key]);
-		});
-		return tls;
 	}
 
 	function getTimeline(timelineId) {
@@ -794,137 +774,9 @@ var atmos = null;
 	    });
 	}
 
-	function createTimelineItem(msg) {
-		var tmpl = Hogan.compile($("#tmpl-timeline-item-wrapper").text());
-		var context = {};
-		context["timeline-item-timestamp"] = utc2jst(msg['created_at']);
-		context["timeline-item-avator-img-url"] = this.createUrl("/user/avator") + "?user_id=" + msg["created_by"];
-		context["timeline-item-username"] = msg["created_by"];
-		context["timeline-item-message"] = msg["message"];
-		var reactions = [];
-		var responses = msg['responses'];
-		Object.keys(responses).sort().forEach(function(resType, i, a) {
-			var responderUserIds = responses[resType];
-			var responseInfo = {};
-			responseInfo['reaction-icon-class'] = "foundicon-" + resType;
-			responseInfo['reaction-count'] = responderUserIds.length;
-			reactions.push(responseInfo);
-		});
-		context["reactions"] = reactions;
-		var generated = tmpl.render(context);
-		return generated;
-	}
-
-	function createTimelineOutline(timelineRootId, timelineId, timelineTitle, timelineRowClass) {
-		return Hogan.compile($("#tmpl-timeline").text()).render({
-			"timeline-row-class": timelineRowClass,
-			"timeline-root-id": timelineRootId,
-			"timeline-title": timelineTitle,
-			"timeline-id": timelineId,
-		});
-	}
-
-	function loadTimelineDefinitions() {
-		// load from settings
-		var allTimelineDefs = AtmosSettings.Timeline.timelineDefinitions();
-
-		// extract timeline definitions that can be handled
-		var targetTimelineRootIds = this._timelineRootIds;
-		var timelineRootIds = Object.keys(allTimelineDefs).filter(function(timelineRootId) {
-			return targetTimelineRootIds.indexOf(timelineRootId) > -1;
-		});
-		var timelineDefs = [];
-		timelineRootIds.forEach(function(timelineRootId) { timelineDefs.push(allTimelineDefs[timelineRootId]); });
-		
-		// sort timeline definition
-		var timelineOrder = AtmosSettings.Timeline.timelineOrder();
-		timelineDefs.sort(function(left, right) {
-			var leftOrder = timelineOrder[left['root-id']];
-			var rightOrder = timelineOrder[right['root-id']];
-			if (typeof leftOrder === 'undefined' && typeof rightOrder === 'undefined') {
-				return 0;
-			}
-			else if (typeof leftOrder === 'undefined') {
-				return -1;
-			}
-			else if (typeof rightOrder === 'undefined') {
-				return 1;
-			}
-			else if (leftOrder < rightOrder) {
-				return -1;
-			}
-			else if (leftOrder > rightOrder) {
-				return 1;
-			}
-			else {
-				return 0;
-			}
-		});
-
-		return timelineDefs;
-	}
-
 	function createTimelines() {
-		var changePositionStatusChanger = changeTimelinePositionLinkStatus.bind(this);
-
-		this.loadTimelineDefinitions().forEach(function(timelineDef) {
-			$("div.contents-wrapper > div.contents").append(createTimelineOutline(
-				timelineDef["root-id"],
-				timelineDef["id"],
-				timelineDef["name"],
-				timelineDef["theme"]
-			));
-		});
-		$(".timeline-move-position.move-left > a").on('click', function(e) {
-			e.stopPropagation();
-			var $timelineRoot = $(e.currentTarget).parent().parent().parent().parent();
-			var $leftRoot = $timelineRoot.prev('.timeline');
-			$leftRoot.before($timelineRoot);
-			changePositionStatusChanger($(".contents > .timeline"));
-			storeTimelineOrder($(".contents > .timeline"));
-		});
-		$(".timeline-move-position.move-right > a").on('click', function(e) {
-			e.stopPropagation();
-			var $timelineRoot = $(e.currentTarget).parent().parent().parent().parent();
-			var $rightRoot = $timelineRoot.next('.timeline');
-			$rightRoot.after($timelineRoot);
-			changePositionStatusChanger($(".contents > .timeline"));
-			storeTimelineOrder($(".contents > .timeline"));
-		});
-	}
-
-	function storeTimelineOrder($timelines) {
-		var timelineOrder = {};
-		$timelines.each(function(index, timeline) { timelineOrder[$(timeline).attr('id')] = index + 1; });
-		AtmosSettings.Timeline.timelineOrder(timelineOrder);
-	}
-
-	function changeTimelinePositionLinkStatus($timelines) {
-		var that = this;
-		$timelines.each(function(index, timeline) {
-			$timeline = $(timeline);
-			var timelineId = $timeline.find(".timeline-items:first").attr("id");
-			var timeline = that.getTimeline(timelineId);
-			if (!can(timeline)) {
-				timeline = that.getPrivateTimeline(timelineId);
-			}
-			if (can(timeline)) {
-				var $prevTimeline = $timeline.prev();
-				if ($prevTimeline.hasClass("timeline") && $prevTimeline.is(':visible')) {
-					timeline.enableChangePositionLeft();
-				}
-				else {
-					timeline.disableChangePositionLeft();
-				}
-				var $nextTimeline = $timeline.next();
-				if ($nextTimeline.hasClass("timeline") && $nextTimeline.is(':visible')) {
-					timeline.enableChangePositionRight();
-				}
-				else {
-					timeline.disableChangePositionRight();
-				}
-			}
-		});
+		var timelineManager = this.timelineManager();
+		timelineManager.loadTimelineDefinitions().forEach(function(timelineDef) { timelineManager.addTimeline(timelineDef) });
 	}
 
 	function init() {
@@ -961,41 +813,6 @@ var atmos = null;
 			}
 		}
 
-		var timelinePositionChangeLinkStatusChanger = changeTimelinePositionLinkStatus.bind(this, $(".contents > .timeline"));
-
-		// defines timelines
-		var scGlobal = createAtmosSearchCondition();
-		scGlobal.count(this._timelineCount);
-		var tlGlobal = new AtmosTimeline('tl_global_timeline', 'Global', 'all messages', this.createUrl('/messages/global_timeline'), scGlobal, timelinePositionChangeLinkStatusChanger);
-		this.addTimeline(tlGlobal);
-
-		var scMy = createAtmosSearchCondition();
-		scMy.count(this._timelineCount);
-		var tlMy = new AtmosTimeline('tl_my_timeline', 'My', 'The messages that my speakers says.', this.createUrl('/messages/focused_timeline'), scMy, timelinePositionChangeLinkStatusChanger);
-		this.addTimeline(tlMy);
-
-		var scTalk = createAtmosSearchCondition();
-		scTalk.count(this._timelineCount);
-		var tlTalk = new AtmosTimeline('tl_talk_timeline', 'Talk', '', this.createUrl('/messages/talk_timeline'), scTalk, timelinePositionChangeLinkStatusChanger);
-		this.addTimeline(tlTalk);
-
-		var scAnnounce = createAtmosSearchCondition();
-		scAnnounce.count(this._timelineCount);
-		var tlAnnounce = new AtmosTimeline('tl_announce_timeline', 'Announce', '', this.createUrl('/messages/announce_timeline'), scAnnounce, timelinePositionChangeLinkStatusChanger);
-		this.addTimeline(tlAnnounce);
-
-		var scMonolog = createAtmosSearchCondition();
-		scMonolog.count(this._timelineCount);
-		var tlMonolog = new AtmosTimeline('tl_monolog_timeline', 'Monolog', '', this.createUrl('/messages/monolog_timeline'), scMonolog, timelinePositionChangeLinkStatusChanger);
-		this.addTimeline(tlMonolog);
-
-		var scPrivate = createAtmosSearchCondition();
-		scPrivate.count(this._timelineCount);
-		var tlPrivate = new AtmosPrivateTimeline('tl_private_timeline', 'Private', '', this.createUrl('/private/timeline'), scPrivate, timelinePositionChangeLinkStatusChanger);
-		this.addPrivateTimeline(tlPrivate);
-
-		timelinePositionChangeLinkStatusChanger();
-
 		this.initScrollbars();
 	}
 
@@ -1007,40 +824,39 @@ var atmos = null;
 
 	function initScrollbars() {
 		$('.contents').perfectScrollbar(atmos.perfectScrollbarSetting);
-		this.getTimelines().forEach(function(tl) { tl.setScrollbar(); });
-		this.getPrivateTimelines().forEach(function(tl) { tl.setScrollbar(); });
+		this.timelineManager().getTimelines().forEach(function(tl) { tl.setScrollbar(); });
 	}
 
 	function processServerNotification(msgJSON) {
 		if (msgJSON['action'] === 'sendResponse') {
 			var targetMsgId = msgJSON['info']['target_msg_id'];
-			this.getTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
+			this.timelineManager().getPublicTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
 			if (can(this._currentProfileDialog)) {
 				this._currentProfileDialog.refreshMessage(targetMsgId);
 			}
 		}
 		else if (msgJSON['action'] === 'sendMessage') {
 			var targetMsgId = msgJSON['info']['_id'];
-			this.getTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
+			this.timelineManager().getPublicTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
 		}
 		else if (msgJSON['action'] === 'removedMessage') {
 			var removedMsgId = msgJSON['info']['_id'];
-			this.getTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
+			this.timelineManager().getPublicTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
 			if (can(this._currentProfileDialog)) {
 				this._currentProfileDialog.removeMessage(removedMsgId);
 			}
 		}
 		else if (msgJSON['action'] === 'sendResponsePrivate') {
 			var targetMsgId = msgJSON['info']['target_msg_id'];
-			this.getPrivateTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
+			this.timelineManager().getPrivateTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
 		}
 		else if (msgJSON['action'] === 'sendPrivate') {
 			var targetMsgId = msgJSON['info']['_id'];
-			this.getPrivateTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
+			this.timelineManager().getPrivateTimelines().forEach(function(tl) { tl.refreshMessage(targetMsgId); });
 		}
 		else if (msgJSON['action'] === 'removedPrivate') {
 			var removedMsgId = msgJSON['info']['_id'];
-			this.getPrivateTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
+			this.timelineManager().getPrivateTimelines().forEach(function(tl) { tl.removeMessage(removedMsgId); });
 		}
 
 		var notificationInfoCreateCallback = new CallbackInfo(
@@ -1172,11 +988,11 @@ var atmos = null;
 	}
 
 	function refreshTimelines() {
-		this.getTimelines().forEach(function(tl) { tl.init(); });
+		this.timelineManager().getPublicTimelines().forEach(function(tl) { tl.init(); });
 	}
 
 	function refreshPrivateTimelines() {
-		this.getPrivateTimelines().forEach(function(tl) { tl.init(); });
+		this.timelineManager().getPrivateTimelines().forEach(function(tl) { tl.init(); });
 	}
 
 	function allUserIds(ids) {
