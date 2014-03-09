@@ -140,6 +140,18 @@
 	color: #999999;
 }
 
+.timeline-header .header-menu {
+	background-color: #555555;
+}
+
+.timeline-header .header-menu a {
+	color: #999999;
+}
+
+.timeline-header .header-menu .disable {
+	color: #606060;
+}
+
 .conversation-header > a {
 	color: #ffffff;
 }

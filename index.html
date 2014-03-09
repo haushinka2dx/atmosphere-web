@@ -102,9 +102,18 @@
 		<script type="text/template" id="tmpl-timeline">
 			<div class="timeline {{timeline-row-class}}" id="{{timeline-root-id}}">
 				<header class="timeline-header">
-					<div class="header-control left-control"><span class="timeline-move-position move-left"><a href="javascript:void(0);"><i class="dripicon-arrow-left"></i></a><span></div>
+					<div class="header-control left-control"></div>
 					<div class="timeline-title">{{timeline-title}}</div>
-					<div class="header-control right-control"><span class="timeline-move-position move-right"><a href="javascript:void(0);"><i class="dripicon-arrow-right"></i></a><span></div>
+					<div class="header-control right-control"><span class="timeline-setting"><a href="javascript:void(0);"><i class="ls-icon-list"></i></a><span></div>
+					<div class="header-menu" style="display: none;">
+						<div class="move-horizontal">
+							<div class="left-control"><span class="timeline-move-position move-left"><a href="javascript:void(0);"><i class="ls-icon-arrowleft"></i></a><span class="disable"><i class="ls-icon-arrowleft"></i></span></span></div>
+							<div class="right-control"><span class="timeline-move-position move-right"><a href="javascript:void(0);"><i class="ls-icon-arrowright"></i></a><span class="disable"><i class="ls-icon-arrowright"></i></span></span></div>
+						</div>
+						<div class="etc">
+							<div class="timeline-close"><span class="timeline-close"><a href="javascript:void(0);"><i class="ls-icon-remove"></i>Remove</a></span></div>
+						</div>
+					</div>
 				</header>
 				<div class="timeline-items-wrapper">
 					<div class="timeline-items" id="{{timeline-id}}">

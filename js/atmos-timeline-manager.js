@@ -117,15 +117,21 @@ var AtmosTimelineManager = (function() {
 			this._publicTimelines[tlDef["id"]] = timeline;
 		}
 
+		changePositionStatusChanger();
+
 		return timeline;
 	};
 
 	function applyTimelineEvent(tlDef) {
 		var targetSelector = ".contents > .timeline";
 		var changePositionStatusChanger = changeTimelinePositionLinkStatus.bind(this, targetSelector);
+		$(".header-control .timeline-setting a").off('click').on('click', function(e) {
+			e.stopPropagation();
+			$menu = $(e.currentTarget).parent().parent().next('.header-menu:first').slideToggle('fast');
+		});
 		$(".timeline-move-position.move-left > a").off('click').on('click', function(e) {
 			e.stopPropagation();
-			var $timelineRoot = $(e.currentTarget).parent().parent().parent().parent();
+			var $timelineRoot = $(e.currentTarget).parents(".timeline");
 			var $leftRoot = $timelineRoot.prev('.timeline');
 			$leftRoot.before($timelineRoot);
 			changePositionStatusChanger();
@@ -133,15 +139,21 @@ var AtmosTimelineManager = (function() {
 		});
 		$(".timeline-move-position.move-right > a").off('click').on('click', function(e) {
 			e.stopPropagation();
-			var $timelineRoot = $(e.currentTarget).parent().parent().parent().parent();
+			var $timelineRoot = $(e.currentTarget).parents(".timeline");
 			var $rightRoot = $timelineRoot.next('.timeline');
 			$rightRoot.after($timelineRoot);
 			changePositionStatusChanger();
 			storeTimelineOrder($(targetSelector));
 		});
-
-		//TODO 削除時のイベント登録（対象タイムラインの情報がないとやりにくい）
-		//var removeFunc = removeTimeline.bind(this, tlDef["id"], $targets);
+		$(".header-menu .timeline-close a").off('click').on('click', function(e) {
+			e.stopPropagation();
+			var $timelineRoot = $(e.currentTarget).parents(".timeline");
+			$timelineRoot.fadeOut('normal', function() {
+				$timelineRoot.remove();
+				changePositionStatusChanger();
+				storeTimelineOrder($(targetSelector));
+			});
+		});
 
 		return changePositionStatusChanger;
 	}
@@ -179,32 +191,6 @@ var AtmosTimelineManager = (function() {
 		$timelines.each(function(index, timeline) { timelineOrder[$(timeline).attr('id')] = index + 1; });
 		AtmosSettings.Timeline.timelineOrder(timelineOrder);
 	}
-
-	//TODO これはタイムラインの削除が実装されたら使う想定
-//	function removeTimeline(timelineId, $targets) {
-//		if (tlDef["private"]) {
-//			if (Object.keys(this._privateTimelines).indexOf(timelineId) == -1) {
-//				return undefined;
-//			}
-//			else {
-//				delete this._privateTimelines[timelineId];
-//			}
-//		}
-//		else {
-//			if (Object.keys(this._publicTimelines).indexOf(timelineId) == -1) {
-//				return undefined;
-//			}
-//			else {
-//				delete this._publicTimelines[timelineId];
-//			}
-//		}
-//
-//		$("#" + tlDef["root-id"]).remove();
-//
-//		applyTimelineEvent.call(this)();
-//
-//		storeTimelineOrder($targets);
-//	};
 
 	return AtmosTimelineManager;
 })();

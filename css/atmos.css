@@ -125,8 +125,10 @@ html, body {
 }
 
 .atmos-vmenu li a.icon-send:before {
-    content: "\f003";
-    font-family: "GeneralFoundicons";
+    content: "\e041";
+    font-family: 'LigatureSymbols';
+	font-size: 2em;
+	margin-left: 0.05em;
 }
 
 .atmos-vmenu li a.icon-private:before {
@@ -261,6 +263,12 @@ html, body {
 .timeline-header {
 	letter-spacing:-.40em;
 }
+
+.timeline-header i {
+	font-size: 2em;
+	margin-right: 0.2em;
+}
+
 .timeline-header .timeline-title,
 .timeline-header .header-control {
 	letter-spacing:normal;
@@ -281,6 +289,40 @@ html, body {
 
 .timeline-header .header-control.right-control {
 	right: 0;
+}
+
+.timeline-header .header-control.timeline-close {
+	right: 0;
+	top: 0;
+	transform: none;
+	-webkit-transform: none;
+}
+
+.timeline-header .header-menu {
+	position: absolute;
+	top: 100%;
+	width: 100%;
+	z-index: 100;
+	letter-spacing:normal;
+	font-size: 0.9em;
+}
+
+.timeline-header .header-menu div {
+	display: inline-block;
+}
+
+.timeline-header .header-menu i {
+	font-size: 1.5em;
+}
+
+.timeline-header .header-menu .move-horizontal {
+	width: 20%;
+	text-align: left;
+}
+
+.timeline-header .header-menu .etc {
+	width: 76%;
+	text-align: right;
 }
 
 .timeline-move-position {
