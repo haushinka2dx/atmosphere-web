@@ -54,6 +54,7 @@
 -->
 						<li><a href="#" class="icon-send" id="menuItemSendMessage"><span>Send Message</span></a><div class="atmos-vmenu-text"><div>Send Message</div></div></li>
 						<li><a href="#" class="icon-private" id="menuItemSendPrivate"><span>Send Private Message</span></a><div class="atmos-vmenu-text"><div>Send Private Message</div></div></li>
+						<li><a href="#" class="icon-timeline" id="menuItemTimeline"><span>Restore Timeline</span></a><div class="atmos-vmenu-text"><div>Restore Timeline</div></div></li>
 						<li><a href="#" class="icon-settings" id="menuItemSettings"><span>Settings</span></a><div class="atmos-vmenu-text"><div>Settings</div></div></li>
 						<li><a href="#" class="icon-logout" id="menuItemLogout"><span>Logout</span></a><div class="atmos-vmenu-text"><div>Logout</div></div></li>
 					</ul>
@@ -398,6 +399,29 @@
 			<div class="timeline-item-separator"></div>
 			{{/has-next-message}}
 		</script>
+		<script type="text/template" id="tmpl-timeline-definition-dialog">
+			<div class="timeline-definition-dialog-wrapper" id="{{timeline-definition-dialog-id}}" style="display: none;">
+				<div class="timeline-definition-dialog">
+					<header>
+						<div class="header"><a href="#" class="close-button"><i class="foundicon-remove"></i></a></div>
+						<div class="title">Manage Timeline</div>
+					</header>
+					<div class="timeline-definitions-wrapper">
+						<div class="timeline-definitions">
+							{{#timeline-definitions}}
+							<div class="timeline-definition" data-timelineid="{{timeline-id}}" data-timelinerootid="{{timeline-root-id}}">
+								<div class="title">{{timeline-name}}</div>
+								<div class="control add enable" style="display: none;"><a href="javascript:void(0);"><i class="foundicon-plus"></i></a></div>
+								<div class="control add disable" style="display: none;"><i class="foundicon-plus"></i></div>
+								<div class="control remove enable" style="display: none;"><a href="javascript:void(0);"><i class="foundicon-minus"></i></a></div>
+								<div class="control remove disable" style="display: none;"><i class="foundicon-minus"></i></div>
+							</div>
+							{{/timeline-definitions}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</script>
 
 		<!-- atmospheres -->
 		<script src="js/callback.js"></script>
@@ -420,6 +444,7 @@
 
 				$('#menuItemSendMessage').on('click', function(e) { atmos.showMessageSenderPanel('', '', '', [], false); });
 				$('#menuItemSendPrivate').on('click', function(e) { atmos.showMessageSenderPanel('', '', '', [], true); });
+				$('#menuItemTimeline').on('click', function(e) { atmos.timelineManager().showTimelineManagementDialog(); });
 				$('#menuItemSettings').on('click', function(e) { atmos.showSettingDialog(); });
 				$('#menuItemLogout').on('click', function(e) { atmos.showLogoutDialog(); });
 			});

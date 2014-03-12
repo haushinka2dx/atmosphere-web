@@ -146,6 +146,12 @@ html, body {
     font-family: "GeneralFoundicons";
 }
 
+.atmos-vmenu li a.icon-timeline:before {
+    content: "\e05b";
+    font-family: 'LigatureSymbols';
+	font-size: 2em;
+}
+
 .atmos-vmenu li a.icon-settings:before {
     content: "\f000";
     font-family: "GeneralFoundicons";
@@ -776,7 +782,8 @@ html, body {
 	margin-right: 3px;
 }
 
-.profile-wrapper {
+.profile-wrapper,
+.timeline-definition-dialog-wrapper {
 	position: fixed;
 	left: 0;
 	top: 0;
@@ -785,14 +792,24 @@ html, body {
 	z-index: 9000;
 }
 
-.profile-wrapper .profile {
-	width: 500px;
-	height: 500px;
+.profile-wrapper .profile,
+.timeline-definition-dialog-wrapper .timeline-definition-dialog {
 	position: fixed;
 	top: 50%;
 	left: 50%;
 	-webkit-transform: translateX(-50%) translateY(-50%);
 	transform: translateX(-50%) translateY(-50%);
+}
+
+.profile-wrapper .profile {
+	width: 500px;
+	height: 500px;
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog {
+	width: 400px;
+	height: 300px;
+	font-size: 1.2em;
 }
 
 .profile-wrapper .profile > header {
@@ -801,11 +818,22 @@ html, body {
 	text-align: center;
 }
 
-.profile-wrapper .profile > header div.header {
+.timeline-definition-dialog-wrapper .timeline-definition-dialog > header {
+	width: 100%;
+	height: 20%;
+	text-align: center;
+}
+
+.profile-wrapper .profile > header div.header,
+.timeline-definition-dialog-wrapper .timeline-definition-dialog > header div.header {
 	text-align: right;
 	width: 100%;
 	height: 1.5em;
 	padding: 0;
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog > header div.header {
+	font-size: 0.75em;
 }
 
 .profile-wrapper .profile > header div.side-panel {
@@ -920,6 +948,40 @@ html, body {
 	height: 2px;
 	margin-left: 10%;
 	margin-right: 10%;
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions-wrapper {
+	position: relative;
+	width: 100%;
+	height: 78%;
+	overflow-y: hidden;
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions {
+	position: relative;
+	width: 100%;
+	height: 100%;;
+	overflow-y: hidden;
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition {
+	width: 100%;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition div {
+	display: inline-block;
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition div.title {
+	width: 76%;
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition div.control {
+	width: 10%;
+	text-align: center;
+	margin-top: 0.2em;
 }
 
 div.textcomplete-wrapper {

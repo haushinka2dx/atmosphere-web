@@ -293,16 +293,19 @@
 	color: #d5d5d5;
 }
 
-.profile-wrapper {
+.profile-wrapper,
+.timeline-definition-dialog-wrapper {
 	background-color: rgba(0,0,0,0.6);
 }
 
-.profile-wrapper .profile {
+.profile-wrapper .profile,
+.timeline-definition-dialog-wrapper .timeline-definition-dialog {
 	color: rgba(255,255,255,1.0);
 	background-color: rgba(0,0,0,0.7);
 }
 
-.profile-wrapper .profile a.close-button {
+.profile-wrapper .profile a.close-button,
+.timeline-definition-dialog-wrapper .timeline-definition-dialog a.close-button {
 	color: rgba(100,100,100,1.0);
 	text-decoration: none;
 }
@@ -349,6 +352,26 @@
 
 .profile-wrapper .profile .profile-main div.timeline div.timeline-item-separator {
 	background-color: rgba(100,100,100,0.3);
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition {
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-top-color: rgba(185,185,185,0.3);
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: rgba(185,185,185,0.3);
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition,
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition .control.enable a {
+	color: rgba(205,205,205,1.0);
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition .control.disable {
+	color: rgba(55,55,55,1.0);
 }
 
 .palette-global-timeline-base-color {

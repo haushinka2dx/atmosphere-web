@@ -776,7 +776,7 @@ var atmos = null;
 
 	function createTimelines() {
 		var timelineManager = this.timelineManager();
-		timelineManager.loadTimelineDefinitions().forEach(function(timelineDef) { timelineManager.addTimeline(timelineDef) });
+		timelineManager.loadTimelineDefinitions().reverse().forEach(function(timelineDef) { timelineManager.addTimeline(timelineDef) });
 	}
 
 	function init() {
