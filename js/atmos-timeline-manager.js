@@ -127,6 +127,34 @@ var AtmosTimelineManager = (function() {
 		return timeline;
 	};
 
+	AtmosTimelineManager.prototype.removeTimeline = function(targetTimelineId, callback) {
+		if (!canl(targetTimelineId)) {
+			if (can(callback)) {
+				callback(false);
+			}
+			return;
+		}
+
+		var timelineManager = this;
+		var targetSelector = '.contents > .timeline';
+		var changePositionStatusChanger = changeTimelinePositionLinkStatus.bind(this, targetSelector);
+		var $timelineRoot = $('#' + targetTimelineId).parents('.timeline');
+		$timelineRoot.fadeOut('normal', function() {
+			$timelineRoot.remove();
+			changePositionStatusChanger();
+			storeTimelineOrder($(targetSelector));
+			if (timelineManager.getPublicTimeline(targetTimelineId)) {
+				delete timelineManager._publicTimelines[targetTimelineId];
+			}
+			else {
+				delete timelineManager._privateTimelines[targetTimelineId];
+			}
+			if (can(callback)) {
+				callback(true);
+			}
+		});
+	};
+
 	function applyTimelineEvent(tlDef) {
 		var timelineManager = this;
 		var targetSelector = ".contents > .timeline";
@@ -156,15 +184,7 @@ var AtmosTimelineManager = (function() {
 			var $timelineRoot = $(e.currentTarget).parents(".timeline");
 			var targetTimelineId = $timelineRoot.find('.timeline-items').attr("id");
 			$timelineRoot.fadeOut('normal', function() {
-				$timelineRoot.remove();
-				changePositionStatusChanger();
-				storeTimelineOrder($(targetSelector));
-				if (timelineManager.getPublicTimeline(targetTimelineId)) {
-					delete timelineManager._publicTimelines[targetTimelineId];
-				}
-				else {
-					delete timelineManager._privateTimelines[targetTimelineId];
-				}
+				timelineManager.removeTimeline(targetTimelineId);
 			});
 		});
 
@@ -239,6 +259,7 @@ var AtmosTimelineManager = (function() {
 		$('#' + dialogId).on('click', '.control a', function(e) {
 			e.stopPropagation();
 			var targetTimelineRootId = $(this).parents('.timeline-definition').data('timelinerootid');
+			var targetTimelineId = $(this).parents('.timeline-definition').data('timelineid');
 			var $parent = $(this).parent();
 			if ($parent.hasClass('add')) {
 				var timeline = timelineManager.addTimeline(timelineDefs.filter(function(tlDef) { return tlDef['root-id'] === targetTimelineRootId; })[0]);
@@ -246,6 +267,9 @@ var AtmosTimelineManager = (function() {
 				timelineDefinitionStatusChanger();
 			}
 			else if ($parent.hasClass('remove')) {
+				timelineManager.removeTimeline(targetTimelineId, function() {
+					timelineDefinitionStatusChanger();
+				});
 			}
 			else {
 				// nothing to do
