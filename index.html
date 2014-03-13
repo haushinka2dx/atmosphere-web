@@ -103,8 +103,7 @@
 		<script type="text/template" id="tmpl-timeline">
 			<div class="timeline {{timeline-row-class}}" id="{{timeline-root-id}}">
 				<header class="timeline-header">
-					<div class="header-control left-control"></div>
-					<div class="timeline-title">{{timeline-title}}</div>
+					<div class="timeline-title"><i class="{{timeline-icon-class}}"></i><span>{{timeline-title}}</span></div>
 					<div class="header-control right-control"><span class="timeline-setting"><a href="javascript:void(0);"><i class="ls-icon-list"></i></a><span></div>
 					<div class="header-menu" style="display: none;">
 						<div class="move-horizontal">
@@ -410,7 +409,7 @@
 						<div class="timeline-definitions">
 							{{#timeline-definitions}}
 							<div class="timeline-definition" data-timelineid="{{timeline-id}}" data-timelinerootid="{{timeline-root-id}}">
-								<div class="title">{{timeline-name}}</div>
+								<div class="title"><i class="{{timeline-icon-class}}"></i><span>{{timeline-name}}</span></div>
 								<div class="control add enable" style="display: none;"><a href="javascript:void(0);"><i class="foundicon-plus"></i></a></div>
 								<div class="control add disable" style="display: none;"><i class="foundicon-plus"></i></div>
 								<div class="control remove enable" style="display: none;"><a href="javascript:void(0);"><i class="foundicon-minus"></i></a></div>

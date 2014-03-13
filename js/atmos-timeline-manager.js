@@ -104,10 +104,11 @@ var AtmosTimelineManager = (function() {
 		}
 
 		$(this._containerSelector).prepend(Hogan.compile($("#tmpl-timeline").text()).render({
-			"timeline-row-class": tlDef["theme"],
-			"timeline-root-id":   tlDef["root-id"],
-			"timeline-title":     tlDef["name"],
-			"timeline-id":        tlDef["id"]
+			"timeline-row-class":  tlDef["theme"],
+			"timeline-root-id":    tlDef["root-id"],
+			"timeline-title":      tlDef["name"],
+			"timeline-icon-class": tlDef["icon"],
+			"timeline-id":         tlDef["id"]
 		}));
 
 		var changePositionStatusChanger = applyTimelineEvent.call(this, tlDef);
@@ -245,9 +246,10 @@ var AtmosTimelineManager = (function() {
 		var dialogId = uuid();
 		var timelineDefs = this.loadTimelineDefinitions(true);
 		var tlDefs = [];
-		Object.keys(timelineDefs).reverse().forEach(function(tlId) {
+		Object.keys(timelineDefs).forEach(function(tlId) {
 			tlDefs.push({
 				"timeline-name":timelineDefs[tlId]["name"],
+				"timeline-icon-class":timelineDefs[tlId]["icon"],
 				"timeline-id":timelineDefs[tlId]["id"],
 				"timeline-root-id":timelineDefs[tlId]["root-id"]
 			});

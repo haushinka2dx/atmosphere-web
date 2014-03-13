@@ -147,7 +147,7 @@ html, body {
 }
 
 .atmos-vmenu li a.icon-timeline:before {
-    content: "\e05b";
+    content: "\e08e";
     font-family: 'LigatureSymbols';
 	font-size: 2em;
 }
@@ -246,7 +246,7 @@ html, body {
 	display: inline-block;
 	font-size: 1rem;
 	white-space: normal;
-	width: 298px;
+	width: 498px;
 	height: 100%;
 	vertical-align: top;
 	overflow-x: hidden;
@@ -279,6 +279,27 @@ html, body {
 .timeline-header .header-control {
 	letter-spacing:normal;
 	position: absolute;
+}
+
+.timeline-header .timeline-title i,
+.timeline-header .timeline-title span {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+}
+
+.timeline-header .timeline-title i {
+	width: 1em;
+	font-size: 1.8em;
+	text-align: center;
+	padding-bottom: 0.1em;
+	left: 0;
+}
+
+.timeline-header .timeline-title span {
+	left: 2.1em;
 }
 
 .timeline-header .header-control {
@@ -336,7 +357,7 @@ html, body {
 }
 
 .timeline-header .timeline-title {
-	width: 80%;
+	width: 90%;
 	display: inline-block;
 	top: 50%;
 	left: 50%;
@@ -968,6 +989,7 @@ html, body {
 	width: 100%;
 	padding-top: 4px;
 	padding-bottom: 4px;
+	position: relative;
 }
 
 .timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition div {
@@ -977,6 +999,37 @@ html, body {
 .timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition div.title {
 	width: 76%;
 }
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition div.title i,
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition div.title span {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition div.title i {
+	width: 1em;
+	font-size: 1.5em;
+	text-align: center;
+	padding-bottom: 0.2em;
+	left: 0.25em;
+}
+
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition div.title span {
+	left: 2.1em;
+}
+
+/*
+.timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition div.title i {
+	display: inline-block;
+	width: 1em;
+	font-size: 1.5em;
+	margin: 0 3px 0 3px;
+	text-align: center;
+}
+*/
 
 .timeline-definition-dialog-wrapper .timeline-definition-dialog .timeline-definitions .timeline-definition div.control {
 	width: 10%;
