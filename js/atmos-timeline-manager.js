@@ -2,6 +2,7 @@ var AtmosTimelineManager = (function() {
 	function AtmosTimelineManager(containerSelector) {
 		this._publicTimelines = {};
 		this._privateTimelines = {};
+		this._timelineDefinitions = {};
 		this._timelineCount = 50;
 		this._timelineRootIds = [];
 		this._containerSelector = containerSelector;
@@ -122,6 +123,10 @@ var AtmosTimelineManager = (function() {
 			this._publicTimelines[tlDef["id"]] = timeline;
 		}
 
+		this._timelineDefinitions[tlDef["id"]] = tlDef;
+		storeTimelineDefinitions.call(this);
+		storeTimelineOrder($('.contents > .timeline'));
+
 		changePositionStatusChanger();
 
 		return timeline;
@@ -142,13 +147,15 @@ var AtmosTimelineManager = (function() {
 		$timelineRoot.fadeOut('normal', function() {
 			$timelineRoot.remove();
 			changePositionStatusChanger();
-			storeTimelineOrder($(targetSelector));
 			if (timelineManager.getPublicTimeline(targetTimelineId)) {
 				delete timelineManager._publicTimelines[targetTimelineId];
 			}
 			else {
 				delete timelineManager._privateTimelines[targetTimelineId];
 			}
+			delete timelineManager._timelineDefinitions[targetTimelineId];
+			storeTimelineOrder($(targetSelector));
+			storeTimelineDefinitions.call(timelineManager);
 			if (can(callback)) {
 				callback(true);
 			}
@@ -219,6 +226,15 @@ var AtmosTimelineManager = (function() {
 		});
 	}
 
+	function storeTimelineDefinitions() {
+		var timelineManager = this;
+		var definitions = {};
+		Object.keys(this._timelineDefinitions).forEach(function(timelineId) {
+			definitions[timelineManager._timelineDefinitions[timelineId]['root-id']] = timelineManager._timelineDefinitions[timelineId];
+		});
+		AtmosSettings.Timeline.timelineDefinitions(definitions);
+	}
+
 	function storeTimelineOrder($timelines) {
 		var timelineOrder = {};
 		$timelines.each(function(index, timeline) { timelineOrder[$(timeline).attr('id')] = index + 1; });
@@ -229,7 +245,7 @@ var AtmosTimelineManager = (function() {
 		var dialogId = uuid();
 		var timelineDefs = this.loadTimelineDefinitions(true);
 		var tlDefs = [];
-		Object.keys(timelineDefs).forEach(function(tlId) {
+		Object.keys(timelineDefs).reverse().forEach(function(tlId) {
 			tlDefs.push({
 				"timeline-name":timelineDefs[tlId]["name"],
 				"timeline-id":timelineDefs[tlId]["id"],
