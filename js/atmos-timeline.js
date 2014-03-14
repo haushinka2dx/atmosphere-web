@@ -339,7 +339,7 @@ var AtmosTimeline = (function() {
 			this
 		);
 		atmos.sendRequest(
-			this._searchUrl,
+			this.url(),
 			'GET',
 			{ "message_ids" : messageId },
 			successCallback
