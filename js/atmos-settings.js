@@ -34,38 +34,56 @@ var AtmosSettings = (function() {
 			"tl_global_timeline-root":{
 				"root-id": 'tl_global_timeline-root',
 				"id":      'tl_global_timeline',
-				"name":    'global timeline',
-				"theme":   'timeline-row1'
+				"name":    'Everyone\'s Messages',
+				"icon":    'ls-icon-globe',
+				"theme":   'timeline-row1',
+				"api":     '/messages/global_timeline',
+				"private": false,
 			},
 			"tl_my_timeline-root":{
 				"root-id": 'tl_my_timeline-root',
 				"id":      'tl_my_timeline',
-				"name":    'my timeline',
-				"theme":   'timeline-row2'
+				"name":    'Following Messages',
+				"icon":    'ls-icon-flag',
+				"theme":   'timeline-row2',
+				"api":     '/messages/focused_timeline',
+				"private": false,
 			},
 			"tl_talk_timeline-root":{
 				"root-id": 'tl_talk_timeline-root',
 				"id":      'tl_talk_timeline',
-				"name":    'talk timeline',
-				"theme":   'timeline-row2'
+				"name":    'Messages to You',
+				"icon":    'ls-icon-comments',
+				"theme":   'timeline-row3',
+				"api":     '/messages/talk_timeline',
+				"private": false,
 			},
 			"tl_announce_timeline-root":{
 				"root-id": 'tl_announce_timeline-root',
 				"id":      'tl_announce_timeline',
-				"name":    'announce timeline',
-				"theme":   'timeline-row4'
+				"name":    'Group Messages',
+				"icon":    'ls-icon-circle',
+				"theme":   'timeline-row4',
+				"api":     '/messages/announce_timeline',
+				"private": false,
 			},
 			"tl_monolog_timeline-root":{
 				"root-id": 'tl_monolog_timeline-root',
 				"id":      'tl_monolog_timeline',
-				"name":    'monolog timeline',
-				"theme":   'timeline-row5'
+				"name":    'Monologue',
+				"icon":    'ls-icon-lock',
+				"theme":   'timeline-row5',
+				"api":     '/messages/monolog_timeline',
+				"private": false,
 			},
 			"tl_private_timeline-root":{
 				"root-id": 'tl_private_timeline-root',
 				"id":      'tl_private_timeline',
-				"name":    'private timeline',
-				"theme":   'timeline-row-private'
+				"name":    'Private Messages',
+				"icon":    'ls-icon-mail',
+				"theme":   'timeline-row-private',
+				"api":     '/private/timeline',
+				"private": true,
 			},
 		};
 
