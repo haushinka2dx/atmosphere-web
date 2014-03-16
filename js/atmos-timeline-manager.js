@@ -2,6 +2,7 @@ var AtmosTimelineManager = (function() {
 	function AtmosTimelineManager(containerSelector) {
 		this._publicTimelines = {};
 		this._privateTimelines = {};
+		this._timelineDefinitions = {};
 		this._timelineCount = 50;
 		this._timelineRootIds = [];
 		this._containerSelector = containerSelector;
@@ -55,9 +56,14 @@ var AtmosTimelineManager = (function() {
 		return tls;
 	}
 
-	AtmosTimelineManager.prototype.loadTimelineDefinitions = function() {
+	AtmosTimelineManager.prototype.loadTimelineDefinitions = function(isDefault) {
 		// load from settings
-		var allTimelineDefs = AtmosSettings.Timeline.timelineDefinitions();
+		if (isDefault) {
+			var allTimelineDefs = AtmosSettings.Timeline.defaultTimelineDefinitions;
+		}
+		else {
+			var allTimelineDefs = AtmosSettings.Timeline.timelineDefinitions();
+		}
 
 		// extract timeline definitions that can be handled
 		var targetTimelineRootIds = this._timelineRootIds;
@@ -97,11 +103,12 @@ var AtmosTimelineManager = (function() {
 			}
 		}
 
-		$(this._containerSelector).append(Hogan.compile($("#tmpl-timeline").text()).render({
-			"timeline-row-class": tlDef["theme"],
-			"timeline-root-id":   tlDef["root-id"],
-			"timeline-title":     tlDef["name"],
-			"timeline-id":        tlDef["id"]
+		$(this._containerSelector).prepend(Hogan.compile($("#tmpl-timeline").text()).render({
+			"timeline-row-class":  tlDef["theme"],
+			"timeline-root-id":    tlDef["root-id"],
+			"timeline-title":      tlDef["name"],
+			"timeline-icon-class": tlDef["icon"],
+			"timeline-id":         tlDef["id"]
 		}));
 
 		var changePositionStatusChanger = applyTimelineEvent.call(this, tlDef);
@@ -117,15 +124,56 @@ var AtmosTimelineManager = (function() {
 			this._publicTimelines[tlDef["id"]] = timeline;
 		}
 
+		this._timelineDefinitions[tlDef["id"]] = tlDef;
+		storeTimelineDefinitions.call(this);
+		storeTimelineOrder($('.contents > .timeline'));
+
+		changePositionStatusChanger();
+
 		return timeline;
 	};
 
+	AtmosTimelineManager.prototype.removeTimeline = function(targetTimelineId, callback) {
+		if (!canl(targetTimelineId)) {
+			if (can(callback)) {
+				callback(false);
+			}
+			return;
+		}
+
+		var timelineManager = this;
+		var targetSelector = '.contents > .timeline';
+		var changePositionStatusChanger = changeTimelinePositionLinkStatus.bind(this, targetSelector);
+		var $timelineRoot = $('#' + targetTimelineId).parents('.timeline');
+		$timelineRoot.fadeOut('normal', function() {
+			$timelineRoot.remove();
+			changePositionStatusChanger();
+			if (timelineManager.getPublicTimeline(targetTimelineId)) {
+				delete timelineManager._publicTimelines[targetTimelineId];
+			}
+			else {
+				delete timelineManager._privateTimelines[targetTimelineId];
+			}
+			delete timelineManager._timelineDefinitions[targetTimelineId];
+			storeTimelineOrder($(targetSelector));
+			storeTimelineDefinitions.call(timelineManager);
+			if (can(callback)) {
+				callback(true);
+			}
+		});
+	};
+
 	function applyTimelineEvent(tlDef) {
+		var timelineManager = this;
 		var targetSelector = ".contents > .timeline";
 		var changePositionStatusChanger = changeTimelinePositionLinkStatus.bind(this, targetSelector);
+		$(".header-control .timeline-setting a").off('click').on('click', function(e) {
+			e.stopPropagation();
+			$menu = $(e.currentTarget).parent().parent().next('.header-menu:first').slideToggle('fast');
+		});
 		$(".timeline-move-position.move-left > a").off('click').on('click', function(e) {
 			e.stopPropagation();
-			var $timelineRoot = $(e.currentTarget).parent().parent().parent().parent();
+			var $timelineRoot = $(e.currentTarget).parents(".timeline");
 			var $leftRoot = $timelineRoot.prev('.timeline');
 			$leftRoot.before($timelineRoot);
 			changePositionStatusChanger();
@@ -133,15 +181,20 @@ var AtmosTimelineManager = (function() {
 		});
 		$(".timeline-move-position.move-right > a").off('click').on('click', function(e) {
 			e.stopPropagation();
-			var $timelineRoot = $(e.currentTarget).parent().parent().parent().parent();
+			var $timelineRoot = $(e.currentTarget).parents(".timeline");
 			var $rightRoot = $timelineRoot.next('.timeline');
 			$rightRoot.after($timelineRoot);
 			changePositionStatusChanger();
 			storeTimelineOrder($(targetSelector));
 		});
-
-		//TODO 削除時のイベント登録（対象タイムラインの情報がないとやりにくい）
-		//var removeFunc = removeTimeline.bind(this, tlDef["id"], $targets);
+		$(".header-menu .timeline-close a").off('click').on('click', function(e) {
+			e.stopPropagation();
+			var $timelineRoot = $(e.currentTarget).parents(".timeline");
+			var targetTimelineId = $timelineRoot.find('.timeline-items').attr("id");
+			$timelineRoot.fadeOut('normal', function() {
+				timelineManager.removeTimeline(targetTimelineId);
+			});
+		});
 
 		return changePositionStatusChanger;
 	}
@@ -174,37 +227,98 @@ var AtmosTimelineManager = (function() {
 		});
 	}
 
+	function storeTimelineDefinitions() {
+		var timelineManager = this;
+		var definitions = {};
+		Object.keys(this._timelineDefinitions).forEach(function(timelineId) {
+			definitions[timelineManager._timelineDefinitions[timelineId]['root-id']] = timelineManager._timelineDefinitions[timelineId];
+		});
+		AtmosSettings.Timeline.timelineDefinitions(definitions);
+	}
+
 	function storeTimelineOrder($timelines) {
 		var timelineOrder = {};
 		$timelines.each(function(index, timeline) { timelineOrder[$(timeline).attr('id')] = index + 1; });
 		AtmosSettings.Timeline.timelineOrder(timelineOrder);
 	}
 
-	//TODO これはタイムラインの削除が実装されたら使う想定
-//	function removeTimeline(timelineId, $targets) {
-//		if (tlDef["private"]) {
-//			if (Object.keys(this._privateTimelines).indexOf(timelineId) == -1) {
-//				return undefined;
-//			}
-//			else {
-//				delete this._privateTimelines[timelineId];
-//			}
-//		}
-//		else {
-//			if (Object.keys(this._publicTimelines).indexOf(timelineId) == -1) {
-//				return undefined;
-//			}
-//			else {
-//				delete this._publicTimelines[timelineId];
-//			}
-//		}
-//
-//		$("#" + tlDef["root-id"]).remove();
-//
-//		applyTimelineEvent.call(this)();
-//
-//		storeTimelineOrder($targets);
-//	};
+	AtmosTimelineManager.prototype.showTimelineManagementDialog = function() {
+		var dialogId = uuid();
+		var timelineDefs = this.loadTimelineDefinitions(true);
+		var tlDefs = [];
+		Object.keys(timelineDefs).forEach(function(tlId) {
+			tlDefs.push({
+				"timeline-name":timelineDefs[tlId]["name"],
+				"timeline-icon-class":timelineDefs[tlId]["icon"],
+				"timeline-id":timelineDefs[tlId]["id"],
+				"timeline-root-id":timelineDefs[tlId]["root-id"]
+			});
+		});
+		$('body').append(Hogan.compile($("#tmpl-timeline-definition-dialog").text()).render({
+			"timeline-definition-dialog-id": dialogId,
+			"timeline-definitions": tlDefs
+		}));
+
+		var timelineDefinitionStatusChanger = changeTimelineDefinitionState.bind(null, dialogId, this._containerSelector);
+
+		var timelineManager = this;
+		var closer = (function() {
+			var id = dialogId;
+			return function(e) {
+				e.stopPropagation();
+				$('#' + id).hide('fast', function() {
+					$('#' + id).remove();
+				});
+			}
+		})();
+		$('#' + dialogId).on('click', closer);
+		$('#' + dialogId).on('click', '.timeline-definition-dialog', function(e) { e.stopPropagation(); });
+		$('#' + dialogId).on('click', 'a.close-button', closer);
+		$('#' + dialogId).on('click', '.control a', function(e) {
+			e.stopPropagation();
+			var targetTimelineRootId = $(this).parents('.timeline-definition').data('timelinerootid');
+			var targetTimelineId = $(this).parents('.timeline-definition').data('timelineid');
+			var $parent = $(this).parent();
+			if ($parent.hasClass('add')) {
+				var timeline = timelineManager.addTimeline(timelineDefs.filter(function(tlDef) { return tlDef['root-id'] === targetTimelineRootId; })[0]);
+				timeline.init();
+				timelineDefinitionStatusChanger();
+			}
+			else if ($parent.hasClass('remove')) {
+				timelineManager.removeTimeline(targetTimelineId, function() {
+					timelineDefinitionStatusChanger();
+				});
+			}
+			else {
+				// nothing to do
+			}
+		});
+
+		timelineDefinitionStatusChanger();
+
+		$('#' + dialogId + ' .timeline-definitions').perfectScrollbar(atmos.perfectScrollbarSetting);
+		$('#' + dialogId).show('fast');
+	};
+
+	function changeTimelineDefinitionState(dialogId, timelineContainerSelector) {
+		var existingTimelineRootIds = [];
+		$(timelineContainerSelector).find('.timeline').each(function() { existingTimelineRootIds.push($(this).attr("id")) });
+
+		$('#' + dialogId + ' .timeline-definition').each(function() {
+			if (existingTimelineRootIds.indexOf($(this).data('timelinerootid')) !== -1) {
+				$(this).find('.control.add.enable').hide();
+				$(this).find('.control.add.disable').show();
+				$(this).find('.control.remove.enable').show();
+				$(this).find('.control.remove.disable').hide();
+			}
+			else {
+				$(this).find('.control.add.enable').show();
+				$(this).find('.control.add.disable').hide();
+				$(this).find('.control.remove.enable').hide();
+				$(this).find('.control.remove.disable').show();
+			}
+		});
+	}
 
 	return AtmosTimelineManager;
 })();

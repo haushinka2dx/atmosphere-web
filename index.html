@@ -54,6 +54,7 @@
 -->
 						<li><a href="#" class="icon-send" id="menuItemSendMessage"><span>Send Message</span></a><div class="atmos-vmenu-text"><div>Send Message</div></div></li>
 						<li><a href="#" class="icon-private" id="menuItemSendPrivate"><span>Send Private Message</span></a><div class="atmos-vmenu-text"><div>Send Private Message</div></div></li>
+						<li><a href="#" class="icon-timeline" id="menuItemTimeline"><span>Manage Timeline</span></a><div class="atmos-vmenu-text"><div>Manage Timeline</div></div></li>
 						<li><a href="#" class="icon-settings" id="menuItemSettings"><span>Settings</span></a><div class="atmos-vmenu-text"><div>Settings</div></div></li>
 						<li><a href="#" class="icon-logout" id="menuItemLogout"><span>Logout</span></a><div class="atmos-vmenu-text"><div>Logout</div></div></li>
 					</ul>
@@ -102,9 +103,17 @@
 		<script type="text/template" id="tmpl-timeline">
 			<div class="timeline {{timeline-row-class}}" id="{{timeline-root-id}}">
 				<header class="timeline-header">
-					<div class="header-control left-control"><span class="timeline-move-position move-left"><a href="javascript:void(0);"><i class="dripicon-arrow-left"></i></a><span></div>
-					<div class="timeline-title">{{timeline-title}}</div>
-					<div class="header-control right-control"><span class="timeline-move-position move-right"><a href="javascript:void(0);"><i class="dripicon-arrow-right"></i></a><span></div>
+					<div class="timeline-title"><i class="{{timeline-icon-class}}"></i><span>{{timeline-title}}</span></div>
+					<div class="header-control right-control"><span class="timeline-setting"><a href="javascript:void(0);"><i class="ls-icon-list"></i></a><span></div>
+					<div class="header-menu" style="display: none;">
+						<div class="move-horizontal">
+							<div class="left-control"><span class="timeline-move-position move-left"><a href="javascript:void(0);"><i class="ls-icon-arrowleft"></i></a><span class="disable"><i class="ls-icon-arrowleft"></i></span></span></div>
+							<div class="right-control"><span class="timeline-move-position move-right"><a href="javascript:void(0);"><i class="ls-icon-arrowright"></i></a><span class="disable"><i class="ls-icon-arrowright"></i></span></span></div>
+						</div>
+						<div class="etc">
+							<div class="timeline-close"><span class="timeline-close"><a href="javascript:void(0);"><i class="ls-icon-remove"></i>Remove</a></span></div>
+						</div>
+					</div>
 				</header>
 				<div class="timeline-items-wrapper">
 					<div class="timeline-items" id="{{timeline-id}}">
@@ -389,6 +398,29 @@
 			<div class="timeline-item-separator"></div>
 			{{/has-next-message}}
 		</script>
+		<script type="text/template" id="tmpl-timeline-definition-dialog">
+			<div class="timeline-definition-dialog-wrapper" id="{{timeline-definition-dialog-id}}" style="display: none;">
+				<div class="timeline-definition-dialog">
+					<header>
+						<div class="header"><a href="#" class="close-button"><i class="foundicon-remove"></i></a></div>
+						<div class="title">Manage Timeline</div>
+					</header>
+					<div class="timeline-definitions-wrapper">
+						<div class="timeline-definitions">
+							{{#timeline-definitions}}
+							<div class="timeline-definition" data-timelineid="{{timeline-id}}" data-timelinerootid="{{timeline-root-id}}">
+								<div class="title"><i class="{{timeline-icon-class}}"></i><span>{{timeline-name}}</span></div>
+								<div class="control add enable" style="display: none;"><a href="javascript:void(0);"><i class="foundicon-plus"></i></a></div>
+								<div class="control add disable" style="display: none;"><i class="foundicon-plus"></i></div>
+								<div class="control remove enable" style="display: none;"><a href="javascript:void(0);"><i class="foundicon-minus"></i></a></div>
+								<div class="control remove disable" style="display: none;"><i class="foundicon-minus"></i></div>
+							</div>
+							{{/timeline-definitions}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</script>
 
 		<!-- atmospheres -->
 		<script src="js/callback.js"></script>
@@ -411,6 +443,7 @@
 
 				$('#menuItemSendMessage').on('click', function(e) { atmos.showMessageSenderPanel('', '', '', [], false); });
 				$('#menuItemSendPrivate').on('click', function(e) { atmos.showMessageSenderPanel('', '', '', [], true); });
+				$('#menuItemTimeline').on('click', function(e) { atmos.timelineManager().showTimelineManagementDialog(); });
 				$('#menuItemSettings').on('click', function(e) { atmos.showSettingDialog(); });
 				$('#menuItemLogout').on('click', function(e) { atmos.showLogoutDialog(); });
 			});

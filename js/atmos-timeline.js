@@ -224,19 +224,23 @@ var AtmosTimeline = (function() {
 	}
 
 	function enableChangePositionLeft() {
-		$("#" + this.rootId() + " .header-control .move-left a").show();
+		$("#" + this.rootId() + " .header-menu .move-left a").show();
+		$("#" + this.rootId() + " .header-menu .move-left .disable").hide();
 	}
 
 	function disableChangePositionLeft() {
-		$("#" + this.rootId() + " .header-control .move-left a").hide();
+		$("#" + this.rootId() + " .header-menu .move-left a").hide();
+		$("#" + this.rootId() + " .header-menu .move-left .disable").show();
 	}
 
 	function enableChangePositionRight() {
-		$("#" + this.rootId() + " .header-control .move-right a").show();
+		$("#" + this.rootId() + " .header-menu .move-right a").show();
+		$("#" + this.rootId() + " .header-menu .move-right .disable").hide();
 	} 
 
 	function disableChangePositionRight() {
-		$("#" + this.rootId() + " .header-control .move-right a").hide();
+		$("#" + this.rootId() + " .header-menu .move-right a").hide();
+		$("#" + this.rootId() + " .header-menu .move-right .disable").show();
 	}
 
 	function createTimelineItem(msg) {
