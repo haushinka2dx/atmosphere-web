@@ -136,6 +136,12 @@ html, body {
     font-family: "GeneralFoundicons";
 }
 
+.atmos-vmenu li a.icon-search:before {
+    content: "\e116";
+    font-family: 'LigatureSymbols';
+	font-size: 2em;
+}
+
 .atmos-vmenu li a.icon-avator:before {
     content: "\f020";
     font-family: "GeneralFoundicons";
@@ -1058,3 +1064,222 @@ div.textcomplete-wrapper > ul.dropdown-menu > li {
 div.textcomplete-wrapper > ul.dropdown-menu > li.active {
 	background-color: rgba(0,0,0,0.2);
 }
+
+.search-panel-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 8000;
+}
+
+.search-panel,
+.search-result-wrapper {
+	position: fixed;
+	top: 179px;
+	width: 300px;
+	font-size: 1.2em;
+	z-index: 8001;
+}
+
+.search-panel {
+	left: 66px;
+	height: 248px;
+}
+
+.search-result-wrapper {
+	left: 376px;
+	height: 448px;
+}
+
+.search-panel:after,
+.search-result-wrapper:after {
+	border: 10px solid transparent;
+	border-left-width: 0;
+	width: 0;
+	display: block;
+	top: 188px;
+	position: fixed;
+	content: ""
+}
+
+.search-panel:after {
+	left: 56px;
+}
+
+.search-result-wrapper:after {
+	left: 366px;
+}
+
+/*
+.search-panel-wrapper .search-panel,
+.search-result-wrapper .search-result {
+*/
+
+.search-result-wrapper .search-result {
+	height: 100%;
+}
+
+.search-panel-wrapper .search-panel input,
+.search-panel-wrapper .search-panel textarea {
+	font-size: 1em;
+}
+
+.search-panel-wrapper .search-panel > div,
+.search-result-wrapper .search-result > div {
+	position: relative;
+	display: inline-block;
+	width: 100%;
+	overflow: hidden;
+}
+
+.search-panel-wrapper .search-panel .command-area {
+	height: 38px;
+	margin-bottom: -8px;
+}
+
+.search-panel-wrapper .search-panel .command-area .input {
+	width: 88%;
+	height: 100%;
+	display: inline-block;
+}
+
+.search-panel-wrapper .search-panel .command-area .input input {
+	width: 94%;
+	height: 80%;
+	padding: 0.25em 0.25em; 0.25em 0.25em;
+}
+
+.search-panel-wrapper .search-panel .command-area .command {
+	display: inline-block;
+	width: 10%;
+}
+
+.search-panel-wrapper .search-panel .command-area .command a {
+	display: block;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+}
+
+.search-panel-wrapper .search-panel .history-area-wrapper {
+	position: relative;
+	height: 210px;
+	overflow-y: hidden;
+	padding-bottom: 8px;
+}
+
+.search-panel-wrapper .search-panel .history-area {
+	position: relative;
+	height: 100%;
+	display: block;
+	overflow-y: hidden;
+}
+
+.search-panel-wrapper .search-panel .history-area .history {
+	display: block;
+	height: 1.6em;
+}
+
+.search-panel-wrapper .search-panel .history-area .history div {
+	display: inline-block;
+	height: 100%;
+}
+
+.search-panel-wrapper .search-panel .history-area .history .keyword {
+	width: 72%;
+	padding: 0 0.25em 0 0.25em;
+}
+
+.search-panel-wrapper .search-panel .history-area .history .control {
+	width: 6%;
+}
+
+.search-result-wrapper .search-result .header {
+	height: 38px;
+	margin-bottom: -8px; /* これがないと隙間が空くので仕方なく */
+}
+
+.search-result-wrapper .search-result .header div {
+	height: 100%;
+	display: inline-block;
+	position: relative;
+}
+
+.search-result-wrapper .search-result .header .title {
+	width: 86%;
+	height: 100%;
+	padding: 0 0.25em 0 0.25em;
+}
+
+.search-result-wrapper .search-result .header .title span {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 60%; /* 50% だとなぜか上にずれる */
+	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+}
+
+.search-result-wrapper .search-result .header .title span i {
+	margin-right: 0.25em;
+}
+
+.search-result-wrapper .search-result .header .command {
+	width: 8%;
+	height: 100%;
+}
+
+.search-result-wrapper .search-result .header .command span {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 60%; /* 50% だとなぜか上にずれる */
+	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+}
+
+.search-result-wrapper .search-result .result-wrapper {
+	position: relative;
+	height: 410px;
+	overflow: hidden;
+}
+
+.search-result-wrapper .search-result .result-wrapper .result {
+	position: relative;
+	height: 100%;
+	overflow: hidden;
+}
+
+.search-result-wrapper .search-result .result-wrapper .timeline-item-wrapper {
+	padding-left: 40px;
+}
+
+.search-result-wrapper .search-result .result-wrapper .timeline-item {
+}
+
+.search-result-wrapper .search-result .result-wrapper .timeline-item-avator {
+	width: 36px;
+	margin-left: -40px;
+	margin-right: 4px;
+}
+
+.search-result-wrapper .search-result .result-wrapper .timeline-item-avator > img {
+	max-width: 36px;
+	max-height: 36px;
+}
+
+.search-result-wrapper .search-result .result-wrapper .timeline-item-username {
+	font-size: 0.7em;
+}
+
+.search-result-wrapper .search-result .result-wrapper .timeline-item-timestamp {
+	font-size: 0.6em;
+}
+
+.search-result-wrapper .search-result .result-wrapper .timeline-item-message {
+	font-size: 0.7em;
+}
+

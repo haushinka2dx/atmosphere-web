@@ -85,4 +85,67 @@ describe('AtmosSettings', function(){
 			});
 		});
 	});
+
+	describe('Search', function(){
+		var target;
+		beforeEach(function() {
+			localStorage.clear();
+			target = AtmosSettings.Search;
+		});
+
+		describe('keywords, addKeyword, and removeKeyword', function(){
+			it('default value', function(){
+				expect(target.keywords()).toEqual([]);
+			});
+
+			cases([
+				  [ undefined, [] ],
+				  [ '', [] ],
+				  [ 'a', ['a']],
+			])
+			.it('add keyword at first', function(keyword, result){
+				target.addKeyword(keyword);
+				expect(target.keywords()).toEqual(result);
+			});
+
+			cases([
+				  [ undefined, ['a'] ],
+				  [ '', ['a'] ],
+				  [ 'b', ['b','a']],
+			])
+			.it('add keyword at second', function(keyword, result){
+				target.addKeyword('a');
+				target.addKeyword(keyword);
+				expect(target.keywords()).toEqual(result);
+			});
+
+			cases([
+				  [ 'a', ['a','b','c']],
+				  [ 'b', ['b','a','c']],
+				  [ 'c', ['c','a','b']],
+			])
+			.it('add existing keyword', function(keyword, result){
+				target.addKeyword('c');
+				target.addKeyword('b');
+				target.addKeyword('a');
+				target.addKeyword(keyword);
+				expect(target.keywords()).toEqual(result);
+			});
+
+			cases([
+				  [ undefined, ['a','b','c']],
+				  [ '', ['a','b','c']],
+				  [ 'z', ['a','b','c']],
+				  [ 'b', ['a','c']],
+			])
+			.it('remove keyword', function(keyword, result){
+				target.addKeyword('c');
+				target.addKeyword('b');
+				target.addKeyword('a');
+				target.removeKeyword(keyword);
+				expect(target.keywords()).toEqual(result);
+			});
+		});
+
+	});
 });

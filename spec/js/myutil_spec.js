@@ -79,3 +79,59 @@ describe('getExtension', function(){
 		expect(getExtension(filename)).toEqual(expected);
 	});
 });
+
+describe('extractAddressesUsers', function(){
+       cases([
+                 ['', []],
+                 ['aaa3329', []],
+                 ['@edwards', ['edwards']],
+                 ['hello @edwards', ['edwards']],
+                 ['@john are you online?', ['john']],
+                 ['I will take a lunch with @jack, @joe, and @bob.', ['jack','joe','bob']],
+       ])
+       .it('userId is extracted out of string', function(msg, expected) {
+               expect(extractAddressesUsers(msg)).toEqual(expected);
+       });
+});
+
+describe('extractAddressesGroups', function(){
+       cases([
+                 ['', []],
+                 ['aaa3329', []],
+                 ['$libro', ['libro']],
+                 ['hello $libro team.', ['libro']],
+                 ['$infra it is a day to finish.', ['infra']],
+                 ['There are $teama, $teamb, and $teamc.', ['teama','teamb','teamc']],
+       ])
+       .it('groupId is extracted out of string', function(msg, expected) {
+               expect(extractAddressesGroups(msg)).toEqual(expected);
+       });
+});
+
+describe('extractHashtags', function(){
+       cases([
+                 ['', []],
+                 ['aaa3329', []],
+                 ['#lgtm', ['lgtm']],
+                 ['this is problem #at', ['at']],
+                 ['#fyi apache 2.2 is faster than apache 2.4.', ['fyi']],
+                 ['This is first version. #app #version #release', ['app','version','release']],
+       ])
+       .it('hashtags is extracted out of string', function(msg, expected) {
+               expect(extractHashtags(msg)).toEqual(expected);
+       });
+});
+
+describe('extractEKeywords', function(){
+       cases([
+                 ['', []],
+                 ['@test', []],
+                 ['$test', []],
+                 ['#test', []],
+                 ['aaa3329', ['aaa3329']],
+                 ['this is problem #at $test by @jj', ['this','is', 'problem', 'by']],
+       ])
+       .it('keywords is extracted out of string', function(msg, expected) {
+               expect(extractKeywords(msg)).toEqual(expected);
+       });
+});

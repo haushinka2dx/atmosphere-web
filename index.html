@@ -54,6 +54,7 @@
 -->
 						<li><a href="#" class="icon-send" id="menuItemSendMessage"><span>Send Message</span></a><div class="atmos-vmenu-text"><div>Send Message</div></div></li>
 						<li><a href="#" class="icon-private" id="menuItemSendPrivate"><span>Send Private Message</span></a><div class="atmos-vmenu-text"><div>Send Private Message</div></div></li>
+						<li><a href="#" class="icon-search" id="menuItemSearch"><span>Search Message</span></a><div class="atmos-vmenu-text"><div>Search Message</div></div></li>
 						<li><a href="#" class="icon-timeline" id="menuItemTimeline"><span>Manage Timeline</span></a><div class="atmos-vmenu-text"><div>Manage Timeline</div></div></li>
 						<li><a href="#" class="icon-settings" id="menuItemSettings"><span>Settings</span></a><div class="atmos-vmenu-text"><div>Settings</div></div></li>
 						<li><a href="#" class="icon-logout" id="menuItemLogout"><span>Logout</span></a><div class="atmos-vmenu-text"><div>Logout</div></div></li>
@@ -421,6 +422,56 @@
 				</div>
 			</div>
 		</script>
+		<script type="text/template" id="tmpl-search-panel">
+			<div class="search-panel-wrapper" id="{{search-panel-id}}" style="display: none;">
+				<div class="search-panel">
+					<div class="command-area">
+						<div class="input"><input type="text" placeholder="Words you interested in"></input></div>
+						<div class="command"><a href="javascript:void(0);"><i class="ls-icon-search"></i></a></div>
+					</div>
+					<div class="history-area-wrapper">
+						<div class="history-area"></div>
+					</div>
+				</div>
+			</div>
+		</script>
+		<script type="text/template" id="tmpl-search-history-item">
+			<div class="history" data-keyword="{{keyword}}" style="display: none;">
+				<div class="keyword">{{displaykeyword}}</div>
+				<div class="control apply"><a href="javascript:void(0);"><i class="ls-icon-edit"></i></a></div>
+				<div class="control search"><a href="javascript:void(0);"><i class="ls-icon-search"></i></a></div>
+				<div class="control delete"><a href="javascript:void(0);"><i class="ls-icon-delete"></i></a></div>
+			</div>
+		</script>
+		<script type="text/template" id="tmpl-search-result">
+			<div class="search-result-wrapper" id="{{search-result-id}}" style="display: none;">
+				<div class="search-result">
+					<div class="header">
+						<div class="title"><span><i class="ls-icon-search"></i><span>{{title}}</span></span></div>
+						<div class="command"><span><a href="javascript:void(0);" class="simptip-position-left simptip-movable" data-tooltip="Add to Timeline"><i class="ls-icon-plus"></i></a></span></div>
+					</div>
+					<div class="result-wrapper">
+						<div class="result">
+						</div>
+					</div>
+				</div>
+			</div>
+		</script>
+		<script type="text/template" id="tmpl-search-result-item">
+			<div class="timeline-item-wrapper">
+				<article class="timeline-item msg_{{timeline-item-message-id}}">
+					<header class="timeline-item-header">
+						<div class="timeline-item-timestamp">{{timeline-item-timestamp}}</div>
+						<div class="timeline-item-user">
+							<div class="timeline-item-avator"><img src="{{timeline-item-avator-img-url}}" /></div>
+							<div class="timeline-item-username">{{timeline-item-username}}</div>
+						</div>
+						<div style="float: clear;" ></div>
+					</header>
+					<div class="timeline-item-message">{{timeline-item-message}}</div>
+				</article>
+			</div>
+		</script>
 
 		<!-- atmospheres -->
 		<script src="js/callback.js"></script>
@@ -433,6 +484,7 @@
 		<script src="js/atmos-private-timeline.js"></script>
 		<script src="js/atmos-private-conversation.js"></script>
 		<script src="js/atmos-sender-panel.js"></script>
+		<script src="js/atmos-search.js"></script>
 		<script src="js/atmos-dialog.js"></script>
 		<script src="js/atmos-profile.js"></script>
 		<script src="js/atmos-sockjs.js"></script>
@@ -443,6 +495,7 @@
 
 				$('#menuItemSendMessage').on('click', function(e) { atmos.showMessageSenderPanel('', '', '', [], false); });
 				$('#menuItemSendPrivate').on('click', function(e) { atmos.showMessageSenderPanel('', '', '', [], true); });
+				$('#menuItemSearch').on('click', function(e) { atmos.toggleSearchPanel(); });
 				$('#menuItemTimeline').on('click', function(e) { atmos.timelineManager().showTimelineManagementDialog(); });
 				$('#menuItemSettings').on('click', function(e) { atmos.showSettingDialog(); });
 				$('#menuItemLogout').on('click', function(e) { atmos.showLogoutDialog(); });
