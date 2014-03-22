@@ -14,17 +14,6 @@ var AtmosSearch = (function() {
 		AtmosSettings.Search.keywords().forEach(function(keyword) {
 			$(historyAreaSelector).append(createHistoryItem(keyword, keyword));
 		});
-//		$('#' + this._panelId + ' .history-area').append(createHistoryItem('a', 'a'));
-//		$('#' + this._panelId + ' .history-area').append(createHistoryItem('keyword1', 'keyword1'));
-//		$('#' + this._panelId + ' .history-area').append(createHistoryItem('keyword2', 'keyword2'));
-//		$('#' + this._panelId + ' .history-area').append(createHistoryItem('keyword3', 'keyword3'));
-//		$('#' + this._panelId + ' .history-area').append(createHistoryItem('keyword4', 'keyword4'));
-//		$('#' + this._panelId + ' .history-area').append(createHistoryItem('keyword5', 'keyword5'));
-//		$('#' + this._panelId + ' .history-area').append(createHistoryItem('keyword6', 'keyword6'));
-//		$('#' + this._panelId + ' .history-area').append(createHistoryItem('keyword7', 'keyword7'));
-//		$('#' + this._panelId + ' .history-area').append(createHistoryItem('keyword8', 'keyword8'));
-//		$('#' + this._panelId + ' .history-area').append(createHistoryItem('keyword9', 'keyword9'));
-//		$('#' + this._panelId + ' .history-area').append(createHistoryItem('keyword10', 'keyword10'));
 
 		var resultPanelShower = showResultPanel.bind(this);
 		var searcher = search.bind(this);
@@ -206,22 +195,6 @@ var AtmosSearch = (function() {
 			displaykeyword: keywordForDisp,
 		});
 	}
-
-//	function addOrMoveTopHistoryItem(keyword) {
-//		var historyAreaSelector = '#' + this._panelId + ' .history-area';
-//		var displayKeyword = keyword;
-//		return Hogan.compile($("#tmpl-search-history-item").text()).render({
-//			keyword: keyword,
-//			displaykeyword: keywordForDisp,
-//		});
-//	}
-//
-//	function removeHistoryItem(keyword, keywordForDisp) {
-//		return Hogan.compile($("#tmpl-search-history-item").text()).render({
-//			keyword: keyword,
-//			displaykeyword: keywordForDisp,
-//		});
-//	}
 
 	function extractSearchCondition(src) {
 		return {
