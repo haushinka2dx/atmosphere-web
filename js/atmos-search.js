@@ -6,70 +6,56 @@ var AtmosSearch = (function() {
 
 	AtmosSearch.prototype.showSearchPanel = function() {
 		this._panelId = uuid();
+		this._panelSelector = '#' + this._panelId;
+
 		$(this._containerSelector).append(Hogan.compile($("#tmpl-search-panel").text()).render({
 			"search-panel-id":  this._panelId,
 		}));
 
-		var historyAreaSelector = '#' + this._panelId + ' .history-area';
+		var historyAreaSelector = this._panelSelector + ' .history-area';
 		AtmosSettings.Search.keywords().forEach(function(keyword) {
-			$(historyAreaSelector).append(createHistoryItem(keyword, keyword));
+			$(historyAreaSelector).append(createHistoryItem(keyword));
 		});
 
 		var resultPanelShower = showResultPanel.bind(this);
 		var searcher = search.bind(this);
-		var that = this;
-		$('#' + this._panelId).on('click', function(e) {
+		var closer = AtmosSearch.prototype.close.bind(this);
+		$(this._panelSelector).on('click', function(e) {
 			e.stopPropagation();
-			that.close();
+			closer();
 		});
-		$('#' + this._panelId).on('click', '.search-panel', function(e) {
+		$(this._panelSelector).on('click', '.search-panel', function(e) {
 			e.stopPropagation();
 		});
-		$('#' + this._panelId).on('click', '.search-panel .history-area-wrapper .history-area .history .control.apply a', function(e) {
+		$(this._panelSelector).on('click', '.search-panel .history-area-wrapper .history-area .history .control.apply a', function(e) {
 			var keyword = $(e.target).parents('.history').data('keyword');
 			$(e.target).parents('.search-panel').find('.command-area .input input').val(keyword);
 		});
-		$('#' + this._panelId).on('click', '.search-panel .history-area-wrapper .history-area .history .control.search a', function(e) {
+		$(this._panelSelector).on('click', '.search-panel .history-area-wrapper .history-area .history .control.search a', function(e) {
 			var keyword = $(e.target).parents('.history').data('keyword');
 			$(e.target).parents('.search-panel').find('.command-area .input input').val(keyword);
 			$(e.target).parents('.search-panel').find('.command-area .command a').eq(0).click();
 		});
-		$('#' + this._panelId).on('click', '.search-panel .history-area-wrapper .history-area .history .control.delete a', function(e) {
+		$(this._panelSelector).on('click', '.search-panel .history-area-wrapper .history-area .history .control.delete a', function(e) {
 			var $historyItem = $(e.target).parents('.history');
 			var keyword = $historyItem.data('keyword');
 			$historyItem.fadeOut('fast', function() { $history.remove(); });
 			AtmosSettings.Search.removeKeyword(keyword);
 		});
-		$('#' + this._panelId).on('click', '.search-result-wrapper', function(e) {
+		$(this._panelSelector).on('click', '.search-result-wrapper', function(e) {
 			e.stopPropagation();
 		});
-		$('#' + this._panelId).on('keypress', '.search-panel .command-area .input > input', function(e) {
+		$(this._panelSelector).on('keypress', '.search-panel .command-area .input > input', function(e) {
 			if(e.keyCode == 13) {
 				$(e.target).parents('.command-area').find('.command > a').eq(0).click();
 			}
 		});
-		$('#' + this._panelId).on('click', '.search-panel .command-area .command > a', function(e) {
+		$(this._panelSelector).on('click', '.search-panel .command-area .command > a', function(e) {
 			var timelineId = 'search' + uuid();
 			var timelineRootId = 'root-' + timelineId;
 			var keyword = $(e.target).parents('.command-area').find('.input input').val();
-
-			var cond = extractSearchCondition(keyword);
-			var scCustom = createAtmosSearchCondition();
-			scCustom.count(100);
-			if (canl(cond.keywords)) {
-				scCustom.keywords(cond.keywords);
-			}
-			if (canl(cond.addressesUsers)) {
-				scCustom.addressUsers(cond.addressesUsers);
-			}
-			if (canl(cond.addressesGroups)) {
-				scCustom.addressGroups(cond.addressesGroups);
-			}
-			if (canl(cond.hashtags)) {
-				scCustom.hashtags(cond.hashtags);
-			}
-
-			var url = '/messages/search?' + scCustom.toGETParameters();
+			var searchCondition = createCondition(keyword);
+			var url = '/messages/search?' + searchCondition.toGETParameters();
 
 			var tlDef = {
 				"root-id": timelineRootId,
@@ -83,35 +69,22 @@ var AtmosSearch = (function() {
 
 			resultPanelShower(keyword, tlDef);
 			searcher(tlDef);
-
-			var $targetHistoryItem = undefined;
-			$(e.target).parents('.search-panel').find('.history-area-wrapper .history-area .history').each(function() {
-				if ($(this).data('keyword') === keyword) {
-					$targetHistoryItem = $(this);
-				}
-			});
-			if ($targetHistoryItem) {
-				$(e.target).parents('.search-panel').find('.history-area-wrapper .history-area').prepend($targetHistoryItem);
-			}
-			else {
-				$(e.target).parents('.search-panel').find('.history-area-wrapper .history-area').prepend(createHistoryItem(keyword, keyword));
-				$(e.target).parents('.search-panel').find('.history-area-wrapper .history-area .history:first').fadeIn();
-			}
-
+			
+			addOrMoveTopHistoryItem($(e.target).parents('.search-panel').find('.history-area-wrapper .history-area'), keyword);
 			AtmosSettings.Search.addKeyword(keyword);
 		});
 
 		// 候補が表示されない
-		// atmos.applyAutoComplete($('#' + this._panelId + ' .search-panel .command-area .input > input'));
+		// atmos.applyAutoComplete($(this._panelSelector + ' .search-panel .command-area .input > input'));
 
-		$('#' + this._panelId).fadeIn(this._windowSpeed);
-		$('#' + this._panelId + ' .history-area').find('.history').fadeIn(this._windowSpeed);
-		$('#' + this._panelId + ' .history-area').perfectScrollbar(atmos.perfectScrollbarSetting);
+		$(this._panelSelector).fadeIn(this._windowSpeed);
+		$(this._panelSelector + ' .history-area').find('.history').fadeIn(this._windowSpeed);
+		$(this._panelSelector + ' .history-area').perfectScrollbar(atmos.perfectScrollbarSetting);
 	}
 
 	AtmosSearch.prototype.close = function() {
 		if (canl(this._panelId)) {
-			var $panel = $('#' + this._panelId);
+			var $panel = $(this._panelSelector);
 			$panel.fadeOut(this._windowSpeed, function() {
 				$panel.remove();
 			});
@@ -125,12 +98,18 @@ var AtmosSearch = (function() {
 	}
 
 	function showResultPanel(keyword, tlDef) {
+		if (keyword.length > 12) {
+			var title = keyword.substr(0, 12) + '...';
+		}
+		else {
+			var title = keyword;
+		}
 		var timelineAppender = addTimeline.bind(null, tlDef);
 		if (!canl(this._resultPanelId)) {
 			this._resultPanelId = uuid();
-			$('#' + this._panelId).append(Hogan.compile($("#tmpl-search-result").text()).render({
+			$(this._panelSelector).append(Hogan.compile($("#tmpl-search-result").text()).render({
 				"search-result-id": this._resultPanelId,
-				"title": keyword,
+				"title": title,
 			}));
 			$('#' + this._resultPanelId).on('click', '.search-result .header .command a', function(e) {
 				timelineAppender();
@@ -143,6 +122,25 @@ var AtmosSearch = (function() {
 				timelineAppender();
 			});
 		}
+	}
+
+	function createCondition(keyword) {
+		var cond = extractSearchCondition(keyword);
+		var scCustom = createAtmosSearchCondition();
+		scCustom.count(100);
+		if (canl(cond.keywords)) {
+			scCustom.keywords(cond.keywords);
+		}
+		if (canl(cond.addressesUsers)) {
+			scCustom.addressUsers(cond.addressesUsers);
+		}
+		if (canl(cond.addressesGroups)) {
+			scCustom.addressGroups(cond.addressesGroups);
+		}
+		if (canl(cond.hashtags)) {
+			scCustom.hashtags(cond.hashtags);
+		}
+		return scCustom;
 	}
 
 	function search(tlDef) {
@@ -189,11 +187,33 @@ var AtmosSearch = (function() {
 
 	}
 
-	function createHistoryItem(keyword, keywordForDisp) {
+	function createHistoryItem(keyword) {
+		if (keyword.length > 10) {
+			var keywordForDisp = keyword.substr(0, 9) + '...';
+		}
+		else {
+			var keywordForDisp = keyword;
+		}
 		return Hogan.compile($("#tmpl-search-history-item").text()).render({
 			keyword: keyword,
 			displaykeyword: keywordForDisp,
 		});
+	}
+
+	function addOrMoveTopHistoryItem($historyArea, keyword) {
+		var $targetHistoryItem = undefined;
+		$historyArea.find('.history').each(function() {
+			if ($(this).data('keyword') === keyword) {
+				$targetHistoryItem = $(this);
+			}
+		});
+		if ($targetHistoryItem) {
+			$historyArea.prepend($targetHistoryItem);
+		}
+		else {
+			$historyArea.prepend(createHistoryItem(keyword));
+			$historyArea.find('.history:first').fadeIn();
+		}
 	}
 
 	function extractSearchCondition(src) {
