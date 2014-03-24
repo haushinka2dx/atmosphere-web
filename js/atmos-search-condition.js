@@ -174,15 +174,7 @@ var createAtmosSearchCondition = undefined;
 	}
 
 	function toGETParameters() {
-		var params = [];
-		var j = this.toJSON();
-		Object.keys(j).forEach(function(k) {
-			var v = j[k];
-			if (canl(k) && canl(v)) {
-				params.push(k + '=' + v);
-			}
-		});
-		return params.join('&');
+		return $.map(this.toJSON(), function(v,k) { return k + '=' + v; }).join('&');
 	}
 
 	createAtmosSearchCondition = function() {
