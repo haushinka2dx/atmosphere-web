@@ -39,7 +39,7 @@ var AtmosSearch = (function() {
 		$(this._panelSelector).on('click', '.search-panel .history-area-wrapper .history-area .history .control.delete a', function(e) {
 			var $historyItem = $(e.target).parents('.history');
 			var keyword = $historyItem.data('keyword');
-			$historyItem.fadeOut('fast', function() { $history.remove(); });
+			$historyItem.fadeOut('fast', function() { $historyItem.remove(); });
 			AtmosSettings.Search.removeKeyword(keyword);
 		});
 		$(this._panelSelector).on('click', '.search-result-wrapper', function(e) {
