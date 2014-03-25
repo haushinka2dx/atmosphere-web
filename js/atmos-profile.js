@@ -146,7 +146,7 @@ var AtmosProfile = (function() {
 		context["has-next-message"] = hasNextMessage;
 		context["timeline-item-message-id"] = msg['_id'];
 		context["timeline-item-timestamp"] = utc2jstRelative(msg['created_at']);
-		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"];
+		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"] + '&image_width=48&image_height=48';
 		context["timeline-item-username"] = msg["created_by"];
 		context["timeline-item-message"] = msg["message"];
 		var addresses = msg["addresses"];

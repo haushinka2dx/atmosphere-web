@@ -174,7 +174,7 @@ var AtmosConversation = (function() {
 		context["is-own-message"] = atmos.currentUserId() === msg['created_by'];
 		context["conversation-item-message-id"] = msg['_id'];
 		context["conversation-item-timestamp"] = utc2jstRelative(msg['created_at']);
-		context["conversation-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"];
+		context["conversation-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"] + '&image_width=48&image_height=48';
 		context["conversation-item-username"] = msg["created_by"];
 		context["conversation-item-message"] = msg["message"];
 		var addresses = msg["addresses"];
