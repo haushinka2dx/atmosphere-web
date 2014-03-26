@@ -374,6 +374,62 @@
 	color: rgba(55,55,55,1.0);
 }
 
+.search-panel-wrapper {
+	background-color: rgba(0,0,0,0.4);
+}
+
+.search-panel,
+.search-result-wrapper {
+	color: #fff;
+	background-color: #444444;
+}
+
+.search-panel:after,
+.search-result-wrapper:after {
+	border-right-color: #444444;
+}
+
+.search-panel-wrapper .search-panel input,
+.search-panel-wrapper .search-panel textarea {
+	background-color: #555555;
+	border-color: #444444;
+	border-style: solid;
+	outline-color: #444444;
+	color: #fff;
+}
+
+.search-panel-wrapper .search-panel input::-webkit-input-placeholder,
+.search-panel-wrapper .search-panel textarea::-webkit-input-placeholder,
+.search-panel-wrapper .search-panel input::-moz-placeholder,
+.search-panel-wrapper .search-panel textarea::-moz-placeholder {
+	color: #444444;
+}
+
+.search-panel-wrapper .search-panel .command a,
+.search-result-wrapper .search-result .command a {
+	color: #aaaaaa;
+}
+
+.search-panel-wrapper .search-panel .command a:hover,
+.search-panel-wrapper .search-panel .command a:active,
+.search-result-wrapper .search-result .command a:hover,
+.search-result-wrapper .search-result .command a:active {
+	color: #ffffff;
+}
+
+.search-panel-wrapper .search-panel .history-area {
+	color: #ffffff;
+}
+
+.search-panel-wrapper .search-panel .history-area a {
+	color: #aaaaaa;
+}
+
+.search-panel-wrapper .search-panel .history-area a:hover,
+.search-panel-wrapper .search-panel .history-area a:active {
+	color: #ffffff;
+}
+
 .palette-global-timeline-base-color {
 	/* BELIZE HOLE */
 	background-color: #2980b9;

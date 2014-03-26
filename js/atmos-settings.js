@@ -127,5 +127,51 @@ var AtmosSettings = (function() {
 		return _Timeline;
 	})();
 
+	AtmosSettings.Search = (function() {
+		function _Search() {
+		}
+
+		_Search.keyKeywords = 'Search.keywords';
+
+		_Search.keywords = function() {
+			var keywordsString = localStorage.getItem(_Search.keyKeywords);
+			if (canl(keywordsString)) {
+				return JSON.parse(keywordsString);
+			}
+			else {
+				return [];
+			}
+		};
+
+		_Search.addKeyword = function(keyword) {
+			if (!canl(keyword)) {
+				return;
+			}
+			var keywords = [];
+			keywords.push(keyword);
+			_Search.keywords().forEach(function(currentKeyword) {
+				if (currentKeyword !== keyword) {
+					keywords.push(currentKeyword);
+				}
+			});
+			localStorage.setItem(_Search.keyKeywords, JSON.stringify(keywords));
+		};
+
+		_Search.removeKeyword = function(keyword) {
+			if (!canl(keyword)) {
+				return;
+			}
+			var keywords = [];
+			_Search.keywords().forEach(function(currentKeyword) {
+				if (currentKeyword !== keyword) {
+					keywords.push(currentKeyword);
+				}
+			});
+			localStorage.setItem(_Search.keyKeywords, JSON.stringify(keywords));
+		};
+
+		return _Search;
+	})();
+
 	return AtmosSettings;
 })();

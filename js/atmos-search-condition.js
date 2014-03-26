@@ -55,6 +55,7 @@ var createAtmosSearchCondition = undefined;
 		addressGroups : addressGroups,
 		messageTypes : messageTypes,
 		toJSON : toJSON,
+		toGETParameters : toGETParameters,
 	}
 
 	function count(argCount) {
@@ -170,6 +171,10 @@ var createAtmosSearchCondition = undefined;
 			j['message_types'] = this.messageTypes();
 		}
 		return j;
+	}
+
+	function toGETParameters() {
+		return $.map(this.toJSON(), function(v,k) { return k + '=' + v; }).join('&');
 	}
 
 	createAtmosSearchCondition = function() {

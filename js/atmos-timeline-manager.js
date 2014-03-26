@@ -116,11 +116,11 @@ var AtmosTimelineManager = (function() {
 		var searchCondition = createAtmosSearchCondition();
 		searchCondition.count(this._timelineCount);
 		if (tlDef["private"]) {
-			var timeline = new AtmosPrivateTimeline(tlDef["id"], tlDef["name"], '', atmos.createUrl(tlDef["api"]), searchCondition, changePositionStatusChanger);
+			var timeline = new AtmosPrivateTimeline(tlDef["id"], tlDef["root-id"], tlDef["name"], '', atmos.createUrl(tlDef["api"]), searchCondition, changePositionStatusChanger);
 			this._privateTimelines[tlDef["id"]] = timeline;
 		}
 		else {
-			var timeline = new AtmosTimeline(tlDef["id"], tlDef["name"], '', atmos.createUrl(tlDef["api"]), searchCondition, changePositionStatusChanger);;
+			var timeline = new AtmosTimeline(tlDef["id"], tlDef["root-id"], tlDef["name"], '', atmos.createUrl(tlDef["api"]), searchCondition, changePositionStatusChanger);;
 			this._publicTimelines[tlDef["id"]] = timeline;
 		}
 
