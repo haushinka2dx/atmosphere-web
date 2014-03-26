@@ -73,7 +73,7 @@ var AtmosTimelineManager = (function() {
 		// extract timeline definitions that can be handled
 		var targetTimelineRootIds = this._timelineRootIds;
 		var timelineRootIds = Object.keys(allTimelineDefs).filter(function(timelineRootId) {
-			return targetTimelineRootIds.length === 0 || targetTimelineRootIds.indexOf(timelineRootId) > -1;
+			return targetTimelineRootIds.length === 0 || allTimelineDefs[timelineRootId].api.indexOf('/messages/search') > -1 || targetTimelineRootIds.indexOf(timelineRootId) > -1;
 		});
 		var timelineDefs = [];
 		timelineRootIds.forEach(function(timelineRootId) { timelineDefs.push(allTimelineDefs[timelineRootId]); });
