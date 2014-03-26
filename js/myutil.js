@@ -215,6 +215,35 @@ function getExtension(filename) {
 	}
 }
 
+function extractAddressesUsers(msg) {
+       return extract(msg, /(^|\b|[^@\-_a-zA-Z0-9])@([a-zA-Z0-9\-_]+)/g, 2);
+}
+
+function extractAddressesGroups(msg) {
+       return extract(msg, /(^|\b|[^$\-_a-zA-Z0-9])\$([a-zA-Z0-9\-_]+)/g, 2);
+}
+
+function extractHashtags(msg) {
+       return extract(msg, /(^|\b|[^#])#([^#@ \n]+)/g, 2);
+}
+
+function extractKeywords(msg) {
+       return msg.replace(/(^|\b|[^@\-_a-zA-Z0-9])@([a-zA-Z0-9\-_]+)/g, '')
+                 .replace(/(^|\b|[^$\-_a-zA-Z0-9])\$([a-zA-Z0-9\-_]+)/g, '')
+                 .replace(/(^|\b|[^#])#([^#@ \n]+)/g, '')
+                         .split(/\s+/)
+                         .filter(function(e) { return typeof(e) !== 'undefined' && e != null && e.length > 0; });
+}
+
+function extract(msg, regexPattern, pos) {
+       var results = [];
+       var matched;
+       while (matched = regexPattern.exec(msg)) {
+               results.push(matched[pos]);
+       }
+       return results;
+}
+
 $(document).ready(function() {
 	Messenger.options = {
    		extraClasses: 'messenger-fixed messenger-on-top messenger-on-right',
