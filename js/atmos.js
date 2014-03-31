@@ -44,6 +44,7 @@ var atmos = null;
 		showMessageSenderPanel : showMessageSenderPanel,
 		showProfileDialog : showProfileDialog,
 		showSettingDialog : showSettingDialog,
+		toggleSearchPanel : toggleSearchPanel,
 		createTimelines : createTimelines,
 		init : init,
 		initSockJS : initSockJS,
@@ -714,6 +715,19 @@ var atmos = null;
 
 	function showSettingDialog() {
 		this.showProfileDialog(this.currentUserId());
+	}
+
+	function toggleSearchPanel() {
+		if (this._searcher && this._searcher.isShown()) {
+			this._searcher.close();
+			this._searcher = undefined;
+		}
+		else {
+			if (!this._searcher) {
+				this._searcher = new AtmosSearch('.main-section .contents-wrapper');
+			}
+			this._searcher.showSearchPanel();
+		}
 	}
 
 	function sendRequest(url, method, dataJSON, successCallback, failureCallback) {

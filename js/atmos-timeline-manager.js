@@ -68,7 +68,7 @@ var AtmosTimelineManager = (function() {
 		// extract timeline definitions that can be handled
 		var targetTimelineRootIds = this._timelineRootIds;
 		var timelineRootIds = Object.keys(allTimelineDefs).filter(function(timelineRootId) {
-			return targetTimelineRootIds.length === 0 || targetTimelineRootIds.indexOf(timelineRootId) > -1;
+			return targetTimelineRootIds.length === 0 || allTimelineDefs[timelineRootId].api.indexOf('/messages/search') > -1 || targetTimelineRootIds.indexOf(timelineRootId) > -1;
 		});
 		var timelineDefs = [];
 		timelineRootIds.forEach(function(timelineRootId) { timelineDefs.push(allTimelineDefs[timelineRootId]); });
@@ -116,11 +116,11 @@ var AtmosTimelineManager = (function() {
 		var searchCondition = createAtmosSearchCondition();
 		searchCondition.count(this._timelineCount);
 		if (tlDef["private"]) {
-			var timeline = new AtmosPrivateTimeline(tlDef["id"], tlDef["name"], '', atmos.createUrl(tlDef["api"]), searchCondition, changePositionStatusChanger);
+			var timeline = new AtmosPrivateTimeline(tlDef["id"], tlDef["root-id"], tlDef["name"], '', atmos.createUrl(tlDef["api"]), searchCondition, changePositionStatusChanger);
 			this._privateTimelines[tlDef["id"]] = timeline;
 		}
 		else {
-			var timeline = new AtmosTimeline(tlDef["id"], tlDef["name"], '', atmos.createUrl(tlDef["api"]), searchCondition, changePositionStatusChanger);;
+			var timeline = new AtmosTimeline(tlDef["id"], tlDef["root-id"], tlDef["name"], '', atmos.createUrl(tlDef["api"]), searchCondition, changePositionStatusChanger);;
 			this._publicTimelines[tlDef["id"]] = timeline;
 		}
 

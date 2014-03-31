@@ -1,7 +1,7 @@
 var AtmosTimeline = (function() {
-	function AtmosTimeline(id, name, description, url, searchCondition, callbackAfterConversation) {
+	function AtmosTimeline(id, rootId, name, description, url, searchCondition, callbackAfterConversation) {
 		this.id(id);
-		this.rootId(id + '-root');
+		this.rootId(rootId);
 		this.name(name);
 		this.description(description);
 		this.url(url);

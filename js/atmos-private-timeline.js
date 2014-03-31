@@ -1,6 +1,6 @@
 var AtmosPrivateTimeline = (function() {
-	function AtmosPrivateTimeline(id, name, description, url, searchCondition, callbackAfterConversation) {
-		AtmosTimeline.apply(this, [ id, name, description, url, searchCondition, callbackAfterConversation ]);
+	function AtmosPrivateTimeline(id, rootId, name, description, url, searchCondition, callbackAfterConversation) {
+		AtmosTimeline.apply(this, [ id, rootId, name, description, url, searchCondition, callbackAfterConversation ]);
 		this._searchUrl = atmos.createUrl('/private/search');
 	}
 	AtmosPrivateTimeline.prototype = Object.create(AtmosTimeline.prototype);
