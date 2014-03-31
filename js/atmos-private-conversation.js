@@ -51,8 +51,8 @@ var AtmosPrivateConversation = (function() {
 		return Hogan.compile($('#' + tmplId).text()).render(context);
 	};
 
-	AtmosPrivateConversation.prototype.applyItemEvents = function($target) {
-		$target.find('a.reaction').on('click', function(e) {
+	AtmosPrivateConversation.prototype.applyItemEvents = function($conversationItems) {
+		$conversationItems.on('click', 'a.reaction', function(e) {
 			var targetLink = e.currentTarget;
 			var $base = $(targetLink).parent().parent();
 			var targetMessageId = $base.find('input[name=message-id]').val();
@@ -60,19 +60,19 @@ var AtmosPrivateConversation = (function() {
 			var reactionType = $(targetLink).attr('reaction-type');
 			atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody, true);
 		});
-		$target.find('div.conversation-item-user').on('click', function(e) {
+		$conversationItems.on('click', 'div.conversation-item-user', function(e) {
 			e.stopPropagation();
-			atmos.showProfileDialog($target.find('div.conversation-item-username').text());
+			atmos.showProfileDialog($(e.target).parents('.conversation-item-wrapper').find('div.conversation-item-username').text());
 		});
-		$target.find('header.conversation-item-header > div.conversation-item-username').on('click', function(e) {
-			e.stopPropagation();
-			atmos.showProfileDialog($(e.target).text());
-		});
-		$target.find('div.conversation-item-address span').on('click', function(e) {
+		$conversationItems.on('click', 'header.conversation-item-header > div.conversation-item-username', function(e) {
 			e.stopPropagation();
 			atmos.showProfileDialog($(e.target).text());
 		});
-		$target.find('a.reply').on('click', function(e) {
+		$conversationItems.on('click', 'div.conversation-item-address span', function(e) {
+			e.stopPropagation();
+			atmos.showProfileDialog($(e.target).text());
+		});
+		$conversationItems.on('click', 'a.reply', function(e) {
 			var targetLink = e.currentTarget;
 			var $base = $(targetLink).parent().parent();
 			var targetMessageId = $base.find('input[name=message-id]').val();
@@ -91,7 +91,7 @@ var AtmosPrivateConversation = (function() {
 			}
 			atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses, true);
 		});
-		$target.find('a.remove').on('click', function(e) {
+		$conversationItems.on('click', 'a.remove', function(e) {
 			var targetLink = e.currentTarget;
 			var $base = $(targetLink).parent().parent();
 			var targetMessageId = $base.find('input[name=message-id]').val();
