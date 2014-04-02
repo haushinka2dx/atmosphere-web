@@ -157,7 +157,7 @@ var AtmosTimeline = (function() {
 								$(this.selector()).append(Hogan.compile($("#tmpl-timeline-read-more").text()).render({}));
 								$readMore = $(this.selector(".timeline-read-more"));
 								$readMore.find("a").on('click', function(e) { that.readMore(); });
-								applyMagicEffect($readMore, 'magictime swashIn', totalDelay);
+								$readMore.fadeIn();
 							}
 						}
 
@@ -195,7 +195,7 @@ var AtmosTimeline = (function() {
 						var totalDelay = showNewItems($(this.selector('> div.new-item')));
 
 						if (tlResult['count'] === this.searchCondition().count()) {
-							applyMagicEffect($readMore, 'magictime swashIn', totalDelay);
+							$readMore.fadeIn();
 						}
 
 						this.setScrollbar();
@@ -454,14 +454,8 @@ var AtmosTimeline = (function() {
 	}
 
 	function showNewItems($newItems) {
-		var delay = 0;
-		$newItems.each(function(index) {
-			var $targetNewItem = $(this);
-			$targetNewItem.removeClass('new-item');
-			applyMagicEffect($targetNewItem, 'magictime swashIn', delay);
-			delay += 60;
-		});
-
+		var delay = 300;
+		$newItems.removeClass('new-item').fadeIn(delay);
 		return delay;
 	}
 
