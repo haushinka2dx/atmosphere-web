@@ -133,6 +133,7 @@ var AtmosTimeline = (function() {
 	}
 
 	function init() {
+		this.applyItemEvents($(this.selector()));
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var that = this;
@@ -143,8 +144,6 @@ var AtmosTimeline = (function() {
 							$(that.selector()).prepend(that.createTimelineItem(msg));
 
 							createHyperLink($(that.selector(' > div:first .timeline-item-message')));
-
-							that.applyItemEvents($(that.selector('> div:first')));
 						});
 
 						this.latestMessageDateTime(tlResult['latest_created_at']);
@@ -188,8 +187,6 @@ var AtmosTimeline = (function() {
 							$readMore.before(that.createTimelineItem(msg));
 
 							createHyperLink($(that.selector('> div.timeline-item-wrapper:last .timeline-item-message')));
-
-							that.applyItemEvents($(that.selector('> div.timeline-item-wrapper:last')));
 						});
 
 						this.latestMessageDateTime(tlResult['latest_created_at']);
@@ -248,7 +245,7 @@ var AtmosTimeline = (function() {
 		context["is-own-message"] = atmos.currentUserId() === msg['created_by'];
 		context["timeline-item-message-id"] = msg['_id'];
 		context["timeline-item-timestamp"] = utc2jstRelative(msg['created_at']);
-		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"];
+		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"] + '&image_width=48&image_height=48';
 		context["timeline-item-username"] = msg["created_by"];
 		context["timeline-item-created-at"] = msg["created_at"];
 		context["timeline-item-message"] = msg["message"];
@@ -308,7 +305,6 @@ var AtmosTimeline = (function() {
 
 				createHyperLink($newItem.find('div.timeline-item-message'));
 
-				that.applyItemEvents($newItem);
 
 				that.latestMessageDateTime(createdAt);
 				that.oldestMessageDateTime(createdAt);
@@ -386,13 +382,13 @@ var AtmosTimeline = (function() {
 		});
 	}
 
-	function applyItemEvents($target) {
+	function applyItemEvents($timelineItems) {
 		var that = this;
-		$target.find('div.timeline-item-user').on('click', function(e) {
+		$timelineItems.on('click', 'div.timeline-item-user', function(e) {
 			e.stopPropagation();
-			atmos.showProfileDialog($target.find('div.timeline-item-username').text());
+			atmos.showProfileDialog($(e.target).parents('.timeline-item-user').find('div.timeline-item-username').text());
 		});
-		$target.find('a.reaction').on('click', function(e) {
+		$timelineItems.on('click', 'a.reaction', function(e) {
 			e.stopPropagation();
 			var targetLink = e.currentTarget;
 			var $base = $(targetLink).parent().parent();
@@ -401,7 +397,7 @@ var AtmosTimeline = (function() {
 			var reactionType = $(targetLink).attr('reaction-type');
 			atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody, false);
 		});
-		$target.find('a.reply').on('click', function(e) {
+		$timelineItems.on('click', 'a.reply', function(e) {
 			e.stopPropagation();
 			var targetLink = e.currentTarget;
 			var $base = $(targetLink).parent().parent();
@@ -423,7 +419,7 @@ var AtmosTimeline = (function() {
 			}
 			atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses, false);
 		});
-		$target.find('a.show-conversation').on('click', function(e) {
+		$timelineItems.on('click', 'a.show-conversation', function(e) {
 			e.stopPropagation();
 			var targetMessageId = $(e.currentTarget).parent().parent().find('input[name=message-id]').val();
 			that._conversation = new AtmosConversation(that.id() + '_conversation', targetMessageId);
@@ -447,7 +443,7 @@ var AtmosTimeline = (function() {
 			}
 			that._conversation.show("normal");
 		});
-		$target.find('a.remove').on('click', function(e) {
+		$timelineItems.on('click', 'a.remove', function(e) {
 			e.stopPropagation();
 			var targetLink = e.currentTarget;
 			var $base = $(targetLink).parent().parent();
