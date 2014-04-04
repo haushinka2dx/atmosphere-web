@@ -56,6 +56,9 @@ var AtmosConversation = (function() {
 				backLinkHandler(that);
 			}
 		});
+
+		this.applyItemEvents($(this.selector()));
+
 		var successCallback = new CallbackInfo(
 			function(res, textStatus, xhr) {
 				var tlResult = JSON.parse(res);
@@ -64,8 +67,6 @@ var AtmosConversation = (function() {
 					$(this.selector()).prepend(this.createConversationItem(tlItem, true));
 
 					createHyperLink($(this.selector('> div:first .conversation-item-message')));
-
-					this.applyItemEvents($(this.selector('> div:first')));
 
 					showNewItems($(this.selector("> div.new-item")));
 
@@ -114,8 +115,6 @@ var AtmosConversation = (function() {
 
 						createHyperLink($(this.selector('> div:first .conversation-item-message')));
 
-						this.applyItemEvents($(this.selector("> div:first")));
-
 						// show
 						showNewItems($(this.selector("> div.new-item:first")));
 
@@ -148,8 +147,6 @@ var AtmosConversation = (function() {
 						$(this.selector()).append(this.createConversationItem(tlItem, false));
 
 						createHyperLink($(this.selector('> div:last .conversation-item-message')));
-
-						this.applyItemEvents($(this.selector("> div:last")));
 
 						// show
 						showNewItems($(this.selector("> div.new-item:last")));
@@ -213,8 +210,8 @@ var AtmosConversation = (function() {
 		applyThumbnailEvent($message.find('a.atmos-image'));
 	}
 
-	function applyItemEvents($target) {
-		$target.find('a.reaction').on('click', function(e) {
+	function applyItemEvents($conversationItems) {
+		$conversationItems.on('click', 'a.reaction', function(e) {
 			var targetLink = e.currentTarget;
 			var $base = $(targetLink).parent().parent();
 			var targetMessageId = $base.find('input[name=message-id]').val();
@@ -222,15 +219,15 @@ var AtmosConversation = (function() {
 			var reactionType = $(targetLink).attr('reaction-type');
 			atmos.showResponseDialog(targetMessageId, reactionType, targetMessageBody, false);
 		});
-		$target.find('div.conversation-item-user').on('click', function(e) {
+		$conversationItems.on('click', 'div.conversation-item-user', function(e) {
 			e.stopPropagation();
-			atmos.showProfileDialog($target.find('div.conversation-item-username').text());
+			atmos.showProfileDialog($(e.target).parents('.conversation-item-wrapper').find('div.conversation-item-username').text());
 		});
-		$target.find('header.conversation-item-header > div.conversation-item-username').on('click', function(e) {
+		$conversationItems.on('click', 'header.conversation-item-header > div.conversation-item-username', function(e) {
 			e.stopPropagation();
 			atmos.showProfileDialog($(e.target).text());
 		});
-		$target.find('a.reply').on('click', function(e) {
+		$conversationItems.on('click', 'a.reply', function(e) {
 			var targetLink = e.currentTarget;
 			var $base = $(targetLink).parent().parent();
 			var targetMessageId = $base.find('input[name=message-id]').val();
@@ -251,7 +248,7 @@ var AtmosConversation = (function() {
 			}
 			atmos.showMessageSenderPanel(defaultMessage, targetMessageId, targetMessageBody, addresses, false);
 		});
-		$target.find('a.remove').on('click', function(e) {
+		$conversationItems.on('click', 'a.remove', function(e) {
 			var targetLink = e.currentTarget;
 			var $base = $(targetLink).parent().parent();
 			var targetMessageId = $base.find('input[name=message-id]').val();
