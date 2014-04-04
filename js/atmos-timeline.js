@@ -386,7 +386,7 @@ var AtmosTimeline = (function() {
 		var that = this;
 		$timelineItems.on('click', 'div.timeline-item-user', function(e) {
 			e.stopPropagation();
-			atmos.showProfileDialog($(e.target).find('div.timeline-item-username').text());
+			atmos.showProfileDialog($(e.target).parents('.timeline-item-user').find('div.timeline-item-username').text());
 		});
 		$timelineItems.on('click', 'a.reaction', function(e) {
 			e.stopPropagation();
