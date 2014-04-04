@@ -929,7 +929,7 @@ var atmos = null;
 			title: title,
 			body: msgJSON['info']['message'],
 			id: msgJSON['action'] + '_' + msgJSON['info']['target_msg_id'],
-			icon: atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"]
+			icon: atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"] + '&image_width=100&image_height=100'
 		};
 	}
 
@@ -948,7 +948,7 @@ var atmos = null;
 							title: msgJSON['info']['action'] + ' by ' + msgJSON['from'],
 							body: "from " + tlItem['created_by'] + ": " + tlItem['message'],
 							id: msgJSON['action'] + '_' + targetMsgId + '_' + msgJSON['info']['action'] + '_' + msgJSON['from'],
-							icon: atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"]
+							icon: atmos.createUrl("/user/avator") + "?user_id=" + msgJSON["from"] + '&image_width=100&image_height=100'
 						});
 						return;
 					}
@@ -1049,7 +1049,7 @@ var atmos = null;
 						}));
 					},
 					template: function(value) {
-						return '<img class="avator-mini" src="' + that.createUrl("/user/avator") + '?user_id=' + value + '" />' + value;
+						return '<img class="avator-mini" src="' + that.createUrl("/user/avator") + '?user_id=' + value + '&image_width=12&image_height=12" />' + value;
 					},
 					replace: function (value) {
 						var name = canl(value) ? value + ' ' : this._term;

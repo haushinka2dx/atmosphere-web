@@ -173,7 +173,7 @@ var AtmosSearch = (function() {
 		var context = {};
 		context["timeline-item-message-id"] = msg['_id'];
 		context["timeline-item-timestamp"] = utc2jstRelative(msg['created_at']);
-		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"];
+		context["timeline-item-avator-img-url"] = atmos.createUrl("/user/avator") + "?user_id=" + msg["created_by"] + '&image_width=36&image_height=36';
 		context["timeline-item-username"] = msg["created_by"];
 		context["timeline-item-message"] = msg["message"];
 		return Hogan.compile($("#tmpl-search-result-item").text()).render(context);
