@@ -455,7 +455,7 @@ var AtmosTimeline = (function() {
 
 	function showNewItems($newItems) {
 		var magicCount = 12;
-		// 最新10件はmagic animation, それ以上ある場合は通常の fadeIn
+		// 最新12件はmagic animation, それ以上ある場合は通常の fadeIn
 		var $newItemsMagic = $newItems.slice(0, magicCount);
 		var fadeInCount = $newItems.length - $newItemsMagic.length;
 		var $newItemsFadeIn = fadeInCount > 0 ? $newItems.slice(-fadeInCount) : [];
