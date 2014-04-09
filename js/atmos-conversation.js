@@ -258,13 +258,9 @@ var AtmosConversation = (function() {
 	}
 
 	function showNewItems($newItems) {
-		var delay = 0;
-		$newItems.each(function(index) {
-			var $targetNewItem = $(this);
-			$targetNewItem.removeClass('new-item');
-			applyMagicEffect($targetNewItem, 'magictime swashIn', delay);
-			delay += 60;
-		});
+		var delay = 300;
+		$newItems.removeClass('new-item').fadeIn(delay);
+		return delay;
 	}
 
 	function updateConversationItemReaction(msg) {

@@ -157,7 +157,7 @@ var AtmosTimeline = (function() {
 								$(this.selector()).append(Hogan.compile($("#tmpl-timeline-read-more").text()).render({}));
 								$readMore = $(this.selector(".timeline-read-more"));
 								$readMore.find("a").on('click', function(e) { that.readMore(); });
-								applyMagicEffect($readMore, 'magictime swashIn', totalDelay);
+								setTimeout(function() { $readMore.fadeIn(); }, totalDelay);
 							}
 						}
 
@@ -195,7 +195,7 @@ var AtmosTimeline = (function() {
 						var totalDelay = showNewItems($(this.selector('> div.new-item')));
 
 						if (tlResult['count'] === this.searchCondition().count()) {
-							applyMagicEffect($readMore, 'magictime swashIn', totalDelay);
+							$readMore.fadeIn();
 						}
 
 						this.setScrollbar();
@@ -454,14 +454,23 @@ var AtmosTimeline = (function() {
 	}
 
 	function showNewItems($newItems) {
+		var magicCount = 12;
+		// 最新12件はmagic animation, それ以上ある場合は通常の fadeIn
+		var $newItemsMagic = $newItems.slice(0, magicCount);
+		var fadeInCount = $newItems.length - $newItemsMagic.length;
+		var $newItemsFadeIn = fadeInCount > 0 ? $newItems.slice(-fadeInCount) : [];
 		var delay = 0;
-		$newItems.each(function(index) {
+		$newItemsMagic.each(function(index) {
 			var $targetNewItem = $(this);
 			$targetNewItem.removeClass('new-item');
 			applyMagicEffect($targetNewItem, 'magictime swashIn', delay);
 			delay += 60;
 		});
-
+		if ($newItemsFadeIn.length > 0) {
+			var fadeInSpeed = 300;
+			setTimeout(function() { $newItemsFadeIn.removeClass('new-item').fadeIn(fadeInSpeed); }, delay);
+			delay += fadeInSpeed;
+		}
 		return delay;
 	}
 
