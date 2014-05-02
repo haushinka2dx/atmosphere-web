@@ -296,7 +296,7 @@ var AtmosTimelineManager = (function() {
 
 		timelineDefinitionStatusChanger();
 
-		$('#' + dialogId + ' .timeline-definitions').perfectScrollbar(atmos.perfectScrollbarSetting);
+		$('#' + dialogId + ' .timeline-definitions').perfectScrollbar(atmos.perfectScrollbarSetting());
 		$('#' + dialogId).show('fast');
 	};
 
