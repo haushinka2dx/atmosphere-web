@@ -79,7 +79,7 @@ var AtmosSearch = (function() {
 
 		$(this._panelSelector).fadeIn(this._windowSpeed);
 		$(this._panelSelector + ' .history-area').find('.history').fadeIn(this._windowSpeed);
-		$(this._panelSelector + ' .history-area').perfectScrollbar(atmos.perfectScrollbarSetting);
+		$(this._panelSelector + ' .history-area').perfectScrollbar(atmos.perfectScrollbarSetting());
 	}
 
 	AtmosSearch.prototype.close = function() {
@@ -155,7 +155,7 @@ var AtmosSearch = (function() {
 							$('#' + resultPanelId + ' .search-result .result-wrapper .result').prepend(createTimelineItem(msg));
 						});
 						$('#' + resultPanelId + ' .search-result .result-wrapper .result .timeline-item-wrapper').fadeIn();
-						$('#' + resultPanelId + ' .search-result .result-wrapper .result').perfectScrollbar(atmos.perfectScrollbarSetting);
+						$('#' + resultPanelId + ' .search-result .result-wrapper .result').perfectScrollbar(atmos.perfectScrollbarSetting());
 					}
 				}
 			},

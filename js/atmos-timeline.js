@@ -360,7 +360,7 @@ var AtmosTimeline = (function() {
 
 	function setScrollbar() {
 		if (this.scrollbarWasSet === false) {
-			$(this.selector()).parent().perfectScrollbar(atmos.perfectScrollbarSetting);
+			$(this.selector()).parent().perfectScrollbar(atmos.perfectScrollbarSetting());
 			this.scrollbarWasSet = true;
 		}
 	}

@@ -100,7 +100,7 @@ var AtmosProfile = (function() {
 
 						var totalDelay = showNewItems($(that.selector('.profile .profile-main div.timeline article.new-item')));
 
-						$(that.selector('.profile .profile-main div.timeline')).perfectScrollbar(atmos.perfectScrollbarSetting);
+						$(that.selector('.profile .profile-main div.timeline')).perfectScrollbar(atmos.perfectScrollbarSetting());
 					}
 				}
 			},

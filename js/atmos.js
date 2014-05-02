@@ -55,7 +55,7 @@ var atmos = null;
 		allUserIds : allUserIds,
 		allGroupIds : allGroupIds,
 		clearCurrentInfo : clearCurrentInfo,
-		perfectScrollbarSetting : { wheelSpeed: 70, minScrollbarLength: 100 },
+		perfectScrollbarSetting : perfectScrollbarSetting,
 		applyAutoComplete : applyAutoComplete,
 		showDesktopNotification : showDesktopNotification,
 	}
@@ -836,7 +836,7 @@ var atmos = null;
 	}
 
 	function initScrollbars() {
-		$('.contents').perfectScrollbar(atmos.perfectScrollbarSetting);
+		$('.contents').perfectScrollbar(atmos.perfectScrollbarSetting());
 		this.timelineManager().getTimelines().forEach(function(tl) { tl.setScrollbar(); });
 	}
 
@@ -1030,6 +1030,15 @@ var atmos = null;
 		this._privateTimelines = [];
 		this._allUserIds = [];
 		this._allGroupIds = [];
+	}
+
+	function perfectScrollbarSetting() {
+		if (navigator.userAgent.match(/Mac|PPC/)) {
+			return { wheelSpeed: 5, minScrollbarLength: 100 };
+		}
+		else {
+			return { wheelSpeed: 70, minScrollbarLength: 100 };
+		}
 	}
 
 	function applyAutoComplete($target) {
