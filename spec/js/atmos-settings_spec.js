@@ -86,6 +86,50 @@ describe('AtmosSettings', function(){
 		});
 	});
 
+	describe('Complement', function(){
+		var target;
+		beforeEach(function() {
+			localStorage.clear();
+			target = AtmosSettings.Complement;
+		});
+
+		describe('userUsedHistory', function(){
+			it('default value', function(){
+				expect(JSON.stringify(target.userUsedHistory())).toEqual(JSON.stringify({}));
+			});
+
+			cases([{bob:2,bobson:1}])
+			.it('set valid value', function(value){
+				target.userUsedHistory(value);
+				expect(target.userUsedHistory()).toEqual(value);
+			});
+
+			cases([undefined, null, ''])
+			.it('if invalid value, return default value', function(value){
+				target.userUsedHistory(value);
+				expect(JSON.stringify(target.userUsedHistory())).toEqual(JSON.stringify({}));
+			});
+		});
+
+		describe('groupUsedHistory', function(){
+			it('default value', function(){
+				expect(JSON.stringify(target.groupUsedHistory())).toEqual(JSON.stringify({}));
+			});
+
+			cases([{bob:2,bobson:1}])
+			.it('set valid value', function(value){
+				target.groupUsedHistory(value);
+				expect(target.groupUsedHistory()).toEqual(value);
+			});
+
+			cases([undefined, null, ''])
+			.it('if invalid value, return default value', function(value){
+				target.groupUsedHistory(value);
+				expect(JSON.stringify(target.groupUsedHistory())).toEqual(JSON.stringify({}));
+			});
+		});
+	});
+
 	describe('Search', function(){
 		var target;
 		beforeEach(function() {

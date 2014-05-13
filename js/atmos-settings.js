@@ -127,6 +127,36 @@ var AtmosSettings = (function() {
 		return _Timeline;
 	})();
 
+	AtmosSettings.Complement = (function() {
+		function _Complement() {
+		}
+
+		function internalHistory(key, nextValue) {
+			if (can(nextValue) && typeof(nextValue) == 'object') {
+				localStorage.setItem(key, JSON.stringify(nextValue));
+			}
+			var currentValueString = localStorage.getItem(key);
+			if (canl(currentValueString)) {
+				return JSON.parse(currentValueString);
+			}
+			else {
+				return {};
+			}
+		}
+
+		_Complement.userUsedHistory = function(userUsedHistory) {
+			var key = 'Timeline.userUsedHistory';
+			return internalHistory(key, userUsedHistory);
+		};
+
+		_Complement.groupUsedHistory = function(groupUsedHistory) {
+			var key = 'Timeline.groupUsedHistory';
+			return internalHistory(key, groupUsedHistory);
+		};
+
+		return _Complement;
+	})();
+
 	AtmosSettings.Search = (function() {
 		function _Search() {
 		}
