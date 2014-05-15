@@ -127,6 +127,50 @@ var AtmosSettings = (function() {
 		return _Timeline;
 	})();
 
+	AtmosSettings.Complement = (function() {
+		function _Complement() {
+		}
+
+		var userUsedHistoryKey = 'Complement.userUsedHistory';
+		var groupUsedHistoryKey = 'Complement.groupUsedHistory';
+
+		function load(key, nextValue) {
+			var currentValueString = localStorage.getItem(key);
+			if (canl(currentValueString)) {
+				return JSON.parse(currentValueString);
+			}
+			else {
+				return {};
+			}
+		}
+
+		function touch(key, id) {
+			if (canl(id)) {
+				var c = load(key);
+				c[id] = Date.now();
+				localStorage.setItem(key, JSON.stringify(c));
+			}
+		}
+
+		_Complement.getUserUsedHistory = function() {
+			return load(userUsedHistoryKey);
+		}
+
+		_Complement.updateUserUsedHistory = function(userId) {
+			touch(userUsedHistoryKey, userId);
+		}
+
+		_Complement.getGroupUsedHistory = function() {
+			return load(groupUsedHistoryKey);
+		}
+
+		_Complement.updateGroupUsedHistory = function(groupId) {
+			touch(groupUsedHistoryKey, groupId);
+		}
+
+		return _Complement;
+	})();
+
 	AtmosSettings.Search = (function() {
 		function _Search() {
 		}

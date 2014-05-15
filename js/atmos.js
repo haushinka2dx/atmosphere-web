@@ -1041,6 +1041,27 @@ var atmos = null;
 		}
 	}
 
+	function createComparator(orderMap) {
+		// OrderMapには key: 配列の要素、value: 要素を最後に使った日時 が入っている。
+		// 並び替える際は Most Recently Used にしたいので数値が大きい方が先に来る
+		return function(left, right) {
+			if (orderMap[left] && orderMap[right]) {
+				if (orderMap[left] == orderMap[right]) {
+					return 0;
+				}
+				else {
+					return orderMap[left] > orderMap[right] ? -1 : 1;
+				}
+			}
+			else if (!orderMap[left] && !orderMap[right]) {
+				return 0;
+			}
+			else {
+				return orderMap[left] ? -1 : 1;
+			}
+		};
+	}
+
 	function applyAutoComplete($target) {
 		var that = this;
 		if (!can(this._autoCompleteConfig)) {
@@ -1051,8 +1072,9 @@ var atmos = null;
 					match: /(^|\s)@(\w*)$/,
 					search: function (term, callback) {
 						this._term = term;
+						var userComparator = createComparator(AtmosSettings.Complement.getUserUsedHistory());
 						var regexp = new RegExp('^' + term);
-						callback($.map(that.allUserIds(), function(userId) {
+						callback($.map(that.allUserIds().sort(userComparator), function(userId) {
 							return regexp.test(userId) ? userId : null;
 						}));
 					},
@@ -1061,6 +1083,9 @@ var atmos = null;
 					},
 					replace: function (value) {
 						var name = canl(value) ? value + ' ' : this._term;
+						if (canl(value)) {
+							AtmosSettings.Complement.updateUserUsedHistory(value);
+						}
 						return '$1@' + name;
 					},
 					cache: false
@@ -1072,8 +1097,9 @@ var atmos = null;
 					match: /(^|\s)\$(\w*)$/,
 					search: function (term, callback) {
 						this._term = term;
+						var groupComparator = createComparator(AtmosSettings.Complement.getGroupUsedHistory());
 						var regexp = new RegExp('^' + term);
-						callback($.map(that.allGroupIds(), function(groupId) {
+						callback($.map(that.allGroupIds().sort(groupComparator), function(groupId) {
 							return regexp.test(groupId) ? groupId : null;
 						}));
 					},
@@ -1082,6 +1108,9 @@ var atmos = null;
 					},
 					replace: function (value) {
 						var name = canl(value) ? value + ' ' : this._term;
+						if (canl(value)) {
+							AtmosSettings.Complement.updateGroupUsedHistory(value);
+						}
 						return '$1$' + name;
 					},
 					cache: false

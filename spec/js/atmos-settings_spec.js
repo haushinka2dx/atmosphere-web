@@ -86,6 +86,66 @@ describe('AtmosSettings', function(){
 		});
 	});
 
+	describe('Complement', function(){
+		var target;
+		beforeEach(function() {
+			localStorage.clear();
+			target = AtmosSettings.Complement;
+		});
+
+		describe('userUsedHistory', function(){
+			it('default value', function(){
+				expect(JSON.stringify(target.getUserUsedHistory())).toEqual(JSON.stringify({}));
+			});
+
+			cases([['bob'], ['bob','john']])
+			.it('set valid value', function(values) {
+				for (var i=0; i<values.length; i++) {
+					target.updateUserUsedHistory(values[i]);
+				}
+
+				var result = target.getUserUsedHistory();
+				var resultKeys = Object.keys(result);
+				for (var i=0; i<values.length; i++) {
+					expect(resultKeys).toContain(values[i]);
+					expect(result[values[i]]).toBeDefined()
+				}
+			});
+
+			cases([undefined, null, ''])
+			.it('if invalid value, return default value', function(value){
+				target.updateUserUsedHistory(value);
+				expect(JSON.stringify(target.getUserUsedHistory())).toEqual(JSON.stringify({}));
+			});
+		});
+
+		describe('groupUsedHistory', function(){
+			it('default value', function(){
+				expect(JSON.stringify(target.getGroupUsedHistory())).toEqual(JSON.stringify({}));
+			});
+
+			cases([['admin'], ['infra','group01']])
+			.it('set valid value', function(values) {
+				for (var i=0; i<values.length; i++) {
+					target.updateGroupUsedHistory(values[i]);
+				}
+
+				var result = target.getGroupUsedHistory();
+				var resultKeys = Object.keys(result);
+				for (var i=0; i<values.length; i++) {
+					expect(resultKeys).toContain(values[i]);
+					expect(result[values[i]]).toBeDefined()
+				}
+			});
+
+			cases([undefined, null, ''])
+			.it('if invalid value, return default value', function(value){
+				target.updateGroupUsedHistory(value);
+				expect(JSON.stringify(target.getGroupUsedHistory())).toEqual(JSON.stringify({}));
+			});
+		});
+	});
+
 	describe('Search', function(){
 		var target;
 		beforeEach(function() {
