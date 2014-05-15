@@ -95,37 +95,53 @@ describe('AtmosSettings', function(){
 
 		describe('userUsedHistory', function(){
 			it('default value', function(){
-				expect(JSON.stringify(target.userUsedHistory())).toEqual(JSON.stringify({}));
+				expect(JSON.stringify(target.getUserUsedHistory())).toEqual(JSON.stringify({}));
 			});
 
-			cases([{bob:2,bobson:1}])
-			.it('set valid value', function(value){
-				target.userUsedHistory(value);
-				expect(target.userUsedHistory()).toEqual(value);
+			cases([['bob'], ['bob','john']])
+			.it('set valid value', function(values) {
+				for (var i=0; i<values.length; i++) {
+					target.updateUserUsedHistory(values[i]);
+				}
+
+				var result = target.getUserUsedHistory();
+				var resultKeys = Object.keys(result);
+				for (var i=0; i<values.length; i++) {
+					expect(resultKeys).toContain(values[i]);
+					expect(result[values[i]]).toBeDefined()
+				}
 			});
 
 			cases([undefined, null, ''])
 			.it('if invalid value, return default value', function(value){
-				target.userUsedHistory(value);
-				expect(JSON.stringify(target.userUsedHistory())).toEqual(JSON.stringify({}));
+				target.updateUserUsedHistory(value);
+				expect(JSON.stringify(target.getUserUsedHistory())).toEqual(JSON.stringify({}));
 			});
 		});
 
 		describe('groupUsedHistory', function(){
 			it('default value', function(){
-				expect(JSON.stringify(target.groupUsedHistory())).toEqual(JSON.stringify({}));
+				expect(JSON.stringify(target.getGroupUsedHistory())).toEqual(JSON.stringify({}));
 			});
 
-			cases([{bob:2,bobson:1}])
-			.it('set valid value', function(value){
-				target.groupUsedHistory(value);
-				expect(target.groupUsedHistory()).toEqual(value);
+			cases([['admin'], ['infra','group01']])
+			.it('set valid value', function(values) {
+				for (var i=0; i<values.length; i++) {
+					target.updateGroupUsedHistory(values[i]);
+				}
+
+				var result = target.getGroupUsedHistory();
+				var resultKeys = Object.keys(result);
+				for (var i=0; i<values.length; i++) {
+					expect(resultKeys).toContain(values[i]);
+					expect(result[values[i]]).toBeDefined()
+				}
 			});
 
 			cases([undefined, null, ''])
 			.it('if invalid value, return default value', function(value){
-				target.groupUsedHistory(value);
-				expect(JSON.stringify(target.groupUsedHistory())).toEqual(JSON.stringify({}));
+				target.updateGroupUsedHistory(value);
+				expect(JSON.stringify(target.getGroupUsedHistory())).toEqual(JSON.stringify({}));
 			});
 		});
 	});

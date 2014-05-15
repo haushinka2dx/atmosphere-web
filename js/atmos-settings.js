@@ -131,10 +131,10 @@ var AtmosSettings = (function() {
 		function _Complement() {
 		}
 
-		function internalHistory(key, nextValue) {
-			if (can(nextValue) && typeof(nextValue) == 'object') {
-				localStorage.setItem(key, JSON.stringify(nextValue));
-			}
+		var userUsedHistoryKey = 'Complement.userUsedHistory';
+		var groupUsedHistoryKey = 'Complement.groupUsedHistory';
+
+		function load(key, nextValue) {
 			var currentValueString = localStorage.getItem(key);
 			if (canl(currentValueString)) {
 				return JSON.parse(currentValueString);
@@ -144,15 +144,29 @@ var AtmosSettings = (function() {
 			}
 		}
 
-		_Complement.userUsedHistory = function(userUsedHistory) {
-			var key = 'Timeline.userUsedHistory';
-			return internalHistory(key, userUsedHistory);
-		};
+		function touch(key, id) {
+			if (canl(id)) {
+				var c = load(key);
+				c[id] = Date.now();
+				localStorage.setItem(key, JSON.stringify(c));
+			}
+		}
 
-		_Complement.groupUsedHistory = function(groupUsedHistory) {
-			var key = 'Timeline.groupUsedHistory';
-			return internalHistory(key, groupUsedHistory);
-		};
+		_Complement.getUserUsedHistory = function() {
+			return load(userUsedHistoryKey);
+		}
+
+		_Complement.updateUserUsedHistory = function(userId) {
+			touch(userUsedHistoryKey, userId);
+		}
+
+		_Complement.getGroupUsedHistory = function() {
+			return load(groupUsedHistoryKey);
+		}
+
+		_Complement.updateGroupUsedHistory = function(groupId) {
+			touch(groupUsedHistoryKey, groupId);
+		}
 
 		return _Complement;
 	})();

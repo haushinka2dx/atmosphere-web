@@ -1073,7 +1073,7 @@ var atmos = null;
 					match: /(^|\s)@(\w*)$/,
 					search: function (term, callback) {
 						this._term = term;
-						var userComparator = createComparator(AtmosSettings.Complement.userUsedHistory());
+						var userComparator = createComparator(AtmosSettings.Complement.getUserUsedHistory());
 						var regexp = new RegExp('^' + term);
 						callback($.map(that.allUserIds().sort(userComparator), function(userId) {
 							return regexp.test(userId) ? userId : null;
@@ -1085,9 +1085,7 @@ var atmos = null;
 					replace: function (value) {
 						var name = canl(value) ? value + ' ' : this._term;
 						if (canl(value)) {
-							var userUsedHistory = AtmosSettings.Complement.userUsedHistory();
-							userUsedHistory[value] = Date.now();
-							AtmosSettings.Complement.userUsedHistory(userUsedHistory);
+							AtmosSettings.Complement.updateUserUsedHistory(value);
 						}
 						return '$1@' + name;
 					},
@@ -1100,7 +1098,7 @@ var atmos = null;
 					match: /(^|\s)\$(\w*)$/,
 					search: function (term, callback) {
 						this._term = term;
-						var groupComparator = createComparator(AtmosSettings.Complement.groupUsedHistory());
+						var groupComparator = createComparator(AtmosSettings.Complement.getGroupUsedHistory());
 						var regexp = new RegExp('^' + term);
 						callback($.map(that.allGroupIds().sort(groupComparator), function(groupId) {
 							return regexp.test(groupId) ? groupId : null;
@@ -1112,9 +1110,7 @@ var atmos = null;
 					replace: function (value) {
 						var name = canl(value) ? value + ' ' : this._term;
 						if (canl(value)) {
-							var groupUsedHistory = AtmosSettings.Complement.groupUsedHistory();
-							groupUsedHistory[value] = Date.now();
-							AtmosSettings.Complement.groupUsedHistory(groupUsedHistory);
+							AtmosSettings.Complement.updateGroupUsedHistory(value);
 						}
 						return '$1$' + name;
 					},
