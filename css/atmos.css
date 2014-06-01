@@ -113,10 +113,9 @@ html, body {
 }
 
 .atmos-vmenu li a.icon-logo:before {
-    content: "A";
-    font-weight: 700;
-    font-size: 200%;
-    font-family: 'Lato', Calibri, Arial, sans-serif;
+    content: "\e600";
+    font-family: "atmos";
+	font-size: 2em;
 }
 
 .atmos-vmenu li a.icon-login:before {
