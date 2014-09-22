@@ -191,7 +191,7 @@ var AtmosConversation = (function() {
 			var responderUserIds = responses[resType];
 			var responseInfo = {};
 			responseInfo['reaction-type'] = resType;
-			responseInfo['reaction-icon-class'] = "foundicon-" + resType;
+			responseInfo['reaction-icon-class'] = "atmos-icon-action-" + resType;
 			responseInfo['reaction-count'] = responderUserIds.length;
 			reactions.push(responseInfo);
 		});

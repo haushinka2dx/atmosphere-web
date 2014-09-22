@@ -347,14 +347,18 @@
 					<header>
 						<div class="header"><a href="#" class="close-button"><i class="foundicon-remove"></i></a></div>
 						<div class="side-panel left">
+							<a class="show-responded-messages simptip-position-left simptip-movable" data-tooltip="Show Fun" href="javascript:void(0);" data-action="fun"><i class="atmos-icon-action-fun"></i></a>
+							<a class="show-responded-messages simptip-position-left simptip-movable" data-tooltip="Show Good" href="javascript:void(0);" data-action="good"><i class="atmos-icon-action-good"></i></a>
+							<a class="show-responded-messages simptip-position-left simptip-movable" data-tooltip="Show Memo" href="javascript:void(0);" data-action="memo"><i class="atmos-icon-action-memo"></i></a>
+							<a class="show-responded-messages simptip-position-left simptip-movable" data-tooltip="Show Usefull" href="javascript:void(0);" data-action="usefull"><i class="atmos-icon-action-usefull" style="margin-right:0.14em;"></i></a>
 						</div>
 						<div class="avator" style="background-image: url('{{profile-avator-image-url}}');" ></div>
 						<div class="side-panel right">
 							{{#is-myself}}
-							<a class="change-avator simptip-position-left simptip-movable" data-tooltip="Change Avator" href="javascript:void(0);"><i class="dripicon-user"></i></a>
-							<a class="change-profile simptip-position-left simptip-movable" data-tooltip="Change Introduction" href="javascript:void(0);"><i class="dripicon-document"></i></a>
-							<a class="change-password simptip-position-left simptip-movable" data-tooltip="Change Password" href="javascript:void(0);"><i class="dripicon-lock"></i></a>
-							<a class="change-notification simptip-position-left simptip-movable" data-tooltip="Change Notification Settings" href="javascript:void(0);"><i class="ls-icon-bell" style="margin-right:0.14em;"></i></a>
+							<a class="change-avator simptip-position-right simptip-movable" data-tooltip="Change Avator" href="javascript:void(0);"><i class="dripicon-user"></i></a>
+							<a class="change-profile simptip-position-right simptip-movable" data-tooltip="Change Introduction" href="javascript:void(0);"><i class="dripicon-document"></i></a>
+							<a class="change-password simptip-position-right simptip-movable" data-tooltip="Change Password" href="javascript:void(0);"><i class="dripicon-lock"></i></a>
+							<a class="change-notification simptip-position-right simptip-movable" data-tooltip="Change Notification Settings" href="javascript:void(0);"><i class="ls-icon-bell" style="margin-right:0.14em;"></i></a>
 							{{/is-myself}}
 						</div>
 						<div class="name">{{profile-username}}</div>
