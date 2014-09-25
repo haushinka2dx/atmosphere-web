@@ -165,7 +165,7 @@ var AtmosProfile = (function() {
 			var responderUserIds = responses[resType];
 			var responseInfo = {};
 			responseInfo['reaction-type'] = resType;
-			responseInfo['reaction-icon-class'] = "foundicon-" + resType;
+			responseInfo['reaction-icon-class'] = "atmos-icon-action-" + resType;
 			responseInfo['reaction-count'] = responderUserIds.length;
 			reactions.push(responseInfo);
 		});
@@ -277,6 +277,33 @@ var AtmosProfile = (function() {
 		$(that.selector('.profile a.change-notification')).on('click', function(e) {
 			e.stopPropagation();
 			atmos.showNotificationSettingsChangeDialog({ timeoutSeconds : AtmosSettings.Desktop.closeTimeoutSeconds() });
+		});
+		$(that.selector('.profile a.show-responded-messages')).on('click', function(e) {
+			e.stopPropagation();
+
+			var action = $(this).data('action');
+
+			var cond = createAtmosSearchCondition();
+			cond.respondedBy(that.userId() + ':' + action);
+
+			var timelineId = 'search' + uuid();
+			var timelineRootId = 'root-' + timelineId;
+			var url = '/messages/search?' + cond.toGETParameters();
+
+			var tlDef = {
+				"root-id": timelineRootId,
+				"id":      timelineId,
+				"name":    that.userId() + "'s " + action,
+				"icon":    'atmos-icon-action-' + action,
+				"theme":   'timeline-row3',
+				"api":     url,
+				"private": false,
+			};
+
+			var timeline = atmos.timelineManager().addTimeline(tlDef);
+			if (timeline) {
+				timeline.init();
+			}
 		});
 	};
 

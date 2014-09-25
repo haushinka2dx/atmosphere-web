@@ -54,6 +54,9 @@ var createAtmosSearchCondition = undefined;
 		addressUsers : addressUsers,
 		addressGroups : addressGroups,
 		messageTypes : messageTypes,
+		messageIds : messageIds,
+		replyToMessageId : replyToMessageId,
+		respondedBy : respondedBy,
 		toJSON : toJSON,
 		toGETParameters : toGETParameters,
 	}
@@ -135,6 +138,27 @@ var createAtmosSearchCondition = undefined;
 		return this._messageTypes;
 	}
 
+	function messageIds(argMessageIds) {
+		if (can(argMessageIds)) {
+			this._messageIds = argMessageIds;
+		}
+		return this._messageIds;
+	}
+
+	function replyToMessageId(argReplyToMessageId) {
+		if (can(argReplyToMessageId)) {
+			this._replyToMessageId = argReplyToMessageId;
+		}
+		return this._replyToMessageId;
+	}
+
+	function respondedBy(argRespondedBy) {
+		if (can(argRespondedBy)) {
+			this._respondedBy = argRespondedBy;
+		}
+		return this._respondedBy;
+	}
+
 	function toJSON() {
 		var j = {};
 		if (can(this.count())) {
@@ -169,6 +193,15 @@ var createAtmosSearchCondition = undefined;
 		}
 		if (can(this.messageTypes())) {
 			j['message_types'] = this.messageTypes();
+		}
+		if (can(this.messageIds())) {
+			j['message_ids'] = this.messageIds();
+		}
+		if (can(this.replyToMessageId())) {
+			j['reply_to_message_id'] = this.replyToMessageId();
+		}
+		if (can(this.respondedBy())) {
+			j['responded_by'] = this.respondedBy();
 		}
 		return j;
 	}

@@ -167,6 +167,30 @@ html, body {
     font-family: "GeneralFoundicons";
 }
 
+.atmos-icon-action-fun:before {
+    font-family: 'LigatureSymbols';
+	font-style: normal;
+	content: "\e07f"; // laugh
+}
+
+.atmos-icon-action-good:before {
+    font-family: 'LigatureSymbols';
+	font-style: normal;
+	content: "\e121"; // star
+}
+
+.atmos-icon-action-memo:before {
+    font-family: 'LigatureSymbols';
+	font-style: normal;
+	content: "\e02a"; // checkbox
+}
+
+.atmos-icon-action-usefull:before {
+    font-family: 'LigatureSymbols';
+	font-style: normal;
+	content: "\e089"; // magic
+}
+
 .sender-panel {
 	width: 288px;
 	height: 100%;
@@ -492,6 +516,7 @@ html, body {
 	opacity: 0;
 	transition: opacity 0.5s ease-out 0;
 	margin-right: 2px;
+	margin-top: -5px;
 }
 
 .timeline-item:hover > .timeline-item-footer > .reaction-panel,
@@ -499,7 +524,8 @@ html, body {
 	opacity: 1;
 }
 
-.reaction-panel > a {
+.reaction-panel > a > i {
+	font-size: 1.4em;
 }
 
 .reaction-count {
@@ -869,11 +895,19 @@ html, body {
 	vertical-align: top;
 }
 
-.profile-wrapper .profile > header div.side-panel.right {
+.profile-wrapper .profile > header div.side-panel.left,div.side-panel.right {
 	font-size: 2em;
-	text-align: right;
 	padding-top: 0.25em;
 }
+
+.profile-wrapper .profile > header div.side-panel.left {
+	text-align: center;
+}
+
+.profile-wrapper .profile > header div.side-panel.right {
+	text-align: right;
+}
+
 
 .profile-wrapper .profile > header div.avator {
 	position: relative;
